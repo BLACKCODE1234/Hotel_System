@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, User, Mail, Lock, CheckCircle, XCircle } from 'lucide-react';
 
 const SignupPage: React.FC = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -13,6 +14,7 @@ const SignupPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [errors, setErrors] = useState<{[key: string]: string}>({});
+  const [isLoading, setIsLoading] = useState(false);
 
   const validatePassword = (password: string) => {
     if (password.length <= 6) {
@@ -51,11 +53,22 @@ const SignupPage: React.FC = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (validateForm()) {
-      console.log('Form submitted:', formData);
-      // Handle signup logic here
+      setIsLoading(true);
+      
+      try {
+        // Simulate API call to register user and send verification email
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        
+        // Navigate to email verification page with email parameter
+        navigate(`/email-verification?email=${encodeURIComponent(formData.email)}`);
+      } catch (error) {
+        setErrors({ submit: 'Registration failed. Please try again.' });
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
 
@@ -263,15 +276,25 @@ const SignupPage: React.FC = () => {
             {/* Submit Button */}
             <button
               type="submit"
-              className="group relative w-full px-8 py-4 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white font-bold rounded-full shadow-2xl transform transition-all duration-500 hover:scale-105 hover:shadow-blue-500/50 hover:shadow-2xl overflow-hidden"
+              disabled={isLoading}
+              className="group relative w-full px-8 py-4 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white font-bold rounded-full shadow-2xl transform transition-all duration-500 hover:scale-105 hover:shadow-blue-500/50 hover:shadow-2xl overflow-hidden disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none"
               style={{
                 boxShadow: '0 0 30px rgba(59, 130, 246, 0.5), 0 0 60px rgba(59, 130, 246, 0.3)',
-                animation: 'glow 2s ease-in-out infinite alternate'
+                animation: isLoading ? 'none' : 'glow 2s ease-in-out infinite alternate'
               }}
             >
               <span className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
               <span className="relative z-10 flex items-center justify-center gap-2 text-lg">
-                🚀 Create Account
+                {isLoading ? (
+                  <>
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                    Creating Account...
+                  </>
+                ) : (
+                  <>
+                    🚀 Create Account
+                  </>
+                )}
               </span>
               <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-purple-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-xl"></div>
             </button>

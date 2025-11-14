@@ -6,6 +6,7 @@ import RoomsPage from './pages/RoomsPage';
 import BookingPage from './pages/BookingPage';
 import SignupPage from './pages/SignupPage';
 import LoginPage from './pages/LoginPage';
+import EmailVerificationPage from './pages/EmailVerificationPage';
 import UserDashboard from './pages/UserDashboard';
 import ProfilePage from './pages/ProfilePage';
 import HistoryPage from './pages/HistoryPage';
@@ -36,6 +37,7 @@ function AppContent() {
           <Route path="/booking" element={<BookingPage />} />
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/email-verification" element={<EmailVerificationPage />} />
           <Route path="/dashboard" element={<UserDashboard />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/history" element={<HistoryPage />} />

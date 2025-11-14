@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { Eye, EyeOff, Mail, Lock, LogIn, XCircle } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { Eye, EyeOff, Mail, Lock, LogIn, XCircle, CheckCircle } from 'lucide-react';
 
 const LoginPage: React.FC = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -11,6 +12,16 @@ const LoginPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState<{[key: string]: string}>({});
   const [isLoading, setIsLoading] = useState(false);
+  const [showVerificationSuccess, setShowVerificationSuccess] = useState(false);
+
+  // Check if user came from email verification
+  useEffect(() => {
+    if (searchParams.get('verified') === 'true') {
+      setShowVerificationSuccess(true);
+      // Hide the message after 5 seconds
+      setTimeout(() => setShowVerificationSuccess(false), 5000);
+    }
+  }, [searchParams]);
 
   const validateForm = () => {
     const newErrors: {[key: string]: string} = {};
@@ -111,6 +122,17 @@ const LoginPage: React.FC = () => {
             <h2 className="text-3xl font-bold text-gray-900 mb-2">Welcome Back</h2>
             <p className="text-gray-600">Sign in to your account to continue</p>
           </div>
+
+          {/* Verification Success Message */}
+          {showVerificationSuccess && (
+            <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg flex items-center gap-3">
+              <CheckCircle className="w-5 h-5 text-green-600" />
+              <div>
+                <p className="text-green-800 font-medium">Email verified successfully!</p>
+                <p className="text-green-700 text-sm">You can now log in to your account.</p>
+              </div>
+            </div>
+          )}
 
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Email */}
