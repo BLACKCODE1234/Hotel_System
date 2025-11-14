@@ -27,7 +27,7 @@ function AppContent() {
                       location.pathname === '/admin/profile' || 
                       location.pathname === '/create-superadmin' || 
                       location.pathname === '/superadmin-management' ||
-                      location.pathname === '/superadmin-dashboard';
+                      location.pathname === '/superadmin';
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -51,7 +51,7 @@ function AppContent() {
           <Route path="/admin/profile" element={<AdminProfilePage />} />
           <Route path="/create-superadmin" element={<CreateSuperAdminPage />} />
           <Route path="/superadmin-management" element={<SuperAdminManagementPage />} />
-          <Route path="/superadmin-dashboard" element={<SuperAdminDashboard />} />
+          <Route path="/superadmin" element={<SuperAdminDashboard />} />
         </Routes>
     </div>
   );
