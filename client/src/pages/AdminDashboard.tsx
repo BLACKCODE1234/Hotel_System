@@ -24,7 +24,8 @@ import {
   ChevronDown,
   Shield,
   Mail,
-  Phone
+  Phone,
+  Crown
 } from 'lucide-react';
 
 interface Booking {
@@ -455,6 +456,7 @@ const AdminDashboard: React.FC = () => {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
         {/* Navigation Tabs */}
         <div className="mb-6 sm:mb-8">
           <div className="border-b border-gray-200">

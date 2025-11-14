@@ -17,10 +17,17 @@ import HotelDetailsPage from './pages/HotelDetailsPage';
 import BookingConfirmationPage from './pages/BookingConfirmationPage';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminProfilePage from './pages/AdminProfilePage';
+import CreateSuperAdminPage from './pages/CreateSuperAdminPage';
+import SuperAdminManagementPage from './pages/SuperAdminManagementPage';
+import SuperAdminDashboard from './pages/SuperAdminDashboard';
 
 function AppContent() {
   const location = useLocation();
-  const isAdminRoute = location.pathname === '/admin' || location.pathname === '/admin/profile';
+  const isAdminRoute = location.pathname === '/admin' || 
+                      location.pathname === '/admin/profile' || 
+                      location.pathname === '/create-superadmin' || 
+                      location.pathname === '/superadmin-management' ||
+                      location.pathname === '/superadmin-dashboard';
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -42,6 +49,9 @@ function AppContent() {
           <Route path="/booking-confirmation" element={<BookingConfirmationPage />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/admin/profile" element={<AdminProfilePage />} />
+          <Route path="/create-superadmin" element={<CreateSuperAdminPage />} />
+          <Route path="/superadmin-management" element={<SuperAdminManagementPage />} />
+          <Route path="/superadmin-dashboard" element={<SuperAdminDashboard />} />
         </Routes>
     </div>
   );
