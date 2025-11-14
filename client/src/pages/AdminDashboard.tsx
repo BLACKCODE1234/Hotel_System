@@ -65,7 +65,6 @@ const AdminDashboard: React.FC = () => {
   const [chartPeriod, setChartPeriod] = useState<'daily' | 'weekly' | 'monthly'>('daily');
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (showProfileDropdown) {
@@ -80,7 +79,7 @@ const AdminDashboard: React.FC = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [showProfileDropdown]);
 
-  // Mock data
+  
   useEffect(() => {
     const mockBookings: Booking[] = [
       {
@@ -191,7 +190,7 @@ const AdminDashboard: React.FC = () => {
       setShowRoomStatusModal(false);
       setSelectedRoom(null);
       
-      // Show success message
+      
       alert(`Room ${selectedRoom.number} status updated to ${newStatus}`);
     }
   };
@@ -201,7 +200,7 @@ const AdminDashboard: React.FC = () => {
     return allRoomStatuses.filter(status => status !== currentStatus);
   };
 
-  // Chart data for different periods
+  
   const getChartData = () => {
     const dailyData = [
       { room: 65, service: 20, total: 85, day: 'Mon', label: 'Mon' },
