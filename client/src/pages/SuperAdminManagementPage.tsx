@@ -196,11 +196,11 @@ const SuperAdminManagementPage: React.FC = () => {
           </div>
           <div className="flex items-center gap-4 self-end sm:self-auto">
             <Link
-              to="/create-superadmin"
+              to="/superadmin"
               className="inline-flex items-center px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white font-medium rounded-lg transition-colors duration-200"
             >
               <Plus className="w-4 h-4 mr-2" />
-              Create Super Admin
+              Super Admin Dashboard
             </Link>
             <div className="flex items-center gap-2">
               <Crown className="w-5 h-5 text-yellow-300" />
