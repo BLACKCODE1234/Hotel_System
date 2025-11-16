@@ -20,13 +20,15 @@ import AdminDashboard from './pages/AdminDashboard';
 import AdminProfilePage from './pages/AdminProfilePage';
 import SuperAdminManagementPage from './pages/SuperAdminManagementPage';
 import SuperAdminDashboard from './pages/SuperAdminDashboard';
+import StaffDashboard from './pages/StaffDashboard';
 
 function AppContent() {
   const location = useLocation();
   const isAdminRoute = location.pathname === '/admin' || 
                       location.pathname === '/admin/profile' || 
                       location.pathname === '/superadmin-management' ||
-                      location.pathname === '/superadmin';
+                      location.pathname === '/superadmin' ||
+                      location.pathname === '/staff';
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -51,6 +53,7 @@ function AppContent() {
           <Route path="/admin/profile" element={<AdminProfilePage />} />
           <Route path="/superadmin-management" element={<SuperAdminManagementPage />} />
           <Route path="/superadmin" element={<SuperAdminDashboard />} />
+          <Route path="/staff" element={<StaffDashboard />} />
         </Routes>
     </div>
   );
