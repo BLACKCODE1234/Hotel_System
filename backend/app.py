@@ -6,3 +6,4 @@ import os
 import json
 import requests
 from flask_cors import CORS
+from psycopg2 import RealDictCursor
