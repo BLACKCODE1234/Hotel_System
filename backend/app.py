@@ -7,3 +7,8 @@ import json
 import requests
 from flask_cors import CORS
 from psycopg2 import RealDictCursor
+
+
+
+if __name__ == '__main__':
+    app.run(debug=True)
