@@ -1,4 +1,4 @@
 import bcrypt
 import psycopg2
-from flask import Flask
+import jwt
 from datetime import datetime 
