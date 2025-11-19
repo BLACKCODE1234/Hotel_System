@@ -54,6 +54,10 @@ def signup():
         cursor.execute("INSERT INTO users (firstname,lastname,email,password) VALUES (%s,%s,%s,%s)",(firstname,lastname,email,hashed))
         db.commit()
         return jsonify({"message":"Account created successfully","status":success}),201
+    
+    
+    
+    
     except psycopg2.Error as e:
         return jsonify({"message":"Server is down","status":error}),500
     finally:
