@@ -45,10 +45,19 @@ def signup():
     try:
         hashed = bcrypt.hashpw(password.encode('utf-8'),bcrypt.gensalt()).decode('utf-8')
         db = database_connection()
-    
+        cursor = db.cursor(cursor_factory=RealDictCursor)
+
+        cursor.execute("select email from login where email = %s ",(email,))
+        if cursor.fetchone():
+            return jsonify({"message":"Account already exist","status":error}),400
+            
+        cursor.execute("INSERT INTO users (firstname,lastname,email,password) VALUES (%s,%s,%s,%s)",)
+        db.commit()
     except psycopg2.Error as e:
         return jsonify({"message":"Server is down","status":error}),500
-
+    finally:
+        cursor.close()
+        db.close()
     
 
 
