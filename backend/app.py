@@ -9,11 +9,21 @@ from flask_cors import CORS
 from psycopg2 import RealDictCursor
 
 
+def database_connection():
+    try:
+        conn = psycopg2.connect(
+            host="localhost",
+            database="",
+            user="",
+            password=""
+        )
+        return conn
+    except psycopg2.Error as e:
+        return jsonify({"message":"Server is down","status":error}),500
+
 @app.route('/signup',methods=['POST'])
 def signup():
-    
     if not request.is_json:
-
         return jsonify({"message":"Request must be JSON","status":400})    
 
     data=request.get_json()
@@ -34,7 +44,7 @@ def signup():
     
     try:
         hashed = bcrypt.hashpw(password.encode('utf-8'),bcrypt.gensalt()).decode('utf-8')
-    
+        db = database_connection()
     
     except psycopg2.Error as e:
         return jsonify({"message":"Server is down","status":error}),500
