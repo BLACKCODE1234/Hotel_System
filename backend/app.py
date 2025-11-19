@@ -50,9 +50,10 @@ def signup():
         cursor.execute("select email from login where email = %s ",(email,))
         if cursor.fetchone():
             return jsonify({"message":"Account already exist","status":error}),400
-            
-        cursor.execute("INSERT INTO users (firstname,lastname,email,password) VALUES (%s,%s,%s,%s)",)
+
+        cursor.execute("INSERT INTO users (firstname,lastname,email,password) VALUES (%s,%s,%s,%s)",(firstname,lastname,email,hashed))
         db.commit()
+        return jsonify({"message":"Account created successfully","status":success}),201
     except psycopg2.Error as e:
         return jsonify({"message":"Server is down","status":error}),500
     finally:
