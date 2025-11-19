@@ -21,7 +21,16 @@ def signup():
     lastname - request.get_json("lastname")
     email = request.get_json("email")
     password = request.get_json("password")
+
+    if len(password) < 6:
+        return jsonify({"message":"Password should be more than 6 characters","status":error}),400
+    
     repassword = request.get_json("repassword")
+    if repassword != password:
+        return jsonify({"message":"Passwords do not match","status":error}),400
+
+    if not all([firstname,lastname,email,password,repassword]):
+        return jsonify({"message":"All fields are required","status":error,"user":None}),400
     
 
 
