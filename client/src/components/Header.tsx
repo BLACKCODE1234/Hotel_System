@@ -7,8 +7,8 @@ const Header: React.FC = () => {
   const location = useLocation();
   
   // Simulate user authentication state (in real app, this would come from context/state management)
-  const isLoggedIn = location.pathname === '/dashboard';
   const isHome = location.pathname === '/';
+  const isAuthPage = location.pathname === '/login' || location.pathname === '/signup';
 
   return (
     <header 
@@ -47,6 +47,15 @@ const Header: React.FC = () => {
                 className="px-5 py-2 bg-blue-600 text-white font-medium rounded-full shadow-md hover:bg-blue-700 transition-colors duration-200"
               >
                 Sign Up
+              </Link>
+            </nav>
+          ) : isAuthPage ? (
+            <nav className="hidden md:flex items-center space-x-1">
+              <Link 
+                to="/" 
+                className="px-4 py-2 text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200 rounded-md hover:bg-gray-50"
+              >
+                Home
               </Link>
             </nav>
           ) : (
@@ -149,6 +158,16 @@ const Header: React.FC = () => {
                   onClick={() => setIsMenuOpen(false)}
                 >
                   Sign Up
+                </Link>
+              </nav>
+            ) : isAuthPage ? (
+              <nav className="flex flex-col space-y-2">
+                <Link 
+                  to="/" 
+                  className="px-4 py-2 text-gray-600 hover:text-blue-600 font-medium transition-colors rounded-md hover:bg-gray-50"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Home
                 </Link>
               </nav>
             ) : (
