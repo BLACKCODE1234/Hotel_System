@@ -15,7 +15,10 @@ import {
   AlertCircle,
   CheckCircle,
   Wrench,
-  Coffee
+  Coffee,
+  MessageCircle,
+  Phone,
+  Video
 } from 'lucide-react';
 
 interface Task {
@@ -34,6 +37,14 @@ interface ChecklistItem {
   id: string;
   label: string;
   completed: boolean;
+}
+
+interface StaffContact {
+  id: string;
+  name: string;
+  role: string;
+  department: string;
+  status: 'online' | 'away' | 'offline';
 }
 
 const StaffDashboard: React.FC = () => {
@@ -82,6 +93,15 @@ const StaffDashboard: React.FC = () => {
     { id: 'briefing', label: 'Attended team briefing', completed: false }
   ]);
 
+  const [staffSearchTerm, setStaffSearchTerm] = useState('');
+  const staffDirectory: StaffContact[] = [
+    { id: 's1', name: 'Maria Garcia', role: 'Housekeeper', department: 'Housekeeping', status: 'online' },
+    { id: 's2', name: 'John Smith', role: 'Maintenance Technician', department: 'Maintenance', status: 'away' },
+    { id: 's3', name: 'Sarah Johnson', role: 'Senior Housekeeper', department: 'Housekeeping', status: 'online' },
+    { id: 's4', name: 'Ahmed Ali', role: 'Front Desk', department: 'Guest Services', status: 'offline' },
+    { id: 's5', name: 'Emily Chen', role: 'Supervisor', department: 'Housekeeping', status: 'online' }
+  ];
+
   const updateTaskStatus = (taskId: string, newStatus: Task['status']) => {
     setTasks(prevTasks =>
       prevTasks.map(task =>
@@ -119,6 +139,27 @@ const StaffDashboard: React.FC = () => {
   const formatLabel = (value: string) => {
     return value.replace('-', ' ').replace(/\b\w/g, (char) => char.toUpperCase());
   };
+
+  const getPresenceColor = (status: StaffContact['status']) => {
+    switch (status) {
+      case 'online':
+        return 'bg-emerald-100 text-emerald-800';
+      case 'away':
+        return 'bg-amber-100 text-amber-800';
+      default:
+        return 'bg-gray-100 text-gray-700';
+    }
+  };
+
+  const filteredStaff = staffDirectory.filter((staff) => {
+    if (!staffSearchTerm.trim()) return true;
+    const term = staffSearchTerm.toLowerCase();
+    return (
+      staff.name.toLowerCase().includes(term) ||
+      staff.department.toLowerCase().includes(term) ||
+      staff.role.toLowerCase().includes(term)
+    );
+  });
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -585,68 +626,92 @@ const StaffDashboard: React.FC = () => {
                       />
                       <span className={item.completed ? 'line-through text-gray-400' : ''}>{item.label}</span>
                     </label>
-                  ))}
-                </div>
+      </div>
+
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">My Profile</h3>
+        <div className="flex items-center gap-4 mb-4">
+          <div className="w-12 h-12 rounded-full bg-emerald-600 text-white flex items-center justify-center text-lg font-semibold">
+            S
+          </div>
+          <div>
+            <p className="font-medium text-gray-900">Staff Member</p>
+            <p className="text-sm text-gray-600">Housekeeping · Floor 2-3</p>
+            <p className="text-xs text-gray-500">Employee ID: HK-1024</p>
+          </div>
+        </div>
+        <div className="space-y-1 text-sm text-gray-700">
+          <p>Email: staff@example.com</p>
+          <p>Phone: +1 (555) 000-1234</p>
+        </div>
+        <Link
+          to="/profile"
+          className="inline-flex items-center gap-2 mt-4 text-sm font-medium text-emerald-700 hover:text-emerald-800"
+        >
+          <span>View full profile</span>
+        </Link>
+      </div>
+    </div>
+
+    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+      <h3 className="text-lg font-semibold text-gray-900 mb-4">Contact Colleagues</h3>
+      <div className="mb-4">
+        <input
+          type="text"
+          value={staffSearchTerm}
+          onChange={(e) => setStaffSearchTerm(e.target.value)}
+          placeholder="Search by name, department, or role"
+          className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+        />
+      </div>
+      <div className="space-y-3">
+        {filteredStaff.slice(0, 5).map((staff) => (
+          <div key={staff.id} className="flex items-center justify-between border border-gray-100 rounded-lg px-3 py-2">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-full bg-emerald-50 text-emerald-700 flex items-center justify-center text-sm font-semibold">
+                {staff.name.charAt(0)}
+              </div>
+              <div>
+                <p className="text-sm font-medium text-gray-900">{staff.name}</p>
+                <p className="text-xs text-gray-500">{staff.role} · {staff.department}</p>
               </div>
             </div>
-          </div>
-        )}
-
-        {/* Requests & Profile Tab */}
-        {activeTab === 'profile' && (
-          <div className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Requests</h3>
-                <p className="text-sm text-gray-600 mb-4">Submit requests to your supervisor.</p>
-                <div className="flex flex-col sm:flex-row gap-3">
-                  <button
-                    type="button"
-                    className="flex-1 px-4 py-2.5 rounded-lg bg-emerald-600 text-white text-sm font-medium hover:bg-emerald-700 transition-colors"
-                  >
-                    Request Time Off
-                  </button>
-                  <button
-                    type="button"
-                    className="flex-1 px-4 py-2.5 rounded-lg border border-gray-300 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
-                  >
-                    Request Shift Swap
-                  </button>
-                </div>
-                <p className="mt-3 text-xs text-gray-500">
-                  These actions can be connected to your HR or scheduling system later.
-                </p>
-              </div>
-
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">My Profile</h3>
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="w-12 h-12 rounded-full bg-emerald-600 text-white flex items-center justify-center text-lg font-semibold">
-                    S
-                  </div>
-                  <div>
-                    <p className="font-medium text-gray-900">Staff Member</p>
-                    <p className="text-sm text-gray-600">Housekeeping · Floor 2-3</p>
-                    <p className="text-xs text-gray-500">Employee ID: HK-1024</p>
-                  </div>
-                </div>
-                <div className="space-y-1 text-sm text-gray-700">
-                  <p>Email: staff@example.com</p>
-                  <p>Phone: +1 (555) 000-1234</p>
-                </div>
-                <Link
-                  to="/profile"
-                  className="inline-flex items-center gap-2 mt-4 text-sm font-medium text-emerald-700 hover:text-emerald-800"
+            <div className="flex items-center gap-2">
+              <span className={`px-2 py-1 text-xs rounded-full ${getPresenceColor(staff.status)}`}>
+                {formatLabel(staff.status)}
+              </span>
+              <div className="hidden md:flex items-center gap-1">
+                <button
+                  type="button"
+                  className="p-1.5 rounded-full border border-gray-200 text-gray-600 hover:bg-gray-50"
+                  title="Start chat"
                 >
-                  <span>View full profile</span>
-                </Link>
+                  <MessageCircle className="w-4 h-4" />
+                </button>
+                <button
+                  type="button"
+                  className="p-1.5 rounded-full border border-gray-200 text-gray-600 hover:bg-gray-50"
+                  title="Start audio call"
+                >
+                  <Phone className="w-4 h-4" />
+                </button>
+                <button
+                  type="button"
+                  className="p-1.5 rounded-full border border-gray-200 text-gray-600 hover:bg-gray-50"
+                  title="Start video call"
+                >
+                  <Video className="w-4 h-4" />
+                </button>
               </div>
             </div>
           </div>
+        ))}
+        {filteredStaff.length === 0 && (
+          <p className="text-sm text-gray-500">No colleagues found. Try a different search.</p>
         )}
       </div>
     </div>
-  );
-};
+  </div>
+)}
 
-export default StaffDashboard;
+// ... (rest of the code remains the same)
