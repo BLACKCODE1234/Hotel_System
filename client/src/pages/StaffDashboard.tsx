@@ -215,9 +215,10 @@ const StaffDashboard: React.FC = () => {
             <nav className="flex flex-wrap gap-2">
               {[
                 { id: 'overview', label: 'Overview', icon: Home },
-                { id: 'tasks', label: 'My Tasks', icon: CheckSquare },
-                { id: 'rooms', label: 'Room Status', icon: Bed },
-                { id: 'schedule', label: 'Schedule', icon: Calendar }
+                { id: 'schedule', label: 'My Day', icon: Clock },
+                { id: 'rooms', label: 'Attendance & Compliance', icon: ClipboardList },
+                { id: 'tasks', label: 'Tasks & Activity', icon: CheckSquare },
+                { id: 'profile', label: 'Requests & Profile', icon: User }
               ].map((tab) => (
                 <button
                   key={tab.id}
@@ -356,14 +357,36 @@ const StaffDashboard: React.FC = () => {
                 ))}
               </div>
             </div>
+
+            {/* Announcements / Notices */}
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Announcements / Notices</h3>
+              <div className="space-y-3">
+                {[
+                  { title: 'New housekeeping SOP update', date: 'Nov 10', category: 'Policy' },
+                  { title: 'Fire drill scheduled for Friday 3 PM', date: 'Nov 12', category: 'Safety' },
+                  { title: 'Staff appreciation event next week', date: 'Nov 18', category: 'HR' }
+                ].map((announcement, index) => (
+                  <div key={index} className="flex items-start justify-between border border-gray-100 rounded-lg px-3 py-2">
+                    <div>
+                      <p className="text-sm font-medium text-gray-900">{announcement.title}</p>
+                      <p className="text-xs text-gray-500">{announcement.date}</p>
+                    </div>
+                    <span className="ml-3 inline-flex px-2 py-1 text-xs rounded-full bg-slate-100 text-slate-700">
+                      {announcement.category}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         )}
 
-        {/* Tasks Tab */}
+        {/* Tasks & Activity Tab */}
         {activeTab === 'tasks' && (
           <div className="space-y-6">
-            <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">My Tasks</h3>
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Tasks &amp; Assignments</h3>
               <div className="space-y-4">
                 {tasks.map((task) => (
                   <div key={task.id} className="border border-gray-200 rounded-lg p-4">
@@ -414,41 +437,22 @@ const StaffDashboard: React.FC = () => {
                 ))}
               </div>
             </div>
-          </div>
-        )}
 
-        {/* Room Status Tab */}
-        {activeTab === 'rooms' && (
-          <div className="space-y-6">
-            <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Room Status - Floor 2</h3>
-              <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-4">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Activity Log</h3>
+              <div className="space-y-3 text-sm text-gray-700">
                 {[
-                  { room: '201', status: 'clean', guest: 'Occupied' },
-                  { room: '202', status: 'dirty', guest: 'Checkout' },
-                  { room: '203', status: 'maintenance', guest: 'OOO' },
-                  { room: '204', status: 'clean', guest: 'Available' },
-                  { room: '205', status: 'cleaning', guest: 'Checkout' },
-                  { room: '206', status: 'clean', guest: 'Occupied' }
-                ].map((room) => (
-                  <div key={room.room} className={`p-4 rounded-lg border-2 ${
-                    room.status === 'clean' ? 'border-green-200 bg-green-50' :
-                    room.status === 'dirty' ? 'border-red-200 bg-red-50' :
-                    room.status === 'cleaning' ? 'border-blue-200 bg-blue-50' :
-                    'border-orange-200 bg-orange-50'
-                  }`}>
-                    <div className="text-center">
-                      <p className="font-bold text-lg">{room.room}</p>
-                      <p className="text-sm text-gray-600">{room.guest}</p>
-                      <span className={`inline-block mt-2 px-2 py-1 text-xs rounded-full ${
-                        room.status === 'clean' ? 'bg-green-100 text-green-800' :
-                        room.status === 'dirty' ? 'bg-red-100 text-red-800' :
-                        room.status === 'cleaning' ? 'bg-blue-100 text-blue-800' :
-                        'bg-orange-100 text-orange-800'
-                      }`}>
-                        {formatLabel(room.status)}
-                      </span>
+                  { action: 'Clocked in for morning shift', time: 'Today · 7:58 AM', meta: 'Shift 8:00 AM - 4:00 PM' },
+                  { action: 'Completed task "Clean Room 205"', time: 'Today · 9:45 AM', meta: 'Housekeeping' },
+                  { action: 'Requested maintenance for Room 301', time: 'Yesterday · 3:10 PM', meta: 'Maintenance' },
+                  { action: 'Marked training "Fire Safety" as completed', time: 'Last week', meta: 'Compliance' }
+                ].map((entry, index) => (
+                  <div key={index} className="flex items-start justify-between border border-gray-100 rounded-lg px-3 py-2">
+                    <div>
+                      <p className="font-medium text-gray-900">{entry.action}</p>
+                      <p className="text-xs text-gray-500">{entry.time}</p>
                     </div>
+                    <span className="ml-3 text-xs text-gray-500">{entry.meta}</span>
                   </div>
                 ))}
               </div>
@@ -456,40 +460,188 @@ const StaffDashboard: React.FC = () => {
           </div>
         )}
 
-        {/* Schedule Tab */}
-        {activeTab === 'schedule' && (
+        {/* Attendance & Compliance Tab */}
+        {activeTab === 'rooms' && (
           <div className="space-y-6">
-            <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">This Week's Schedule</h3>
-              <div className="space-y-4">
-                {[
-                  { day: 'Monday', date: 'Nov 11', shift: '8:00 AM - 4:00 PM', status: 'completed' },
-                  { day: 'Tuesday', date: 'Nov 12', shift: '8:00 AM - 4:00 PM', status: 'completed' },
-                  { day: 'Wednesday', date: 'Nov 13', shift: '8:00 AM - 4:00 PM', status: 'current' },
-                  { day: 'Thursday', date: 'Nov 14', shift: '8:00 AM - 4:00 PM', status: 'upcoming' },
-                  { day: 'Friday', date: 'Nov 15', shift: '8:00 AM - 4:00 PM', status: 'upcoming' }
-                ].map((schedule, index) => (
-                  <div key={index} className={`flex items-center justify-between p-4 rounded-lg border ${
-                    schedule.status === 'current' ? 'border-blue-200 bg-blue-50' :
-                    schedule.status === 'completed' ? 'border-green-200 bg-green-50' :
-                    'border-gray-200 bg-gray-50'
-                  }`}>
-                    <div>
-                      <p className="font-medium text-gray-900">{schedule.day}</p>
-                      <p className="text-sm text-gray-600">{schedule.date}</p>
-                    </div>
-                    <div className="text-center">
-                      <p className="font-medium text-gray-900">{schedule.shift}</p>
-                      <span className={`inline-block mt-1 px-2 py-1 text-xs rounded-full ${
-                        schedule.status === 'current' ? 'bg-blue-100 text-blue-800' :
-                        schedule.status === 'completed' ? 'bg-green-100 text-green-800' :
-                        'bg-gray-100 text-gray-800'
-                      }`}>
-                        {formatLabel(schedule.status)}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">Attendance Summary</h3>
+                <p className="text-sm text-gray-600 mb-4">This month</p>
+                <div className="space-y-2 text-sm text-gray-700">
+                  <p><span className="font-semibold text-gray-900">On-time shifts:</span> 18</p>
+                  <p><span className="font-semibold text-gray-900">Late arrivals:</span> 2</p>
+                  <p><span className="font-semibold text-gray-900">Absences:</span> 1</p>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 lg:col-span-2">
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">Compliance &amp; Training</h3>
+                <p className="text-sm text-gray-600 mb-4">Your required trainings</p>
+                <div className="space-y-3">
+                  {[
+                    { title: 'Fire Safety Basics', status: 'Completed', statusColor: 'bg-green-100 text-green-800' },
+                    { title: 'Guest Privacy & Data Protection', status: 'Due soon', statusColor: 'bg-yellow-100 text-yellow-800' },
+                    { title: 'Workplace Safety Refresher', status: 'Overdue', statusColor: 'bg-red-100 text-red-800' }
+                  ].map((training, index) => (
+                    <div key={index} className="flex items-center justify-between border border-gray-100 rounded-lg px-3 py-2">
+                      <div>
+                        <p className="text-sm font-medium text-gray-900">{training.title}</p>
+                        <p className="text-xs text-gray-500">Housekeeping · Annual</p>
+                      </div>
+                      <span className={`px-2 py-1 text-xs rounded-full ${training.statusColor}`}>
+                        {training.status}
                       </span>
                     </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Pending Compliance Actions</h3>
+              <ul className="list-disc list-inside text-sm text-gray-700 space-y-1">
+                <li>Complete "Workplace Safety Refresher" by Nov 20.</li>
+                <li>Review and sign the updated Housekeeping policies document.</li>
+              </ul>
+            </div>
+          </div>
+        )}
+
+        {/* My Day Tab */}
+        {activeTab === 'schedule' && (
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">Shift Details</h3>
+                <p className="text-sm text-gray-600 mb-4">Today · 8:00 AM - 4:00 PM</p>
+                <div className="space-y-1 text-sm text-gray-700">
+                  <p>Department: Housekeeping</p>
+                  <p>Location: Floors 2-3</p>
+                  <p>Break: 30 minutes</p>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">Clock In / Clock Out</h3>
+                <p className="text-sm text-gray-600 mb-4">
+                  {isClockedIn ? 'You are currently clocked in.' : 'You are currently clocked out.'}
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setIsClockedIn(!isClockedIn)}
+                  className="px-4 py-2.5 rounded-lg text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 transition-colors"
+                >
+                  {isClockedIn ? 'Clock Out' : 'Clock In'}
+                </button>
+                <p className="mt-3 text-xs text-gray-500">
+                  This is a demo control. Integration with a real time-tracking system can be added later.
+                </p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">My Schedule</h3>
+                <div className="space-y-4">
+                  {[
+                    { day: 'Monday', date: 'Nov 11', shift: '8:00 AM - 4:00 PM', status: 'completed' },
+                    { day: 'Tuesday', date: 'Nov 12', shift: '8:00 AM - 4:00 PM', status: 'completed' },
+                    { day: 'Wednesday', date: 'Nov 13', shift: '8:00 AM - 4:00 PM', status: 'current' },
+                    { day: 'Thursday', date: 'Nov 14', shift: '8:00 AM - 4:00 PM', status: 'upcoming' },
+                    { day: 'Friday', date: 'Nov 15', shift: '8:00 AM - 4:00 PM', status: 'upcoming' }
+                  ].map((schedule, index) => (
+                    <div key={index} className={`flex items-center justify-between p-4 rounded-lg border ${
+                      schedule.status === 'current' ? 'border-blue-200 bg-blue-50' :
+                      schedule.status === 'completed' ? 'border-green-200 bg-green-50' :
+                      'border-gray-200 bg-gray-50'
+                    }`}>
+                      <div>
+                        <p className="font-medium text-gray-900">{schedule.day}</p>
+                        <p className="text-sm text-gray-600">{schedule.date}</p>
+                      </div>
+                      <div className="text-center">
+                        <p className="font-medium text-gray-900">{schedule.shift}</p>
+                        <span className={`inline-block mt-1 px-2 py-1 text-xs rounded-full ${
+                          schedule.status === 'current' ? 'bg-blue-100 text-blue-800' :
+                          schedule.status === 'completed' ? 'bg-green-100 text-green-800' :
+                          'bg-gray-100 text-gray-800'
+                        }`}>
+                          {formatLabel(schedule.status)}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Daily Checklist</h3>
+                <div className="space-y-2">
+                  {dailyChecklist.map(item => (
+                    <label key={item.id} className="flex items-center gap-3 text-sm text-gray-700">
+                      <input
+                        type="checkbox"
+                        checked={item.completed}
+                        onChange={() => toggleChecklistItem(item.id)}
+                        className="h-4 w-4 text-emerald-600 border-gray-300 rounded"
+                      />
+                      <span className={item.completed ? 'line-through text-gray-400' : ''}>{item.label}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Requests & Profile Tab */}
+        {activeTab === 'profile' && (
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Requests</h3>
+                <p className="text-sm text-gray-600 mb-4">Submit requests to your supervisor.</p>
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <button
+                    type="button"
+                    className="flex-1 px-4 py-2.5 rounded-lg bg-emerald-600 text-white text-sm font-medium hover:bg-emerald-700 transition-colors"
+                  >
+                    Request Time Off
+                  </button>
+                  <button
+                    type="button"
+                    className="flex-1 px-4 py-2.5 rounded-lg border border-gray-300 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+                  >
+                    Request Shift Swap
+                  </button>
+                </div>
+                <p className="mt-3 text-xs text-gray-500">
+                  These actions can be connected to your HR or scheduling system later.
+                </p>
+              </div>
+
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">My Profile</h3>
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-12 h-12 rounded-full bg-emerald-600 text-white flex items-center justify-center text-lg font-semibold">
+                    S
                   </div>
-                ))}
+                  <div>
+                    <p className="font-medium text-gray-900">Staff Member</p>
+                    <p className="text-sm text-gray-600">Housekeeping · Floor 2-3</p>
+                    <p className="text-xs text-gray-500">Employee ID: HK-1024</p>
+                  </div>
+                </div>
+                <div className="space-y-1 text-sm text-gray-700">
+                  <p>Email: staff@example.com</p>
+                  <p>Phone: +1 (555) 000-1234</p>
+                </div>
+                <Link
+                  to="/profile"
+                  className="inline-flex items-center gap-2 mt-4 text-sm font-medium text-emerald-700 hover:text-emerald-800"
+                >
+                  <span>View full profile</span>
+                </Link>
               </div>
             </div>
           </div>
@@ -497,6 +649,5 @@ const StaffDashboard: React.FC = () => {
       </div>
     </div>
   );
-};
 
 export default StaffDashboard;
