@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { 
-  Users, 
   Calendar, 
   CheckSquare, 
   Clock, 
@@ -16,8 +15,6 @@ import {
   MapPin,
   AlertCircle,
   CheckCircle,
-  XCircle,
-  ArrowLeft,
   Wrench,
   Coffee,
   Bed
@@ -103,7 +100,7 @@ const StaffDashboard: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-gradient-to-r from-green-600 to-blue-600 text-white px-4 py-3">
+      <div className="bg-gradient-to-r from-green-700 to-blue-700 text-white px-4 py-4 shadow-md">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
             <div className="flex items-center gap-3">
@@ -111,26 +108,65 @@ const StaffDashboard: React.FC = () => {
                 <Briefcase className="w-5 h-5" />
               </div>
               <div>
-                <h1 className="text-xl sm:text-2xl font-bold">Staff Dashboard</h1>
-                <p className="text-green-100 text-sm">Hotel Operations Center</p>
+                <h1 className="text-2xl font-bold">Hotel Operations Center</h1>
+                <p className="text-green-100 text-sm">Housekeeping Team</p>
               </div>
             </div>
           </div>
           <div className="flex items-center gap-4 self-end sm:self-auto">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 text-sm">
               <Bell className="w-4 h-4" />
               <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full">3</span>
             </div>
             <div className="relative">
               <button
                 onClick={() => setShowProfileDropdown(!showProfileDropdown)}
-                className="flex items-center gap-2 hover:bg-white/10 rounded-lg p-1 transition-colors"
+                className="flex items-center gap-2 hover:bg-white/10 rounded-lg px-2 py-1 transition-colors"
               >
                 <div className="w-8 h-8 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center text-white font-bold">
                   S
                 </div>
+                <div className="hidden sm:flex flex-col items-start text-left">
+                  <span className="text-sm font-semibold leading-tight">Staff Member</span>
+                  <span className="text-xs text-green-100 leading-tight">Housekeeping</span>
+                </div>
                 <ChevronDown className="w-3 h-3" />
               </button>
+              {showProfileDropdown && (
+                <div className="absolute right-0 mt-2 w-60 bg-white text-gray-800 rounded-xl shadow-xl border border-gray-200 z-20">
+                  <div className="px-4 py-3 border-b border-gray-100">
+                    <p className="text-sm font-semibold">Staff Member</p>
+                    <p className="text-xs text-gray-500">Housekeeping - Floor 2-3</p>
+                  </div>
+                  <div className="py-1">
+                    <Link
+                      to="/profile"
+                      className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                      onClick={() => setShowProfileDropdown(false)}
+                    >
+                      <User className="w-4 h-4" />
+                      <span>View Profile</span>
+                    </Link>
+                    <Link
+                      to="/settings"
+                      className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                      onClick={() => setShowProfileDropdown(false)}
+                    >
+                      <Settings className="w-4 h-4" />
+                      <span>Account Settings</span>
+                    </Link>
+                    <div className="border-t border-gray-100 my-1" />
+                    <Link
+                      to="/login"
+                      className="flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+                      onClick={() => setShowProfileDropdown(false)}
+                    >
+                      <LogOut className="w-4 h-4" />
+                      <span>Sign Out</span>
+                    </Link>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -220,6 +256,46 @@ const StaffDashboard: React.FC = () => {
                   </div>
                 </div>
               </div>
+            </div>
+
+            {/* Quick Actions */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
+              <button
+                type="button"
+                className="flex items-center gap-3 bg-white rounded-xl shadow-md border border-gray-200 px-4 py-3 hover:shadow-lg hover:border-blue-200 transition-all text-left"
+              >
+                <div className="w-9 h-9 rounded-lg bg-red-100 flex items-center justify-center">
+                  <AlertCircle className="w-5 h-5 text-red-600" />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-gray-900">Report an issue</p>
+                  <p className="text-xs text-gray-500">Notify maintenance or supervisor</p>
+                </div>
+              </button>
+              <button
+                type="button"
+                className="flex items-center gap-3 bg-white rounded-xl shadow-md border border-gray-200 px-4 py-3 hover:shadow-lg hover:border-green-200 transition-all text-left"
+              >
+                <div className="w-9 h-9 rounded-lg bg-green-100 flex items-center justify-center">
+                  <Wrench className="w-5 h-5 text-green-700" />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-gray-900">Request maintenance</p>
+                  <p className="text-xs text-gray-500">Log equipment or room issues</p>
+                </div>
+              </button>
+              <button
+                type="button"
+                className="flex items-center gap-3 bg-white rounded-xl shadow-md border border-gray-200 px-4 py-3 hover:shadow-lg hover:border-amber-200 transition-all text-left"
+              >
+                <div className="w-9 h-9 rounded-lg bg-amber-100 flex items-center justify-center">
+                  <Coffee className="w-5 h-5 text-amber-700" />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-gray-900">Take a break</p>
+                  <p className="text-xs text-gray-500">Coordinate your break schedule</p>
+                </div>
+              </button>
             </div>
 
             {/* Recent Tasks */}
