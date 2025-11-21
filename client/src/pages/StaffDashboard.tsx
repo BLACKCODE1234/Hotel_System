@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { 
-  Calendar, 
   CheckSquare, 
   Clock, 
   Home, 
@@ -16,8 +15,7 @@ import {
   AlertCircle,
   CheckCircle,
   Wrench,
-  Coffee,
-  Bed
+  Coffee
 } from 'lucide-react';
 
 interface Task {
@@ -649,5 +647,6 @@ const StaffDashboard: React.FC = () => {
       </div>
     </div>
   );
+};
 
 export default StaffDashboard;
