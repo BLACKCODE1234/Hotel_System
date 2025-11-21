@@ -16,7 +16,7 @@ const HomePage: React.FC = () => {
         }}
       >
         <div className="absolute inset-0">
-          <div
+          <div className="absolute inset-0 bg-gradient-to-b from-black/50 to-black/30"></div>
         </div>
         
         <div className="relative z-10 text-center px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
@@ -44,32 +44,26 @@ const HomePage: React.FC = () => {
             <div className="flex flex-col sm:flex-row gap-8 justify-center items-center">
               <Link
                 to="/booking"
-                className="group relative px-10 py-5 bg-gradient-to-r from-gold-500 via-accent-600 to-gold-600 text-white font-bold rounded-full shadow-2xl transform transition-all duration-500 hover:scale-105 hover:shadow-gold-500/60 hover:shadow-3xl overflow-hidden"
-                style={{
-                  boxShadow: '0 0 40px rgba(250, 204, 21, 0.6), 0 0 80px rgba(217, 119, 6, 0.4), 0 12px 40px rgba(0, 0, 0, 0.4)',
-                  textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)'
-                }}
+                className="group relative px-10 py-5 bg-gradient-to-r from-gold-500 via-accent-600 to-gold-600 text-white font-bold rounded-full shadow-lg transform transition-all duration-500 hover:scale-105 overflow-hidden"
               >
                 <span className="absolute inset-0 bg-gradient-to-r from-white/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
                 <span className="relative z-10 flex items-center gap-2 text-lg">
                   🏨 Book Your Stay
                 </span>
-                <div className="absolute inset-0 bg-gradient-to-r from-gold-400 to-accent-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-xl"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-gold-400 to-accent-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </Link>
               <button
-                className="group relative px-10 py-5 bg-gradient-to-r from-burgundy-500 via-luxury-600 to-burgundy-600 text-white font-bold rounded-full shadow-2xl transform transition-all duration-500 hover:scale-105 hover:shadow-burgundy-500/60 hover:shadow-3xl overflow-hidden"
-                style={{
-                  boxShadow: '0 0 40px rgba(236, 72, 153, 0.6), 0 0 80px rgba(217, 39, 119, 0.4), 0 12px 40px rgba(0, 0, 0, 0.4)',
-                  textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)'
-                }}
+                className="group relative px-10 py-5 bg-gradient-to-r from-burgundy-500 via-luxury-600 to-burgundy-600 text-white font-bold rounded-full shadow-lg transform transition-all duration-500 hover:scale-105 overflow-hidden"
               >
                 <span className="absolute inset-0 bg-gradient-to-r from-white/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
                 <span className="relative z-10 flex items-center gap-2 text-lg">
                   📞 Contact Us
                 </span>
-                <div className="absolute inset-0 bg-gradient-to-r from-burgundy-400 to-luxury-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-xl"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-burgundy-400 to-luxury-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </button>
             </div>
+            <div className="flex flex-wrap justify-center gap-8 mt-8">
+              <div className="flex items-center gap-2">
                 <Star className="h-5 w-5 text-gold-400" />
                 <span className="text-sm font-medium">5-Star Service</span>
               </div>
@@ -237,31 +231,22 @@ const HomePage: React.FC = () => {
             <div className="flex flex-col sm:flex-row gap-8 justify-center items-center mb-12">
               <Link
                 to="/booking"
-                className="group relative px-12 py-6 bg-gradient-to-r from-gold-500 via-accent-600 to-gold-600 text-white font-bold rounded-full shadow-2xl transform transition-all duration-500 hover:scale-105 hover:shadow-gold-500/60 hover:shadow-3xl overflow-hidden"
-                style={{
-                  boxShadow: '0 0 50px rgba(250, 204, 21, 0.7), 0 0 100px rgba(217, 119, 6, 0.4), 0 12px 40px rgba(0, 0, 0, 0.4)',
-                  animation: 'glow 3s ease-in-out infinite alternate'
-                }}
+                className="group relative px-12 py-6 bg-gradient-to-r from-gold-500 via-accent-600 to-gold-600 text-white font-bold rounded-full shadow-lg transform transition-all duration-500 hover:scale-105 overflow-hidden"
               >
                 <span className="absolute inset-0 bg-gradient-to-r from-white/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
                 <span className="relative z-10 flex items-center gap-3 text-xl font-semibold">
                   <span className="text-2xl">🏨</span> Book Your Stay <ChevronRight className="h-6 w-6 group-hover:translate-x-1 transition-transform" />
                 </span>
-                <div className="absolute inset-0 bg-gradient-to-r from-gold-400 to-accent-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-xl"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-gold-400 to-accent-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </Link>
               <button
-                className="group relative px-12 py-6 bg-gradient-to-r from-burgundy-500 via-luxury-600 to-burgundy-600 text-white font-bold rounded-full shadow-2xl transform transition-all duration-500 hover:scale-105 hover:shadow-burgundy-500/60 hover:shadow-3xl overflow-hidden"
-                style={{
-                  boxShadow: '0 0 50px rgba(236, 72, 153, 0.7), 0 0 100px rgba(217, 39, 119, 0.4), 0 12px 40px rgba(0, 0, 0, 0.4)',
-                  animation: 'glow 3s ease-in-out infinite alternate',
-                  animationDelay: '0.7s'
-                }}
+                className="group relative px-12 py-6 bg-gradient-to-r from-burgundy-500 via-luxury-600 to-burgundy-600 text-white font-bold rounded-full shadow-lg transform transition-all duration-500 hover:scale-105 overflow-hidden"
               >
                 <span className="absolute inset-0 bg-gradient-to-r from-white/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
                 <span className="relative z-10 flex items-center gap-3 text-xl font-semibold">
                   <span className="text-2xl">📞</span> Contact Us <ChevronRight className="h-6 w-6 group-hover:translate-x-1 transition-transform" />
                 </span>
-                <div className="absolute inset-0 bg-gradient-to-r from-burgundy-400 to-luxury-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-xl"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-burgundy-400 to-luxury-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </button>
             </div>
             
