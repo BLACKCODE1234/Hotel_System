@@ -32,6 +32,12 @@ interface Task {
   department: string;
 }
 
+interface ChecklistItem {
+  id: string;
+  label: string;
+  completed: boolean;
+}
+
 const StaffDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
@@ -71,10 +77,25 @@ const StaffDashboard: React.FC = () => {
     }
   ]);
 
+  const [isClockedIn, setIsClockedIn] = useState(false);
+  const [dailyChecklist, setDailyChecklist] = useState<ChecklistItem[]>([
+    { id: 'uniform', label: 'Uniform & appearance check', completed: false },
+    { id: 'equipment', label: 'Cleaning equipment prepared', completed: false },
+    { id: 'briefing', label: 'Attended team briefing', completed: false }
+  ]);
+
   const updateTaskStatus = (taskId: string, newStatus: Task['status']) => {
     setTasks(prevTasks =>
       prevTasks.map(task =>
         task.id === taskId ? { ...task, status: newStatus } : task
+      )
+    );
+  };
+
+  const toggleChecklistItem = (id: string) => {
+    setDailyChecklist(prevItems =>
+      prevItems.map(item =>
+        item.id === id ? { ...item, completed: !item.completed } : item
       )
     );
   };
@@ -119,7 +140,7 @@ const StaffDashboard: React.FC = () => {
           <div className="flex items-center gap-6 self-end sm:self-auto">
             <div className="hidden md:flex flex-col items-end text-xs text-gray-500">
               <span className="font-medium text-gray-900">Today</span>
-              <span>Shift: 8:00 AM  4:00 PM</span>
+              <span>Shift: 8:00 AM - 4:00 PM</span>
             </div>
             <div className="flex items-center gap-3">
               <button
@@ -142,7 +163,7 @@ const StaffDashboard: React.FC = () => {
                   </div>
                   <div className="hidden sm:flex flex-col items-start text-left">
                     <span className="text-sm font-semibold leading-tight text-gray-900">Staff Member</span>
-                    <span className="text-xs text-gray-500 leading-tight">Housekeeping b7 Floor 2-3</span>
+                    <span className="text-xs text-gray-500 leading-tight">Housekeeping - Floor 2-3</span>
                   </div>
                   <ChevronDown className="w-3 h-3 text-gray-500" />
                 </button>
@@ -150,7 +171,7 @@ const StaffDashboard: React.FC = () => {
                   <div className="absolute right-0 mt-2 w-60 bg-white text-gray-800 rounded-xl shadow-lg border border-gray-200 z-20">
                     <div className="px-4 py-3 border-b border-gray-100">
                       <p className="text-sm font-semibold">Staff Member</p>
-                      <p className="text-xs text-gray-500">Housekeeping b7 Floor 2-3</p>
+                      <p className="text-xs text-gray-500">Housekeeping - Floor 2-3</p>
                     </div>
                     <div className="py-1">
                       <Link
