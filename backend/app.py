@@ -67,7 +67,8 @@ def signup():
 
 @app.route('login',methods=['POST'])
 def login():
-    pass
+    if not requests.is_json:
+        
 
 
 if __name__ == '__main__':
