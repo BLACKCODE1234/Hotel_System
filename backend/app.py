@@ -68,7 +68,7 @@ def signup():
 @app.route('login',methods=['POST'])
 def login():
     if not requests.is_json:
-        return jsonify({"message":"All fields are required",}),404
+        return jsonify({"message":"All fields are required","status":"error"}),404
 
 
 if __name__ == '__main__':
