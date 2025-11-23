@@ -65,6 +65,9 @@ def signup():
         db.close()
     
 
+@app.route('login',methods=['POST'])
+def login():
+    pass
 
 
 if __name__ == '__main__':
