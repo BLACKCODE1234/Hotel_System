@@ -73,7 +73,13 @@ def login():
     if not all ([email,password]):
         return jsonify({"message":"All fields are required","status":"error"}),400
 
-    hashed = checkpw(password.encode('utf-8'),bcrypt.gensalt()).decode('utf-8')
+    try:
+        db = database_connection()
+    except psycopg2.Error as e:
+        return jsonify({"message":"Server is down","status":"error"}),500
+    finally:
+        cursor.close()
+        db.close()
 
 if __name__ == '__main__':
     app.run(debug=True)
