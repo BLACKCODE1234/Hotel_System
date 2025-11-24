@@ -102,8 +102,10 @@ def login():
     except psycopg2.Error as e:
         return jsonify({"message":"Server is down","status":"error"}),500
     finally:
-        cursor.close()
-        db.close()
+        if 'cursor' in locals():
+            cursor.close()
+        if 'db' in locals():
+            db.close()
 
 if __name__ == '__main__':
     app.run(debug=True)
