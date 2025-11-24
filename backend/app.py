@@ -69,7 +69,9 @@ def signup():
 def login():
     if not requests.is_json:
         return jsonify({"message":"All fields are required","status":"error"}),404
-
+    data = request.get_json()
+    email = data.get("email")
+    password = data.get("password")
 
 if __name__ == '__main__':
     app.run(debug=True)
