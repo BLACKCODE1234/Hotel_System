@@ -75,6 +75,7 @@ def login():
 
     try:
         db = database_connection()
+        cursor = db.cursor(cursor_factory=RealDictCursor)
     except psycopg2.Error as e:
         return jsonify({"message":"Server is down","status":"error"}),500
     finally:
