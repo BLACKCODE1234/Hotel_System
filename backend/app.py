@@ -82,7 +82,7 @@ def login():
         if not user:
             return jsonify({"message":"Account not found","status":"error"}),404
             
-        hashedpassword = user['hashpassword']
+        hashedpassword = user['hashpassword'].encode('utf-8') if isinstance (user['hashpassword'],str) else user['hashpassword']
 
     except psycopg2.Error as e:
         return jsonify({"message":"Server is down","status":"error"}),500
