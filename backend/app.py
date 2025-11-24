@@ -73,5 +73,8 @@ def login():
     email = data.get("email")
     password = data.get("password")
 
+    if not all ([email,password]):
+        return jsonify({"message":"All fields are required","status":"error"}),400
+
 if __name__ == '__main__':
     app.run(debug=True)
