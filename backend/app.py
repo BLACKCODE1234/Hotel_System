@@ -87,6 +87,8 @@ def login():
         if not bcrypt.checkpw(password.encode('utf-8'),hashedpassword):
             return jsonify({"message":"Password incorrect","status":"error"}),404
 
+        role = user.get('role','user')
+
     except psycopg2.Error as e:
         return jsonify({"message":"Server is down","status":"error"}),500
     finally:
