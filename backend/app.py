@@ -89,6 +89,16 @@ def login():
 
         role = user.get('role','user')
 
+        
+        try:
+            cursor.execute("""
+                UPDATE login_users SET last_login = NOW()
+                WHERE email = %s AND role IN ('admin','superadmin')
+            """, (email,))
+            db.commit()
+        except Exception:
+            db.rollback()
+
     except psycopg2.Error as e:
         return jsonify({"message":"Server is down","status":"error"}),500
     finally:
