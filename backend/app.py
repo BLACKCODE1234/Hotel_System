@@ -78,6 +78,11 @@ def login():
         cursor = db.cursor(cursor_factory=RealDictCursor)
         cursor.execute("select hashed_password,role,email from login_users where email = %s,")
         user = cursor.fetchone()
+
+        if not user:
+            return jsonify({"message":"Account not found","status":"error"}),404
+            
+            
     except psycopg2.Error as e:
         return jsonify({"message":"Server is down","status":"error"}),500
     finally:
