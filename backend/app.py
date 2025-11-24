@@ -84,6 +84,9 @@ def login():
             
         hashedpassword = user['hashpassword'].encode('utf-8') if isinstance (user['hashpassword'],str) else user['hashpassword']
 
+        if not bcrypt.checkpw(password.encode('utf-8'),hashedpassword):
+            return jsonify({"message":"Password incorrect","status":"error"}),404
+
     except psycopg2.Error as e:
         return jsonify({"message":"Server is down","status":"error"}),500
     finally:
