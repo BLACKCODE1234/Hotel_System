@@ -7,5 +7,7 @@ import datetime
 def generate_access_token(email):
     payload ={
         'email':email,
-        'exp':datetime.datetime.utcnow() + datetime.timedelta(minutes=15)
+        'role':role,
+        'exp':datetime.datetime.utcnow() + datetime.timedelta(minutes=15),
+        'iat':datetime.datetime.utcnow()
     }
