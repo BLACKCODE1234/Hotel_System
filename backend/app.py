@@ -111,7 +111,7 @@ def login():
 
 
 
-@app.route('/user',methods=['POST'])
+@app.route('/logout',methods=['POST'])
 def logout():
     pass
 
@@ -120,7 +120,11 @@ def logout():
 @app.route('/me',methods=['POST'])
 def me():
     pass
-    wow
+
+
+@app.route('/refresh',methods=['POST'])
+def refresh():
+    pass
     
 
 
