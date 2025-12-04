@@ -15,9 +15,12 @@ def generate_access_token(email,role='user'):
     return token
 
 
-def generate_refresh_token(email,role-'user'):
+def generate_refresh_token(email,role:'user'):
     payload = {
         'email':email,
         'role':role,
-        'exp':datetime.datetime.utcnow() + datetime.timedelta
+        'exp':datetime.datetime.utcnow() + datetime.timedelta(minutes=int(os.getenv("REFRESH_TOKEN_EXPIRES_DAYS",7))),
+        'iat':datetime.datetime.utcnow()
     }
+    token = jwt.encode(payload,os.getenv("JWT_REFRESH_KEY"),algorithm='HS256')
+    return token

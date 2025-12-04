@@ -1,3 +1,4 @@
+from flask import Flask,jsonify
 import bcrypt
 import psycopg2
 import jwt
@@ -7,6 +8,7 @@ import json
 import requests
 from flask_cors import CORS
 from psycopg2 import RealDictCursor
+from datetime import datetime,timedelta
 
 
 def database_connection():
@@ -106,6 +108,21 @@ def login():
             cursor.close()
         if 'db' in locals():
             db.close()
+
+
+
+@app.route('/user',methods=['POST'])
+def logout():
+    pass
+
+
+
+@app.route('/me',methods=['POST'])
+def me():
+    pass
+    wow
+    
+
 
 if __name__ == '__main__':
     app.run(debug=True)
