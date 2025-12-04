@@ -9,7 +9,11 @@ import requests
 from flask_cors import CORS
 from psycopg2 import RealDictCursor
 from datetime import datetime,timedelta
+from helper.generate_token import generate_access_token,generate_refresh_token,decoded_token
 
+
+app = Flask(__name__)
+app.secret_key = os.getenv("FLASK_SECRET_KEY","SECRET_KEY")
 
 def database_connection():
     try:
