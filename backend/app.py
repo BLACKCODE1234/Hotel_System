@@ -135,6 +135,40 @@ def login():
         except Exception:
             db.rollback()
 
+        access_token = generate_access_token(email,role)
+        refresh_token = generate_refresh_token(email,role)
+        secure_cookie, samesite_cookie, domain_cookie = get_cookie_settings()
+
+        response = jsonify({"message": "Login successful",
+                            "access_token": access_token,
+                           "user":{
+                               "email":user["email"],
+                               "role":role,
+                               "firstname":user.get("first_name"),
+                               "lastname":user.get("last_name")
+                           }})
+
+
+
+        response.set_cookie('refresh_token', refresh_token,
+                            httponly=True,
+                            secure=secure_cookie,
+                            samesite=samesite_cookie,
+                            domain=domain_cookie,
+                            max_age=7*24*60*60,
+                            path='/'
+                            )
+
+        response.set_cookie('access_token', access_token,
+                            httponly=True,
+                            secure=secure_cookie,
+                            samesite=samesite_cookie,
+                            domain=domain_cookie,
+                            max_age=15*60,
+                            path='/'
+                            )
+        return response
+
     except psycopg2.Error as e:
         return jsonify({"message":"Server is down","status":"error"}),500
     finally:
