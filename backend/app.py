@@ -59,8 +59,19 @@ def signup():
 
         cursor.execute("INSERT INTO users (firstname,lastname,email,password) VALUES (%s,%s,%s,%s)",(firstname,lastname,email,hashed))
         db.commit()
-        return jsonify({"message":"Account created successfully","status":success}),201
+
+        
+        access_token = generate_access_token(email,role='user')
+        refresh_token = generate_refresh_token(email,role='user')
+        secure_cookie, samesite_cookie, domain_cookie = get_cookie_settings()
+
+        user = {"first_name": firstname, "last_name": lastname, "email": email}
+        response = jsonify({"message": "Signup successful", "status": "success", "user": user}),201
+
+        
     
+        
+
     except psycopg2.Error as e:
         return jsonify({"message":"Server is down","status":error}),500
     finally:
