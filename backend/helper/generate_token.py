@@ -1,4 +1,5 @@
 import email
+import secrets
 import jwt
 import os
 import datetime
@@ -24,3 +25,12 @@ def generate_refresh_token(email,role:'user'):
     }
     token = jwt.encode(payload,os.getenv("JWT_REFRESH_KEY"),algorithm='HS256')
     return token
+
+def decoded_token(token,is_refresh=False):
+    secrets = os.getenv("JWT_REFRESH_KEY") if is_refresh else os.getenv("JWT_KEY")
+    try:
+        pass
+    except jwt.ExpiredSignatureError as e:
+        return None
+    except jwt.InvalidTokenError as e:
+        return none
