@@ -37,10 +37,10 @@ JWT_EXP_DELTA_MINUTES = 60
 def database_connection():
     try:
         conn = psycopg2.connect(
-            host=os.getenv("DB_HOST")
+            host=os.getenv("DB_HOST"),
             database=os.getenv("DB_NAME"),
-            user="",
-            password=""
+            user=os.os.getenv("DB_USER"),
+            password=os.getenv("DB_PASSWORD")
         )
         return conn
     except psycopg2.Error as e:
@@ -342,7 +342,19 @@ def userdashboard():
 
 
 
+@app.route("/create_admin",methods=["POST"])
+def create_admin():
+    access_token = request.cookies.get('access_token')
+    if not access_token:
+        return jsonify({"message":"Invalid or Expired token"})
+    decoded = decoded_token(access_token)
 
+    if not decoded:
+        return jsonify({"message":"Invalid or Expired token"})
+    
+    if decoded.get("role") != "superadmin":
+        return jsonify({"message":"Forbidden.Do not have the clearance"})
 
+    
 if __name__ == '__main__':
     app.run(debug=True)
