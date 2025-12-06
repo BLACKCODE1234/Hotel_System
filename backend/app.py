@@ -120,7 +120,8 @@ def signup():
 
 @app.route('login',methods=['POST'])
 def login():
-    if not requests.is_json:
+    
+    if not request.is_json:
         return jsonify({"message":"All fields are required","status":"error"}),404
     data = request.get_json()
     email = data.get("email")
