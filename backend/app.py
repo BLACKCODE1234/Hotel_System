@@ -1,10 +1,10 @@
-from curses import curs_set
+
 from email.errors import MissingHeaderBodySeparatorDefect
 import resource
 
 from psycopg2.extensions import cursor
 from werkzeug.datastructures import Authorization
-import request
+
 from flask import Flask,jsonify,request 
 import bcrypt
 import psycopg2
@@ -40,12 +40,12 @@ def database_connection():
         conn = psycopg2.connect(
             host=os.getenv("DB_HOST"),
             database=os.getenv("DB_NAME"),
-            user=os.os.getenv("DB_USER"),
+            user=os.getenv("DB_USER"),
             password=os.getenv("DB_PASSWORD")
         )
         return conn
     except psycopg2.Error as e:
-        return jsonify({"message":"Server is down","status":error}),500
+        return jsonify({"message":"Server is down","status":"error"}),500
 
 @app.route('/signup',methods=['POST'])
 def signup():
@@ -366,7 +366,7 @@ def create_admin():
         return jsonify({"message":"All fields are required"}),400
 
     try:
-        db = database_connection
+        db = database_connection()
         cursor = db.cursor(cursor_factory=RealDictCursor)
         cursor.execute("select email from loginusers where email = %s",(email,))
 
@@ -375,20 +375,20 @@ def create_admin():
 
         hashed_password = bcrypt.hashpw(password.encode('UTF-8'),bcrypt.gensalt()).decode('UTF-8')
 
-        cursor.execute("""insert into loginusers (first_name,last_name,email.passwords,role)
+        cursor.execute("""insert into loginusers (first_name,last_name,email,passwords,role)
                     values(%s,%s,%s,%s,%s)""",
         (first_name,last_name,email,password,"admin"))
         db.commit()
 
         return jsonify({"message":"ADmin Created Successfully"}),201
 
-    except exception as e:
+    except Exception as e:
         db.rollback()
         return jsonify({"message":"Server error"}),500
     finally:
         if 'cursor' in locals():
             cursor.close()
-        if 'db' in locals:
+        if 'db' in locals():
             db.close()
 
 
@@ -478,7 +478,7 @@ def cancel_booking():
         cursor = db.cursor(cursor_factory=RealDictCursor)
 
         
-        if user_role in ['admin', 'superadmin']:
+        if role in ['admin', 'superadmin']:
             
             cursor.execute("SELECT * FROM bookings WHERE booking_id = %s", (booking_id,))
         else:
@@ -646,7 +646,7 @@ def payments():
     if not access_token:
         return jsonify({"message":"No Token was returned"}),401
 
-    decoded = decode_token(access_token)
+    decoded = decoded_token(access_token)
     if not decoded:
         return jsonify({"message":"No Token was returned"}),401
 
