@@ -355,6 +355,15 @@ def create_admin():
     if decoded.get("role") != "superadmin":
         return jsonify({"message":"Forbidden.Do not have the clearance"})
 
-    
+    data = request.get_json()
+    first_name = data.get("firstname")
+    last_name = data.get("lastname")
+    email = data.get("email")
+    password = data.get("password")
+
+    if not all ([first_name,last_name,email,password]):
+        return jsonify({"message":"All fields are required"}),400
+
+
 if __name__ == '__main__':
     app.run(debug=True)
