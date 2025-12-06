@@ -7,7 +7,6 @@ import bcrypt
 import psycopg2
 import jwt
 from datetime import datetime 
-import os
 import json
 import requests
 from flask_cors import CORS
@@ -24,6 +23,11 @@ load_dotenv()
 app = Flask(__name__)
 app.secret_key = os.getenv("FLASK_SECRET_KEY","SECRET_KEY")
 
+
+frontend_origins = os.getenv("FRONTEND_ORIGINS", "")
+frontend_origins = [origin.strip() for origin in frontend_origins.split(",") if origin.strip()]
+
+
 CORS  (
         app,supports_credentials=True,
         resources={r"/*": {"origins": frontend_origins}},
@@ -32,9 +36,6 @@ CORS  (
         methods=["GET","POST","PUT","DELETE","PATCH","OPTIONS"]
 )
 
-
-frontend_origins = os.getenv("FRONTEND_ORIGINS", "")
-frontend_origins = [origin.strip() for origin in frontend_origins.split(",") if origin.strip()]
 
 
 JWT_ALGORITHM = "HS256"
@@ -59,20 +60,20 @@ def signup():
         return jsonify({"message":"Request must be JSON","status":400})    
 
     data=request.get_json()
-    firstname = data.get_json("firstname")
-    lastname = data.get_json("lastname")
-    email = data.get_json("email")
-    password = data.get_json("password")
+    firstname = data.get("firstname")
+    lastname = data.get("lastname")
+    email = data.get("email")
+    password = data.get("password")
 
     if len(password) < 6:
-        return jsonify({"message":"Password should be more than 6 characters","status":error}),400
+        return jsonify({"message":"Password should be more than 6 characters","status":"error"}),400
     
     repassword = request.get_json("repassword")
     if repassword != password:
-        return jsonify({"message":"Passwords do not match","status":error}),400
+        return jsonify({"message":"Passwords do not match","status":"error"}),400
 
     if not all([firstname,lastname,email,password,repassword]):
-        return jsonify({"message":"All fields are required","status":error,"user":None}),400
+        return jsonify({"message":"All fields are required","status":"error","user":None}),400
     
     try:
         hashed = bcrypt.hashpw(password.encode('utf-8'),bcrypt.gensalt()).decode('utf-8')
@@ -81,7 +82,7 @@ def signup():
 
         cursor.execute("select email from login where email = %s ",(email,))
         if cursor.fetchone():
-            return jsonify({"message":"Account already exist","status":error}),400
+            return jsonify({"message":"Account already exist","status":"error"}),400
 
         cursor.execute("INSERT INTO users (firstname,lastname,email,password) VALUES (%s,%s,%s,%s)",(firstname,lastname,email,hashed))
         db.commit()
@@ -124,7 +125,7 @@ def signup():
              db.close()
     
 
-@app.route('login',methods=['POST'])
+@app.route('/login',methods=['POST'])
 def login():
     
     if not request.is_json:
