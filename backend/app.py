@@ -4,7 +4,7 @@ import resource
 from psycopg2.extensions import cursor
 from werkzeug.datastructures import Authorization
 import request
-from flask import Flask,jsonify
+from flask import Flask,jsonify,request 
 import bcrypt
 import psycopg2
 import jwt
@@ -37,8 +37,8 @@ JWT_EXP_DELTA_MINUTES = 60
 def database_connection():
     try:
         conn = psycopg2.connect(
-            host="localhost",
-            database="",
+            host=os.getenv("DB_HOST")
+            database=os.getenv("DB_NAME"),
             user="",
             password=""
         )
