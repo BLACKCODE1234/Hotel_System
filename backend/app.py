@@ -1,3 +1,4 @@
+from curses import curs_set
 from email.errors import MissingHeaderBodySeparatorDefect
 import resource
 
@@ -267,8 +268,8 @@ def refresh():
 
 
     
-@app.route('/userdashboard',methods=['POST'])
-def userdashboard():
+@app.route('/bookings',methods=['POST'])
+def bookings():
     access_token = request.cookies.get('access_token')
     if not access_token:
         return jsonify({"message":"No Token "}),401
@@ -342,18 +343,18 @@ def userdashboard():
 
 
 
-@app.route("/create_admin",methods=["POST"])
+@app.route("/superadmin/create_admin",methods=["POST"])
 def create_admin():
     access_token = request.cookies.get('access_token')
     if not access_token:
-        return jsonify({"message":"Invalid or Expired token"})
+        return jsonify({"message":"Invalid or Expired token"}),401
     decoded = decoded_token(access_token)
 
     if not decoded:
-        return jsonify({"message":"Invalid or Expired token"})
+        return jsonify({"message":"Invalid or Expired token"}),401
     
     if decoded.get("role") != "superadmin":
-        return jsonify({"message":"Forbidden.Do not have the clearance"})
+        return jsonify({"message":"Forbidden.Do not have the clearance"}),403
 
     data = request.get_json()
     first_name = data.get("firstname")
@@ -367,9 +368,287 @@ def create_admin():
     try:
         db = database_connection
         cursor = db.cursor(cursor_factory=RealDictCursor)
-    except psycopg2.Error as e:
-        return jsonify({})
+        cursor.execute("select email from loginusers where email = %s",(email,))
 
+        if cursor.execute.fetchone():
+            return jsonify({"message":"Account already exist"}),401
+
+        hashed_password = bcrypt.hashpw(password.encode('UTF-8'),bcrypt.gensalt()).decode('UTF-8')
+
+        cursor.execute("""insert into loginusers (first_name,last_name,email.passwords,role)
+                    values(%s,%s,%s,%s,%s)""",
+        (first_name,last_name,email,password,"admin"))
+        db.commit()
+
+        return jsonify({"message":"ADmin Created Successfully"}),201
+
+    except exception as e:
+        db.rollback()
+        return jsonify({"message":"Server error"}),500
+    finally:
+        if 'cursor' in locals():
+            cursor.close()
+        if 'db' in locals:
+            db.close()
+
+
+
+@app.route('/superadmin/deleteadmin', methods=['DELETE'])
+def delete_admin():
+    access_token = request.cookies.get('access_token')
+    if not access_token:
+        return jsonify({"message": "No Token"}), 401
+
+    decoded = decoded_token(access_token)
+    if not decoded:
+        return jsonify({"message": "Invalid or expired token"}), 401
+
+    if decoded.get("role") != "superadmin":
+        return jsonify({"message": "Forbidden: Super Admins only"}), 403
+
+    
+    data = request.get_json()
+    email = data.get("email")
+
+    if not email:
+        return jsonify({"message": "Email is required"}), 400
+
+    try:
+        db = database_connection()
+        cursor = db.cursor(cursor_factory=RealDictCursor)
+
+   
+        cursor.execute("SELECT role FROM loginusers WHERE email = %s", (email,))
+        user = cursor.fetchone()
+        if not user:
+            return jsonify({"message": "User not found"}), 404
+
+       
+        if user["role"] != "admin":
+            return jsonify({"message": "Only admins can be deleted"}), 400
+
+        
+        cursor.execute("DELETE FROM loginusers WHERE email = %s", (email,))
+        db.commit()
+
+        # Log audit
+        log_audit(decoded.get('email'), "DELETE_ADMIN", f"Deleted admin account {email}", "SUCCESS", "USER", email)
+
+        return jsonify({"message": f"Admin with email {email} deleted successfully"}), 200
+
+    except Exception as e:
+        db.rollback()
+        log_audit(decoded.get('email'), "DELETE_ADMIN", f"Failed to delete admin: {str(e)}", "FAILED", "USER", email)
+        return jsonify({"error": str(e)}), 500
+
+    finally:
+        if 'cursor' in locals():
+            cursor.close()
+        if 'db' in locals():
+            db.close()
+
+
+
+
+@app.route('/cancelbooking', methods=['POST'])
+def cancel_booking():
+    print(f"CANCEL BOOKING - Request received")
+    access_token = request.cookies.get('access_token')
+    if not access_token:
+        print(f"CANCEL BOOKING - No access token")
+        return jsonify({"message": "No Token"}), 401
+
+    decoded = decoded_token(access_token)
+    if not decoded:
+        print(f"CANCEL BOOKING - Invalid token")
+        return jsonify({"message": "Invalid or expired token"}), 401
+
+    email = decoded.get('email')
+    role = decoded.get('role')
+    data = request.get_json()
+    booking_id = data.get("booking_id")
+    
+    print(f"CANCEL BOOKING - User: {email}, Role: {role}, Booking ID: {booking_id}")
+
+    if not booking_id:
+        return jsonify({"message": "Booking ID is required"}), 400
+
+    try:
+        db = database_connection()
+        cursor = db.cursor(cursor_factory=RealDictCursor)
+
+        
+        if user_role in ['admin', 'superadmin']:
+            
+            cursor.execute("SELECT * FROM bookings WHERE booking_id = %s", (booking_id,))
+        else:
+            
+            cursor.execute("SELECT * FROM bookings WHERE booking_id = %s AND user_email = %s", 
+                           (booking_id, email))
+        
+        booking = cursor.fetchone()
+        if not booking:
+            return jsonify({"message": "Booking not found"}), 404
+
+        cursor.execute("UPDATE bookings SET status = %s WHERE booking_id = %s RETURNING *",
+                        ("cancelled", booking_id))
+        updated = cursor.fetchone()
+        db.commit()
+
+
+    
+        log_audit(
+            user_email, 
+            "CANCEL_BOOKING", 
+            f"Cancelled booking {booking_id}", 
+            "SUCCESS", 
+            "BOOKING", 
+            str(booking_id)
+        )
+
+        return jsonify({"message": "Booking cancelled", "booking": updated}), 200
+
+    except Exception as e:
+        db.rollback()
+        log_audit(user_email, "CANCEL_BOOKING", f"Failed to cancel booking: {str(e)}", "FAILED", "BOOKING", str(booking_id))
+        return jsonify({"message":"Server error"}), 500
+
+    finally:
+        if 'cursor' in locals(): 
+            cursor.close()
+        if 'db' in locals(): 
+            db.close()
+
+
+
+
+@app.route('/userdetails',methods=['GET'])
+def userdetails():
+    access_token = request.cookies.get('access_token')
+    if not access_token:
+        return jsonify({"message":"No Token was returned"}),401
+        
+    decoded = decoded_token(access_token)
+    if not decoded:
+        return jsonify({"message":"No Token was returned"}),401
+        
+    useremail = request.args.get('email')
+    if not useremail:
+        return jsonify({"message":"Email required"}),400
+    
+   
+    
+    try:
+        db = database_connection()
+        cursor = db.cursor(cursor_factory=RealDictCursor)
+        cursor.execute("""select first_name,last_name,email,
+                       role from loginusers where email =%s """,
+                       (email,))
+        details = cursor.fetchone()
+        
+        if not details:
+            return jsonify({"message":"Something Happened"}),404
+        return jsonify(details),200
+    
+    except Exception as e:
+        return jsonify({"message":"Server error"}),500
+    
+    finally:
+        if 'cursor' in locals():
+            cursor.close()
+        if 'db' in locals():
+            db.close()
+
+
+
+
+
+@app.route('/user/history', methods=['GET'])
+def user_history():
+    access_token = request.cookies.get('access_token')
+    if not access_token:
+        return jsonify({"message": "No token provided"}), 401
+
+    decoded = decoded_token(access_token)
+    if not decoded:
+        return jsonify({"message": "Invalid or expired token"}), 401
+
+    user_email = decoded.get("email")
+    if not user_email:
+        return jsonify({"message": "Invalid token payload"}), 401
+
+    try:
+        db = database_connection()
+        cursor = db.cursor(cursor_factory=RealDictCursor)
+        cursor.execute("""
+            SELECT 
+        """, (user_email,))
+        
+        history = cursor.fetchall()
+
+        return jsonify(history), 200
+
+    except Exception as e:
+        return jsonify({"message":"Server error"}), 500
+
+    finally:
+        if 'cursor' in locals():
+            cursor.close()
+        if 'db' in locals():
+            db.close()
+
+
+
+
+@app.route('/superadmin/list_admin', methods=['GET'])
+def list_admins():
+    try:
+        auth_header = request.headers.get('Authorization')
+        if not auth_header or not auth_header.startswith('Bearer '):
+            return jsonify({"message": "No token provided"}), 401
+        token = auth_header.split(' ')[1]
+        decoded = decoded_token(token)
+
+        if not decoded:
+            return jsonify({"message": "Invalid token"}), 401
+        email = decoded.get('email')
+
+        db = database_connection()
+        cursor = db.cursor(cursor_factory=RealDictCursor)
+        cursor.execute("SELECT role FROM loginusers WHERE email = %s", (email,))
+        me = cursor.fetchone()
+        if not me or me['role'] != 'superadmin':
+            return jsonify({"message": "Unauthorized - SuperAdmin access required"}), 403
+
+        cursor.execute("""
+            
+        """)
+        admins = cursor.fetchall()
+        cursor.close(); db.close()
+        return jsonify([
+            {
+                'id': a['id'],
+                'name': f"{a['first_name']} {a['last_name']}",
+                'email': a['email'],
+                'permissions': a.get('permissions', []),
+                'lastLogin': a.get('last_login'),
+                'status': a.get('status','active')
+            } for a in admins
+        ])
+    except Exception as e:
+        return jsonify({"message": f"Error listing admins: {str(e)}"}), 500
+
+
+@app.route('/payments',methods=['POST'])
+def payments():
+
+    access_token = request.cookies.get('access_token')
+    if not access_token:
+        return jsonify({"message":"No Token was returned"}),401
+
+    decoded = decode_token(access_token)
+    if not decoded:
+        return jsonify({"message":"No Token was returned"}),401
 
 
 if __name__ == '__main__':
