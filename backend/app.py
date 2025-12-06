@@ -140,7 +140,7 @@ def login():
     try:
         db = database_connection()
         cursor = db.cursor(cursor_factory=RealDictCursor)
-        cursor.execute("select passwords,role,email from loginusers where email = %s,"(email,))
+        cursor.execute("select passwords,role,email from loginusers where email = %s",(email,))
         user = cursor.fetchone()
 
         if not user:
