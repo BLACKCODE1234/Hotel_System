@@ -364,6 +364,13 @@ def create_admin():
     if not all ([first_name,last_name,email,password]):
         return jsonify({"message":"All fields are required"}),400
 
+    try:
+        db = database_connection
+        cursor = db.cursor(cursor_factory=RealDictCursor)
+    except psycopg2.Error as e:
+        return jsonify({})
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
