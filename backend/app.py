@@ -68,7 +68,7 @@ def signup():
     if len(password) < 6:
         return jsonify({"message":"Password should be more than 6 characters","status":"error"}),400
     
-    repassword = request.get_json("repassword")
+    repassword = request.get("repassword")
     if repassword != password:
         return jsonify({"message":"Passwords do not match","status":"error"}),400
 
@@ -140,7 +140,7 @@ def login():
     try:
         db = database_connection()
         cursor = db.cursor(cursor_factory=RealDictCursor)
-        cursor.execute("select passwords,role,email from loginusers where email = %s,")
+        cursor.execute("select passwords,role,email from loginusers where email = %s,"(email,))
         user = cursor.fetchone()
 
         if not user:
