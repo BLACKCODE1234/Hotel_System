@@ -1,10 +1,7 @@
 
-from email.errors import MissingHeaderBodySeparatorDefect
-import resource
 
 from psycopg2.extensions import cursor
-from werkzeug.datastructures import Authorization
-
+import os
 from flask import Flask,jsonify,request 
 import bcrypt
 import psycopg2
@@ -18,6 +15,11 @@ from psycopg2 import RealDictCursor
 from datetime import datetime,timedelta
 from helper.generate_token import generate_access_token,generate_refresh_token,decoded_token
 
+from dotenv import load_dotenv
+load_dotenv()
+
+
+
 
 app = Flask(__name__)
 app.secret_key = os.getenv("FLASK_SECRET_KEY","SECRET_KEY")
@@ -29,6 +31,10 @@ CORS  (
         allow_headers=["Content-Type","Authorization"],
         methods=["GET","POST","PUT","DELETE","PATCH","OPTIONS"]
 )
+
+
+frontend_origins = os.getenv("FRONTEND_ORIGINS", "")
+frontend_origins = [origin.strip() for origin in frontend_origins.split(",") if origin.strip()]
 
 
 JWT_ALGORITHM = "HS256"
