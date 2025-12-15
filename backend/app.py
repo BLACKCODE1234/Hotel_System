@@ -75,8 +75,11 @@ def signup():
     email = data.get("email")
     password = data.get("password")
 
+    if '@' not in email:
+        return jsonify({"message":"Invalid email","status":"error"}),422
+
     if len(password) < 6:
-        return jsonify({"message":"Password should be more than 6 characters","status":"error"}),400
+        return jsonify({"message":"Password should be more than 6 characters","status":"error"}),422
     
     repassword = data.get("repassword")
     if repassword != password:
@@ -92,7 +95,7 @@ def signup():
 
         cursor.execute("select email from login_users where email = %s ",(email,))
         if cursor.fetchone():
-            return jsonify({"message":"Account already exist","status":"error"}),400
+            return jsonify({"message":"Account already exist","status":"error"}),409
 
         cursor.execute("INSERT INTO users (firstname,lastname,email,password) VALUES (%s,%s,%s,%s)",(firstname,lastname,email,hashed))
         db.commit()
@@ -145,7 +148,7 @@ def login():
     password = data.get("password")
 
     if not all ([email,password]):
-        return jsonify({"message":"All fields are required","status":"error"}),400
+        return jsonify({"message":"All fields are required","status":"error"}),404
 
     try:
         db = database_connection()
@@ -450,7 +453,7 @@ def delete_admin():
 
        
         if user["role"] != "admin":
-            return jsonify({"message": "Only admins can be deleted"}), 400
+            return jsonify({"message": "Only admins can be deleted"}), 403
 
         
         cursor.execute("DELETE FROM login_users WHERE email = %s", (email,))
@@ -522,16 +525,12 @@ def cancel_booking():
         db.commit()
 
 
-    
-        # Audit log: Booking cancelled successfully
-        # log_audit(email, "CANCEL_BOOKING", f"Cancelled booking {booking_id}", "SUCCESS", "BOOKING", str(booking_id))
+     
 
         return jsonify({"message": "Booking cancelled", "booking": updated}), 200
 
     except Exception as e:
         db.rollback()
-        # Audit log: Failed to cancel booking
-        # log_audit(email, "CANCEL_BOOKING", f"Failed to cancel booking: {str(e)}", "FAILED", "BOOKING", str(booking_id))
         return jsonify({"message":"Server error"}), 500
 
     finally:
