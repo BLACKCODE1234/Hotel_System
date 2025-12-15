@@ -324,12 +324,12 @@ def bookings():
     if not last_name:missing_fields.append("last_name")
     if not email:missing_fields.append("email")
     if not phone:missing_fields.append("phone")
-    if not adults:missing_field.append("adults")
-    if not children:missing_field.append("children")
-    if not rooms:missing_field.append("rooms")
-    if not room_type:missing_field.append("room_type")
-    if not in_date:missing_field.append("in_date")
-    if not out_date:missing_field.append("out_date")
+    if not adults:missing_fields.append("adults")
+    if not children:missing_fields.append("children")
+    if not rooms:missing_fields.append("rooms")
+    if not room_type:missing_fields.append("room_type")
+    if not in_date:missing_fields.append("in_date")
+    if not out_date:missing_fields.append("out_date")
 
     if missing_fields:
         return jsonify({"message":f"Required fields missing: {',  '.join(missing_fields)}"}),400
