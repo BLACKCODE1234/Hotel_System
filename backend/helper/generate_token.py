@@ -27,7 +27,7 @@ def generate_refresh_token(email,role:'user'):
     return token
 
 def decoded_token(token,is_refresh=False):
-    secrets = os.getenv("JWT_REFRESH_KEY") if is_refresh else os.getenv("JWT_KEY")
+    secret = os.getenv("JWT_REFRESH_KEY") if is_refresh else os.getenv("JWT_KEY")
     try:
         payload = jwt.decode(token, secret, algorithms=['HS256'])
         return payload
