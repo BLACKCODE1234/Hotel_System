@@ -68,7 +68,7 @@ def signup():
     if len(password) < 6:
         return jsonify({"message":"Password should be more than 6 characters","status":"error"}),400
     
-    repassword = request.get("repassword")
+    repassword = data.get("repassword")
     if repassword != password:
         return jsonify({"message":"Passwords do not match","status":"error"}),400
 
@@ -156,7 +156,7 @@ def login():
         
         try:
             cursor.execute("""
-                UPDATE login_users SET last_login = NOW()
+                UPDATE loginusers SET last_login = NOW()
                 WHERE email = %s AND role IN ('admin','superadmin')
             """, (email,))
             db.commit()
@@ -223,7 +223,7 @@ def me():
     if not access_token:
         return jsonify({"message": "No token", "user": None}), 401
 
-    decoded = decode_token(access_token)
+    decoded = decoded_token(access_token)
     if not decoded:
         return jsonify({"message": "Invalid token", "user": None}), 401
 
@@ -254,7 +254,7 @@ def refresh():
     if not refresh_token:
         return jsonify({"message": "Refresh token missing", "code": "NO_REFRESH_TOKEN"}), 401
 
-    decoded = decode_token(refresh_token, is_refresh=True)
+    decoded = decoded_token(refresh_token, is_refresh=True)
     if not decoded:
         return jsonify({"message": "Invalid or expired refresh token", "code": "INVALID_REFRESH_TOKEN"}), 401
 
