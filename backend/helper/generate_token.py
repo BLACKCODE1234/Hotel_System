@@ -29,8 +29,9 @@ def generate_refresh_token(email,role:'user'):
 def decoded_token(token,is_refresh=False):
     secrets = os.getenv("JWT_REFRESH_KEY") if is_refresh else os.getenv("JWT_KEY")
     try:
-        pass
+        payload = jwt.decode(token, secret, algorithms=['HS256'])
+        return payload
     except jwt.ExpiredSignatureError as e:
         return None
     except jwt.InvalidTokenError as e:
-        return none
+        return None
