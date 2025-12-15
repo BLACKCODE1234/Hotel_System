@@ -292,13 +292,13 @@ def bookings():
     if not access_token:
         return jsonify({"message":"No Token "}),401
     
-    decoded = decoded_token(decoded_token)
+    decoded = decoded_token(access_token)
     if not decoded:
         return jsonify({"message":"Invalid or Expired Token"})
 
     user_email = decoded.get('email')
     if not user_email:
-        return jsonify({"messaage":"Account not found"}),401
+        return jsonify({"message":"Account not found"}),401
 
     data = request.get_json()
     
@@ -342,16 +342,23 @@ def bookings():
     try:
         db = database_connection()
         cursor = db.cursor(cursor_factory=RealDictCursor)
-        cursor.execute("select room_id,room,roomtype, ")
-
-
+        
+        # TODO: Implement room availability check and booking creation
+        # Check room availability for the given dates and room type
+        # cursor.execute("SELECT room_id, room, roomtype FROM rooms WHERE roomtype = %s AND available = true", (room_type,))
+        # available_rooms = cursor.fetchall()
+        
+        # If rooms available, create booking
+        # cursor.execute("INSERT INTO bookings (...) VALUES (...)")
+        # db.commit()
+        
+        return jsonify({"message": "Booking functionality not yet implemented"}), 501
 
 
 
 
     except psycopg2.Error as e:
-        return jsonify({f"message":"Something happened Server Down."
-                        "We are trying to resolve it ","error":str(e),}),500
+        return jsonify({"message": "Something happened Server Down. We are trying to resolve it", "error": str(e)}), 500
 
     finally:
         if 'cursor' in locals():
@@ -386,14 +393,14 @@ def create_admin():
     try:
         db = database_connection()
         cursor = db.cursor(cursor_factory=RealDictCursor)
-        cursor.execute("select email from loginusers where email = %s",(email,))
+        cursor.execute("select email from login_users where email = %s",(email,))
 
         if cursor.fetchone():
             return jsonify({"message":"Account already exist"}),401
 
         hashed_password = bcrypt.hashpw(password.encode('UTF-8'),bcrypt.gensalt()).decode('UTF-8')
 
-        cursor.execute("""insert into loginusers (first_name,last_name,email,passwords,role)
+        cursor.execute("""insert into login_users (first_name,last_name,email,passwords,role)
                     values(%s,%s,%s,%s,%s)""",
         (first_name,last_name,email,hashed_password,"admin"))
         db.commit()
@@ -436,7 +443,7 @@ def delete_admin():
         cursor = db.cursor(cursor_factory=RealDictCursor)
 
    
-        cursor.execute("SELECT role FROM loginusers WHERE email = %s", (email,))
+        cursor.execute("SELECT role FROM login_users WHERE email = %s", (email,))
         user = cursor.fetchone()
         if not user:
             return jsonify({"message": "User not found"}), 404
@@ -446,17 +453,18 @@ def delete_admin():
             return jsonify({"message": "Only admins can be deleted"}), 400
 
         
-        cursor.execute("DELETE FROM loginusers WHERE email = %s", (email,))
+        cursor.execute("DELETE FROM login_users WHERE email = %s", (email,))
         db.commit()
 
-        # Log audit
-        log_audit(decoded.get('email'), "DELETE_ADMIN", f"Deleted admin account {email}", "SUCCESS", "USER", email)
+        # Audit log: Admin deleted successfully
+        # log_audit(decoded.get('email'), "DELETE_ADMIN", f"Deleted admin account {email}", "SUCCESS", "USER", email)
 
         return jsonify({"message": f"Admin with email {email} deleted successfully"}), 200
 
     except Exception as e:
         db.rollback()
-        log_audit(decoded.get('email'), "DELETE_ADMIN", f"Failed to delete admin: {str(e)}", "FAILED", "USER", email)
+        # Audit log: Failed to delete admin
+        # log_audit(decoded.get('email'), "DELETE_ADMIN", f"Failed to delete admin: {str(e)}", "FAILED", "USER", email)
         return jsonify({"error": str(e)}), 500
 
     finally:
@@ -515,20 +523,15 @@ def cancel_booking():
 
 
     
-        log_audit(
-            user_email, 
-            "CANCEL_BOOKING", 
-            f"Cancelled booking {booking_id}", 
-            "SUCCESS", 
-            "BOOKING", 
-            str(booking_id)
-        )
+        # Audit log: Booking cancelled successfully
+        # log_audit(email, "CANCEL_BOOKING", f"Cancelled booking {booking_id}", "SUCCESS", "BOOKING", str(booking_id))
 
         return jsonify({"message": "Booking cancelled", "booking": updated}), 200
 
     except Exception as e:
         db.rollback()
-        log_audit(user_email, "CANCEL_BOOKING", f"Failed to cancel booking: {str(e)}", "FAILED", "BOOKING", str(booking_id))
+        # Audit log: Failed to cancel booking
+        # log_audit(email, "CANCEL_BOOKING", f"Failed to cancel booking: {str(e)}", "FAILED", "BOOKING", str(booking_id))
         return jsonify({"message":"Server error"}), 500
 
     finally:
@@ -560,7 +563,7 @@ def userdetails():
         db = database_connection()
         cursor = db.cursor(cursor_factory=RealDictCursor)
         cursor.execute("""select first_name,last_name,email,
-                       role from loginusers where email =%s """,
+                       role from login_users where email =%s """,
                        (useremail,))
         details = cursor.fetchone()
         
@@ -599,7 +602,10 @@ def user_history():
         db = database_connection()
         cursor = db.cursor(cursor_factory=RealDictCursor)
         cursor.execute("""
-            SELECT 
+            SELECT booking_id, user_email, room_type, in_date, out_date, status, created_at
+            FROM bookings 
+            WHERE user_email = %s
+            ORDER BY created_at DESC
         """, (user_email,))
         
         history = cursor.fetchall()
@@ -633,13 +639,16 @@ def list_admins():
 
         db = database_connection()
         cursor = db.cursor(cursor_factory=RealDictCursor)
-        cursor.execute("SELECT role FROM loginusers WHERE email = %s", (email,))
+        cursor.execute("SELECT role FROM login_users WHERE email = %s", (email,))
         me = cursor.fetchone()
         if not me or me['role'] != 'superadmin':
             return jsonify({"message": "Unauthorized - SuperAdmin access required"}), 403
 
         cursor.execute("""
-            
+            SELECT id, first_name, last_name, email, role, last_login, status
+            FROM login_users
+            WHERE role = 'admin'
+            ORDER BY created_at DESC
         """)
         admins = cursor.fetchall()
         cursor.close(); db.close()
