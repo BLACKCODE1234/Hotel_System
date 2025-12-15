@@ -80,7 +80,7 @@ def signup():
         db = database_connection()
         cursor = db.cursor(cursor_factory=RealDictCursor)
 
-        cursor.execute("select email from login where email = %s ",(email,))
+        cursor.execute("select email from login_users where email = %s ",(email,))
         if cursor.fetchone():
             return jsonify({"message":"Account already exist","status":"error"}),400
 
@@ -117,7 +117,7 @@ def signup():
         
 
     except psycopg2.Error as e:
-        return jsonify({"message":"Server is down","status":error}),500
+        return jsonify({"message":"Server is down","status":"error"}),500
     finally:
         if 'cursor'in locals:
             cursor.close()
@@ -140,7 +140,7 @@ def login():
     try:
         db = database_connection()
         cursor = db.cursor(cursor_factory=RealDictCursor)
-        cursor.execute("select passwords,role,email from loginusers where email = %s",(email,))
+        cursor.execute("select passwords,role,email from login_users where email = %s",(email,))
         user = cursor.fetchone()
 
         if not user:
@@ -156,7 +156,7 @@ def login():
         
         try:
             cursor.execute("""
-                UPDATE loginusers SET last_login = NOW()
+                UPDATE login_users SET last_login = NOW()
                 WHERE email = %s AND role IN ('admin','superadmin')
             """, (email,))
             db.commit()
@@ -308,7 +308,7 @@ def bookings():
     sp_request = data.get("special_request")
 
 
-    missing_field = []
+    missing_fields = []
 
     if not first_name:missing_field.append("first_name")
     if not last_name:missing_field.append("last_name")
@@ -322,7 +322,7 @@ def bookings():
     if not out_date:missing_field.append("out_date")
 
     if missing_fields:
-        return jsonify({"message":f"Required fields missing: {',  '.join(missing_field)}"}),400
+        return jsonify({"message":f"Required fields missing: {',  '.join(missing_fields)}"}),400
 
     """user name 
         To be like the account info on top with let say an image 
