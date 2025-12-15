@@ -54,6 +54,16 @@ def database_connection():
     except psycopg2.Error as e:
         return jsonify({"message":"Server is down","status":"error"}),500
 
+def get_cookie_settings():
+    is_local = ("localhost" in request.host) or ("127.0.0.1" in request.host)
+    secure_cookie = False if is_local else True
+    samesite_cookie = "Lax" if is_local else "None"  
+    domain_cookie = None  
+    return secure_cookie, samesite_cookie, domain_cookie
+
+
+
+
 @app.route('/signup',methods=['POST'])
 def signup():
     if not request.is_json:
@@ -119,9 +129,9 @@ def signup():
     except psycopg2.Error as e:
         return jsonify({"message":"Server is down","status":"error"}),500
     finally:
-        if 'cursor'in locals:
+        if 'cursor'in locals():
             cursor.close()
-        if 'db' in locals:
+        if 'db' in locals():
              db.close()
     
 
@@ -310,10 +320,10 @@ def bookings():
 
     missing_fields = []
 
-    if not first_name:missing_field.append("first_name")
-    if not last_name:missing_field.append("last_name")
-    if not email:missing_field.append("email")
-    if not phone:missing_field.append("phone")
+    if not first_name:missing_fields.append("first_name")
+    if not last_name:missing_fields.append("last_name")
+    if not email:missing_fields.append("email")
+    if not phone:missing_fields.append("phone")
     if not adults:missing_field.append("adults")
     if not children:missing_field.append("children")
     if not rooms:missing_field.append("rooms")
@@ -378,14 +388,14 @@ def create_admin():
         cursor = db.cursor(cursor_factory=RealDictCursor)
         cursor.execute("select email from loginusers where email = %s",(email,))
 
-        if cursor.execute.fetchone():
+        if cursor.fetchone():
             return jsonify({"message":"Account already exist"}),401
 
         hashed_password = bcrypt.hashpw(password.encode('UTF-8'),bcrypt.gensalt()).decode('UTF-8')
 
         cursor.execute("""insert into loginusers (first_name,last_name,email,passwords,role)
                     values(%s,%s,%s,%s,%s)""",
-        (first_name,last_name,email,password,"admin"))
+        (first_name,last_name,email,hashed_password,"admin"))
         db.commit()
 
         return jsonify({"message":"ADmin Created Successfully"}),201
@@ -551,7 +561,7 @@ def userdetails():
         cursor = db.cursor(cursor_factory=RealDictCursor)
         cursor.execute("""select first_name,last_name,email,
                        role from loginusers where email =%s """,
-                       (email,))
+                       (useremail,))
         details = cursor.fetchone()
         
         if not details:
