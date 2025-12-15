@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, User, Mail, Lock, CheckCircle, XCircle } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
 
 const SignupPage: React.FC = () => {
   const navigate = useNavigate();
+  const { signup, loading, error, clearError } = useAuth();
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -14,7 +16,6 @@ const SignupPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [errors, setErrors] = useState<{[key: string]: string}>({});
-  const [isLoading, setIsLoading] = useState(false);
 
   const validatePassword = (password: string) => {
     if (password.length <= 6) {
@@ -55,19 +56,21 @@ const SignupPage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    clearError();
+    
     if (validateForm()) {
-      setIsLoading(true);
+      const userData = {
+        first_name: formData.firstName,
+        last_name: formData.lastName,
+        email: formData.email,
+        password: formData.password
+      };
       
-      try {
-        // Simulate API call to register user and send verification email
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        
+      const success = await signup(userData);
+      
+      if (success) {
         // Navigate to email verification page with email parameter
         navigate(`/email-verification?email=${encodeURIComponent(formData.email)}`);
-      } catch (error) {
-        setErrors({ submit: 'Registration failed. Please try again.' });
-      } finally {
-        setIsLoading(false);
       }
     }
   };
@@ -276,22 +279,23 @@ const SignupPage: React.FC = () => {
             {/* Submit Button */}
             <button
               type="submit"
-              disabled={isLoading}
-              className="group relative w-full px-8 py-4 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white font-bold rounded-full shadow-2xl transform transition-all duration-500 hover:scale-105 hover:shadow-blue-500/50 hover:shadow-2xl overflow-hidden disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none"
+              disabled={loading}
+              className="group relative w-full px-8 py-4 bg-gradient-to-r from-green-500 via-blue-500 to-purple-500 text-white font-bold rounded-full shadow-2xl transform transition-all duration-500 hover:scale-105 hover:shadow-green-500/50 hover:shadow-2xl overflow-hidden disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none"
               style={{
-                boxShadow: '0 0 30px rgba(59, 130, 246, 0.5), 0 0 60px rgba(59, 130, 246, 0.3)',
-                animation: isLoading ? 'none' : 'glow 2s ease-in-out infinite alternate'
+                boxShadow: '0 0 30px rgba(34, 197, 94, 0.5), 0 0 60px rgba(34, 197, 94, 0.3)',
+                animation: loading ? 'none' : 'glow 2s ease-in-out infinite alternate'
               }}
             >
               <span className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
               <span className="relative z-10 flex items-center justify-center gap-2 text-lg">
-                {isLoading ? (
+                {loading ? (
                   <>
                     <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
                     Creating Account...
                   </>
                 ) : (
                   <>
+                    Create Account
                     🚀 Create Account
                   </>
                 )}

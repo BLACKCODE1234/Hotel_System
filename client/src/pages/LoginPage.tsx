@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Eye, EyeOff, Mail, Lock, LogIn, XCircle, CheckCircle } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
 
 const LoginPage: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const { login, loading, error, clearError } = useAuth();
   const [formData, setFormData] = useState({
     email: '',
     password: ''
   });
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState<{[key: string]: string}>({});
-  const [isLoading, setIsLoading] = useState(false);
   const [showVerificationSuccess, setShowVerificationSuccess] = useState(false);
 
   // Check if user came from email verification
@@ -42,45 +43,15 @@ const LoginPage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    clearError();
+    
     if (validateForm()) {
-      setIsLoading(true);
+      const success = await login(formData.email, formData.password);
       
-      // Simulate login process
-      setTimeout(() => {
-        // Admin credentials check
-        if (formData.email === 'admin@luxurygrandhotel.com' && formData.password === 'admin123') {
-          // Store admin session
-          localStorage.setItem('userRole', 'admin');
-          localStorage.setItem('userEmail', formData.email);
-          localStorage.setItem('userName', 'Admin User');
-          
-          console.log('Admin login successful');
-          setIsLoading(false);
-          
-          // Redirect to admin dashboard
-          navigate('/admin');
-        }
-        // Regular user credentials (demo)
-        else if (formData.email === 'user@example.com' && formData.password === 'user123') {
-          // Store user session
-          localStorage.setItem('userRole', 'user');
-          localStorage.setItem('userEmail', formData.email);
-          localStorage.setItem('userName', 'John Doe');
-          
-          console.log('User login successful');
-          setIsLoading(false);
-          
-          // Redirect to user dashboard
-          navigate('/dashboard');
-        }
-        // Invalid credentials
-        else {
-          setIsLoading(false);
-          setErrors({
-            password: 'Invalid email or password. Try admin@luxurygrandhotel.com / admin123 or user@example.com / user123'
-          });
-        }
-      }, 1500);
+      if (success) {
+        // Redirect based on user role (you can enhance this based on your backend response)
+        navigate('/dashboard');
+      }
     }
   };
 
@@ -220,16 +191,16 @@ const LoginPage: React.FC = () => {
             {/* Submit Button */}
             <button
               type="submit"
-              disabled={isLoading}
+              disabled={loading}
               className="group relative w-full px-8 py-4 bg-gradient-to-r from-green-500 via-blue-500 to-purple-500 text-white font-bold rounded-full shadow-2xl transform transition-all duration-500 hover:scale-105 hover:shadow-green-500/50 hover:shadow-2xl overflow-hidden disabled:opacity-70 disabled:cursor-not-allowed"
               style={{
                 boxShadow: '0 0 30px rgba(34, 197, 94, 0.5), 0 0 60px rgba(34, 197, 94, 0.3)',
-                animation: isLoading ? 'none' : 'glow 2s ease-in-out infinite alternate'
+                animation: loading ? 'none' : 'glow 2s ease-in-out infinite alternate'
               }}
             >
               <span className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
               <span className="relative z-10 flex items-center justify-center gap-2 text-lg">
-                {isLoading ? (
+                {loading ? (
                   <>
                     <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
                     Signing In...
