@@ -45,6 +45,17 @@ JWT_ALGORITHM = "HS256"
 JWT_EXP_DELTA_MINUTES = 60
 
 
+# Email configuration
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'  # Example: Gmail SMTP
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = os.getenv('EMAIL_USER')
+app.config['MAIL_PASSWORD'] = os.getenv('EMAIL_PASSWORD')
+
+mail = Mail(app)
+# Tip: For Gmail, you may need an App Password
+
+
 def database_connection():
     try:
         conn = psycopg2.connect(
