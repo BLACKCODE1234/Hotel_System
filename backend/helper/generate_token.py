@@ -16,7 +16,7 @@ def generate_access_token(email,role='user'):
     return token
 
 
-def generate_refresh_token(email,role:'user'):
+def generate_refresh_token(email,role='user'):
     payload = {
         'email':email,
         'role':role,
@@ -35,3 +35,5 @@ def decoded_token(token,is_refresh=False):
         return None
     except jwt.InvalidTokenError as e:
         return None
+
+        
