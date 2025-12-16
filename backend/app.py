@@ -2,7 +2,7 @@
 
 from psycopg2.extensions import cursor
 import os
-from flask import Flask,jsonify,request 
+from flask import Flask,jsonify,request,session
 import bcrypt
 import psycopg2
 import jwt
@@ -13,6 +13,9 @@ from flask_cors import CORS
 from psycopg2 import RealDictCursor
 from datetime import datetime,timedelta
 from helper.generate_token import generate_access_token,generate_refresh_token,decoded_token
+from flask_mail import Mail,Message
+import random
+import smtplib
 
 from dotenv import load_dotenv
 load_dotenv()
