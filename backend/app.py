@@ -13,7 +13,7 @@ from flask_cors import CORS
 from psycopg2 import RealDictCursor
 from datetime import datetime,timedelta
 from helper.generate_token import generate_access_token,generate_refresh_token,decoded_token
-from flask_mail import Mail,Message
+from flask_mail import Mail, Message
 import random
 import smtplib
 
@@ -43,17 +43,6 @@ CORS  (
 
 JWT_ALGORITHM = "HS256"
 JWT_EXP_DELTA_MINUTES = 60
-
-
-# Email configuration
-app.config['MAIL_SERVER'] = 'smtp.gmail.com'  # Example: Gmail SMTP
-app.config['MAIL_PORT'] = 587
-app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USERNAME'] = os.getenv('EMAIL_USER')
-app.config['MAIL_PASSWORD'] = os.getenv('EMAIL_PASSWORD')
-
-mail = Mail(app)
-# Tip: For Gmail, you may need an App Password
 
 
 def database_connection():
@@ -89,11 +78,8 @@ def signup():
     email = data.get("email")
     password = data.get("password")
 
-    if '@' not in email:
-        return jsonify({"message":"Invalid email","status":"error"}),422
-
     if len(password) < 6:
-        return jsonify({"message":"Password should be more than 6 characters","status":"error"}),422
+        return jsonify({"message":"Password should be more than 6 characters","status":"error"}),400
     
     repassword = data.get("repassword")
     if repassword != password:
@@ -109,7 +95,7 @@ def signup():
 
         cursor.execute("select email from login_users where email = %s ",(email,))
         if cursor.fetchone():
-            return jsonify({"message":"Account already exist","status":"error"}),409
+            return jsonify({"message":"Account already exist","status":"error"}),400
 
         cursor.execute("INSERT INTO users (firstname,lastname,email,password) VALUES (%s,%s,%s,%s)",(firstname,lastname,email,hashed))
         db.commit()
@@ -162,7 +148,7 @@ def login():
     password = data.get("password")
 
     if not all ([email,password]):
-        return jsonify({"message":"All fields are required","status":"error"}),404
+        return jsonify({"message":"All fields are required","status":"error"}),400
 
     try:
         db = database_connection()
@@ -311,7 +297,7 @@ def bookings():
     
     decoded = decoded_token(access_token)
     if not decoded:
-        return jsonify({"message":"Invalid or Expired Token"})
+        return jsonify({"message":"Invalid or Expired Token"}),401
 
     user_email = decoded.get('email')
     if not user_email:
@@ -411,6 +397,7 @@ def create_admin():
         db = database_connection()
         cursor = db.cursor(cursor_factory=RealDictCursor)
         cursor.execute("select email from login_users where email = %s",(email,))
+        
 
         if cursor.fetchone():
             return jsonify({"message":"Account already exist"}),401
@@ -467,7 +454,7 @@ def delete_admin():
 
        
         if user["role"] != "admin":
-            return jsonify({"message": "Only admins can be deleted"}), 403
+            return jsonify({"message": "Only admins can be deleted"}), 400
 
         
         cursor.execute("DELETE FROM login_users WHERE email = %s", (email,))
@@ -539,12 +526,16 @@ def cancel_booking():
         db.commit()
 
 
-     
+    
+        # Audit log: Booking cancelled successfully
+        # log_audit(email, "CANCEL_BOOKING", f"Cancelled booking {booking_id}", "SUCCESS", "BOOKING", str(booking_id))
 
         return jsonify({"message": "Booking cancelled", "booking": updated}), 200
 
     except Exception as e:
         db.rollback()
+        # Audit log: Failed to cancel booking
+        # log_audit(email, "CANCEL_BOOKING", f"Failed to cancel booking: {str(e)}", "FAILED", "BOOKING", str(booking_id))
         return jsonify({"message":"Server error"}), 500
 
     finally:
