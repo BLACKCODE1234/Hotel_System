@@ -72,6 +72,13 @@ def get_cookie_settings():
 def generate_otp():
     character = string.ascii_uppercase +string.ascii_lowercase + string.digits
     otp = ''.join(secrets.choice(character)for _ in range(6))
+    return otp
+
+def send_otp_email(receiver_email,otp):
+    msg = EmailMessage()
+    msg["Subjct"]= "Your OTP code " 
+    msg["From"] =    GMAIL_USER
+    msg["To"] = Sender_Gmail
 
 
 @app.route('/signup',methods=['POST'])
