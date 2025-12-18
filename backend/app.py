@@ -69,7 +69,9 @@ def get_cookie_settings():
     domain_cookie = None  
     return secure_cookie, samesite_cookie, domain_cookie
 
-
+def generate_otp():
+    character = string.ascii_uppercase +string.ascii_lowercase + string.digits
+    otp = ''.join(secrets.choice(character)for _ in range(6))
 
 
 @app.route('/signup',methods=['POST'])
