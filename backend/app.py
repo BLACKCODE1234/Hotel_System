@@ -17,6 +17,7 @@ from flask_mail import Mail, Message
 import random
 import smtplib
 import secrets
+import string 
 
 from dotenv import load_dotenv
 load_dotenv()
