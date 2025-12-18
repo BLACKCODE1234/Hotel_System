@@ -79,6 +79,12 @@ def send_otp_email(receiver_email,otp):
     msg["Subjct"]= "Your OTP code " 
     msg["From"] =    GMAIL_USER
     msg["To"] = Sender_Gmail
+    msg.set_content(f"Your otp is {otp}.It will expire in 5 minutes")
+
+    with smtplib.SMTP_SSL("smtp.gmail.com",465) as server:
+        server.login(GMAIL_USER,GMAIL_APP_PASSWORD)
+        server.send_message(msg)
+
 
 
 @app.route('/signup',methods=['POST'])
