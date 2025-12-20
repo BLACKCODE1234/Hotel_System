@@ -88,7 +88,7 @@ def send_otp_email(receiver_email,otp):
     msg.set_content(f"Your otp is {otp}.It will expire in 5 minutes")
 
     with smtplib.SMTP_SSL("smtp.gmail.com",465) as server:
-        server.login(GMAIL_USER,GMAIL_APP_PASSWORD)
+        server.login(gmail_user,Gmail_app_password)
         server.send_message(msg)
 
 
