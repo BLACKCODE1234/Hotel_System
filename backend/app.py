@@ -36,6 +36,12 @@ frontend_origins = os.getenv("FRONTEND_ORIGINS", "")
 frontend_origins = [origin.strip() for origin in frontend_origins.split(",") if origin.strip()]
 
 
+gmail_user = os.getenv("GMAIL_USER")
+Gmail_app_password = os.getenv("GMAIL_APP_PASSWORD")
+
+if not gmail_user and Gmail_app_password:
+    raise RuntimeError("System Email Not In Place")
+
 CORS  (
         app,supports_credentials=True,
         resources={r"/*": {"origins": frontend_origins}},
