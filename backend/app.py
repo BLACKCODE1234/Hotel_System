@@ -1,5 +1,6 @@
 
 
+from types import MethodDescriptorType
 from psycopg2.extensions import cursor
 import os
 from flask import Flask,jsonify,request,session
@@ -84,7 +85,7 @@ def send_otp_email(receiver_email,otp):
     msg = EmailMessage()
     msg["Subjct"]= "Your OTP code " 
     msg["From"] =    GMAIL_USER
-    msg["To"] = Sender_Gmail
+    msg["To"] = receiver_Gmail
     msg.set_content(f"Your otp is {otp}.It will expire in 5 minutes")
 
     with smtplib.SMTP_SSL("smtp.gmail.com",465) as server:
@@ -92,7 +93,27 @@ def send_otp_email(receiver_email,otp):
         server.send_message(msg)
 
 
+@app.route('/verify-otp',Methods=['POST'])
+def verity_otp():
+    email = request.json.get("email")
+    user_otp = request.json.get("otp")
 
+    record = otp.store.get("email")
+    if not record:
+        return jsonify({"message":"OTP NOT FOUND"}),400
+
+    if time.time() > record['expires_at']:
+        del otp_store[email]
+        return jsonify({"message":"OTP has expired"}),400
+
+    if record["otp"] != hash_otp(user_otp):
+        return jsonify({"message":"Invalid OTP"}),400
+
+    del otp_store[email]
+    return jsonify({"message":"OTP verified successfully"})
+
+
+    
 @app.route('/signup',methods=['POST'])
 def signup():
     if not request.is_json:
