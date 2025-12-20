@@ -1,0 +1,67 @@
+from flask import Flask, request, jsonify
+import smtplib
+import random
+import time
+from email.message import EmailMessage
+
+app = Flask(__name__)
+
+# Temporary OTP store (use DB or Redis in production)
+otp_store = {}
+
+GMAIL_USER = "yourgmail@gmail.com"
+GMAIL_APP_PASSWORD = "YOUR_APP_PASSWORD"
+
+# Generate 6-digit OTP
+def generate_otp():
+    return str(random.randint(100000, 999999))
+
+# Send OTP Email
+def send_otp_email(receiver_email, otp):
+    msg = EmailMessage()
+    msg["Subject"] = "Your OTP Code"
+    msg["From"] = GMAIL_USER
+    msg["To"] = receiver_email
+    msg.set_content(f"Your OTP is {otp}. It will expire in 5 minutes.")
+
+    with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+        server.login(GMAIL_USER, GMAIL_APP_PASSWORD)
+        server.send_message(msg)
+
+@app.route("/send-otp", methods=["POST"])
+def send_otp():
+    data = request.json
+    email = data.get("email")
+
+    otp = generate_otp()
+    otp_store[email] = {
+        "otp": otp,
+        "expires_at": time.time() + 300  # 5 minutes
+    }
+
+    send_otp_email(email, otp)
+    return jsonify({"message": "OTP sent to email"})
+
+@app.route("/verify-otp", methods=["POST"])
+def verify_otp():
+    data = request.json
+    email = data.get("email")
+    user_otp = data.get("otp")
+
+    record = otp_store.get(email)
+
+    if not record:
+        return jsonify({"message": "OTP not found"}), 400
+
+    if time.time() > record["expires_at"]:
+        del otp_store[email]
+        return jsonify({"message": "OTP expired"}), 400
+
+    if record["otp"] != user_otp:
+        return jsonify({"message": "Invalid OTP"}), 400
+
+    del otp_store[email]
+    return jsonify({"message": "OTP verified successfully"})
+
+if __name__ == "__main__":
+    app.run(debug=True)
