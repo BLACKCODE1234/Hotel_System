@@ -83,9 +83,9 @@ def generate_otp():
 
 def send_otp_email(receiver_email,otp):
     msg = EmailMessage()
-    msg["Subjct"]= "Your OTP code " 
-    msg["From"] =    GMAIL_USER
-    msg["To"] = receiver_Gmail
+    msg["Subject"]= "Your OTP code " 
+    msg["From"] =    gmail_user
+    msg["To"] = receiver_email
     msg.set_content(f"Your otp is {otp}.It will expire in 5 minutes")
 
     with smtplib.SMTP_SSL("smtp.gmail.com",465) as server:
@@ -93,12 +93,12 @@ def send_otp_email(receiver_email,otp):
         server.send_message(msg)
 
 
-@app.route('/verify-otp',Methods=['POST'])
-def verity_otp():
+@app.route('/verify-otp',methods=['POST'])
+def verify_otp():
     email = request.json.get("email")
     user_otp = request.json.get("otp")
 
-    record = otp.store.get("email")
+    record = otp_store.get("email")
     if not record:
         return jsonify({"message":"OTP NOT FOUND"}),400
 
@@ -113,7 +113,7 @@ def verity_otp():
     return jsonify({"message":"OTP verified successfully"})
 
 
-    
+
 @app.route('/signup',methods=['POST'])
 def signup():
     if not request.is_json:
