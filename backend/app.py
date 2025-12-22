@@ -196,9 +196,14 @@ def verify_otp():
             return jsonify({"message":"Invalid OTP"}),400
 
         cursor.execute("UPDATE email_otps SET used = TRUE WHERE id = %s", (record['id'],))
+        cursor.execute("""
+            UPDATE loginusers
+            SET verified = TRUE
+            WHERE email = %s
+        """, (email,))
         db.commit()
 
-        return jsonify({"message":"OTP verified successfully"}),200
+        return jsonify({"message":"OTP verified successfully","account_verified": True}),200
     except psycopg2.Error as e:
         if 'db' in locals():
             db.rollback()
