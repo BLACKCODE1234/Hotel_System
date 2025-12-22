@@ -704,14 +704,12 @@ def userdetails():
         
     decoded = decoded_token(access_token)
     if not decoded:
-        return jsonify({"message":"No Token was returned"}),401
-        
-    useremail = request.args.get('email')
+        return jsonify({"message":"Invalid or expired token"}),401
+
+    useremail = decoded.get('email')
     if not useremail:
-        return jsonify({"message":"Email required"}),400
-    
-   
-    
+        return jsonify({"message":"Invalid token payload"}),401
+
     try:
         db = database_connection()
         cursor = db.cursor(cursor_factory=RealDictCursor)
@@ -721,7 +719,7 @@ def userdetails():
         details = cursor.fetchone()
         
         if not details:
-            return jsonify({"message":"Something Happened"}),404
+            return jsonify({"message":"User not found"}),404
         return jsonify(details),200
     
     except Exception as e:
@@ -737,6 +735,69 @@ def userdetails():
 
 
 
+@app.route('/change-password', methods=['POST'])
+def change_password():
+    access_token = request.cookies.get('access_token')
+    if not access_token:
+        return jsonify({"message": "No Token was returned"}), 401
+
+    decoded = decoded_token(access_token)
+    if not decoded:
+        return jsonify({"message": "Invalid or expired token"}), 401
+
+    data = request.get_json() or {}
+    current_password = data.get('currentPassword') or data.get('current_password')
+    new_password = data.get('newPassword') or data.get('new_password')
+    confirm_password = data.get('confirmPassword') or data.get('confirm_password')
+
+    if not current_password or not new_password:
+        return jsonify({"message": "Current and new password are required"}), 400
+
+    if confirm_password and new_password != confirm_password:
+        return jsonify({"message": "New passwords do not match"}), 400
+
+    if len(new_password) < 6:
+        return jsonify({"message": "Password should be more than 6 characters"}), 400
+
+    user_email = decoded.get('email')
+    if not user_email:
+        return jsonify({"message": "Invalid token payload"}), 401
+
+    try:
+        db = database_connection()
+        cursor = db.cursor(cursor_factory=RealDictCursor)
+
+        cursor.execute("SELECT password FROM loginusers WHERE email = %s", (user_email,))
+        user = cursor.fetchone()
+
+        if not user:
+            return jsonify({"message": "User not found"}), 404
+
+        stored_password = user['password'].encode('utf-8') if isinstance(user['password'], str) else user['password']
+
+        if not bcrypt.checkpw(current_password.encode('utf-8'), stored_password):
+            return jsonify({"message": "Current password is incorrect"}), 400
+
+        new_hashed = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+
+        cursor.execute("UPDATE loginusers SET password = %s WHERE email = %s", (new_hashed, user_email))
+        db.commit()
+
+        return jsonify({"message": "Password updated successfully"}), 200
+
+    except psycopg2.Error:
+        if 'db' in locals():
+            db.rollback()
+        return jsonify({"message": "Server error"}), 500
+
+    finally:
+        if 'cursor' in locals():
+            cursor.close()
+        if 'db' in locals():
+            db.close()
+
+
+ 
 @app.route('/user/history', methods=['GET'])
 def user_history():
     access_token = request.cookies.get('access_token')
