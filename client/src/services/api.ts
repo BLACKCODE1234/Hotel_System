@@ -103,6 +103,14 @@ export const api = {
       credentials: 'include'
     }),
 
+  changePassword: (data: { currentPassword: string; newPassword: string; confirmPassword?: string }) =>
+    fetch(`${API_BASE_URL}/change-password`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+      credentials: 'include'
+    }),
+
   // Payments
   processPayment: (paymentData: any) =>
     fetch(`${API_BASE_URL}/payments`, {

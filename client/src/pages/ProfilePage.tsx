@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { api } from '../services/api';
 import { 
   User, 
   MapPin,
@@ -38,6 +39,37 @@ const ProfilePage: React.FC = () => {
   const [user] = useState({
     membershipTier: 'Gold'
   });
+
+  const handlePasswordUpdate = async () => {
+    if (passwordData.newPassword !== passwordData.confirmPassword) {
+      alert('New passwords do not match!');
+      return;
+    }
+
+    if (passwordData.newPassword.length < 8) {
+      alert('Password must be at least 8 characters long!');
+      return;
+    }
+
+    try {
+      const response = await api.changePassword({
+        currentPassword: passwordData.currentPassword,
+        newPassword: passwordData.newPassword,
+        confirmPassword: passwordData.confirmPassword
+      });
+
+      if (response.ok) {
+        alert('Password updated successfully!');
+        setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
+        setShowPasswordSection(false);
+      } else {
+        const data = await response.json().catch(() => ({}));
+        alert(data.message || 'Failed to update password');
+      }
+    } catch (error) {
+      alert('Network error. Please try again.');
+    }
+  };
 
   return (
     <div 
@@ -248,7 +280,10 @@ const ProfilePage: React.FC = () => {
                             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                           />
                         </div>
-                        <button className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 w-fit">
+                        <button
+                          onClick={handlePasswordUpdate}
+                          className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 w-fit"
+                        >
                           <Save className="h-4 w-4 mr-2" />
                           Update Password
                         </button>
