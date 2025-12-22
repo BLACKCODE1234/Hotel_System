@@ -26,8 +26,8 @@ from email.message import EmailMessage
 from dotenv import load_dotenv
 load_dotenv()
 
-
-
+# Global OTP storage
+otp_store = {}
 
 app = Flask(__name__)
 app.secret_key = os.getenv("FLASK_SECRET_KEY","SECRET_KEY")
@@ -40,7 +40,7 @@ frontend_origins = [origin.strip() for origin in frontend_origins.split(",") if 
 gmail_user = os.getenv("GMAIL_USER")
 Gmail_app_password = os.getenv("GMAIL_APP_PASSWORD")
 
-if not gmail_user and Gmail_app_password:
+if not gmail_user or not Gmail_app_password:
     raise RuntimeError("System Email Not In Place")
 
 CORS  (
@@ -77,7 +77,7 @@ def get_cookie_settings():
     return secure_cookie, samesite_cookie, domain_cookie
 
 def generate_otp():
-    character = string.ascii_uppercase +string.ascii_lowercase + string.digits
+    character = string.ascii_uppercase + string.ascii_lowercase + string.digits
     otp = ''.join(secrets.choice(character)for _ in range(6))
     return otp
 
@@ -106,7 +106,7 @@ def verify_otp():
         del otp_store[email]
         return jsonify({"message":"OTP has expired"}),400
 
-    if record["otp"] != hash_otp(user_otp):
+    if not bcrypt.checkpw(user_otp.encode('utf-8'), record['otp'].encode('utf-8')):
         return jsonify({"message":"Invalid OTP"}),400
 
     del otp_store[email]
@@ -140,11 +140,11 @@ def signup():
         db = database_connection()
         cursor = db.cursor(cursor_factory=RealDictCursor)
 
-        cursor.execute("select email from login_users where email = %s ",(email,))
+        cursor.execute("select email from loginusers where email = %s ",(email,))
         if cursor.fetchone():
             return jsonify({"message":"Account already exist","status":"error"}),400
 
-        cursor.execute("INSERT INTO users (firstname,lastname,email,password) VALUES (%s,%s,%s,%s)",(firstname,lastname,email,hashed))
+        cursor.execute("INSERT INTO loginusers (firstname,lastname,email,password) VALUES (%s,%s,%s,%s)",(firstname,lastname,email,hashed))
         db.commit()
 
         access_token = generate_access_token(email,role='user')
@@ -200,13 +200,13 @@ def login():
     try:
         db = database_connection()
         cursor = db.cursor(cursor_factory=RealDictCursor)
-        cursor.execute("select passwords,role,email from login_users where email = %s",(email,))
+        cursor.execute("select password,role,email from loginusers where email = %s",(email,))
         user = cursor.fetchone()
 
         if not user:
             return jsonify({"message":"Account not found","status":"error"}),404
             
-        hashedpassword = user['passwords'].encode('utf-8') if isinstance (user['passwords'],str) else user['passwords']
+        hashedpassword = user['password'].encode('utf-8') if isinstance (user['password'],str) else user['password']
 
         if not bcrypt.checkpw(password.encode('utf-8'),hashedpassword):
             return jsonify({"message":"Password incorrect","status":"error"}),404
@@ -216,7 +216,7 @@ def login():
         
         try:
             cursor.execute("""
-                UPDATE login_users SET last_login = NOW()
+                UPDATE loginusers SET last_login = NOW()
                 WHERE email = %s AND role IN ('admin','superadmin')
             """, (email,))
             db.commit()
@@ -290,7 +290,7 @@ def me():
     email = decoded.get('email')
     db = database_connection()
     cursor = db.cursor(cursor_factory=RealDictCursor)
-    cursor.execute("SELECT first_name, last_name, email,role FROM login_users WHERE email = %s", (email,))
+    cursor.execute("SELECT first_name, last_name, email,role FROM loginusers WHERE email = %s", (email,))
     user = cursor.fetchone()
     cursor.close()
     db.close()
@@ -443,15 +443,15 @@ def create_admin():
     try:
         db = database_connection()
         cursor = db.cursor(cursor_factory=RealDictCursor)
-        cursor.execute("select email from login_users where email = %s",(email,))
+        cursor.execute("select email from loginusers where email = %s",(email,))
         
 
         if cursor.fetchone():
             return jsonify({"message":"Account already exist"}),401
 
-        hashed_password = bcrypt.hashpw(password.encode('UTF-8'),bcrypt.gensalt()).decode('UTF-8')
+        hashed_password = bcrypt.hashpw(password.encode('utf-8'),bcrypt.gensalt()).decode('utf-8')
 
-        cursor.execute("""insert into login_users (first_name,last_name,email,passwords,role)
+        cursor.execute("""insert into loginusers (first_name,last_name,email,password,role)
                     values(%s,%s,%s,%s,%s)""",
         (first_name,last_name,email,hashed_password,"admin"))
         db.commit()
@@ -494,7 +494,7 @@ def delete_admin():
         cursor = db.cursor(cursor_factory=RealDictCursor)
 
    
-        cursor.execute("SELECT role FROM login_users WHERE email = %s", (email,))
+        cursor.execute("SELECT role FROM loginusers WHERE email = %s", (email,))
         user = cursor.fetchone()
         if not user:
             return jsonify({"message": "User not found"}), 404
@@ -614,7 +614,7 @@ def userdetails():
         db = database_connection()
         cursor = db.cursor(cursor_factory=RealDictCursor)
         cursor.execute("""select first_name,last_name,email,
-                       role from login_users where email =%s """,
+                       role from loginusers where email =%s """,
                        (useremail,))
         details = cursor.fetchone()
         
@@ -690,7 +690,7 @@ def list_admins():
 
         db = database_connection()
         cursor = db.cursor(cursor_factory=RealDictCursor)
-        cursor.execute("SELECT role FROM login_users WHERE email = %s", (email,))
+        cursor.execute("SELECT role FROM loginusers WHERE email = %s", (email,))
         me = cursor.fetchone()
         if not me or me['role'] != 'superadmin':
             return jsonify({"message": "Unauthorized - SuperAdmin access required"}), 403
@@ -719,7 +719,6 @@ def list_admins():
 
 @app.route('/payments',methods=['POST'])
 def payments():
-
     access_token = request.cookies.get('access_token')
     if not access_token:
         return jsonify({"message":"No Token was returned"}),401
@@ -727,6 +726,9 @@ def payments():
     decoded = decoded_token(access_token)
     if not decoded:
         return jsonify({"message":"No Token was returned"}),401
+
+    # TODO: Implement payment processing logic
+    return jsonify({"message":"Payment functionality not yet implemented"}),501
 
 
 if __name__ == '__main__':
