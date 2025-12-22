@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { api } from '../services/api';
 import { 
   CreditCard, 
   Lock, 
@@ -178,20 +179,40 @@ const PaymentPage: React.FC = () => {
       return;
     }
 
+    if (!bookingData) {
+      alert('Booking data is missing. Please start your booking again.');
+      navigate('/booking');
+      return;
+    }
+
     setIsProcessing(true);
     
     try {
-      // Simulate payment processing
-      await new Promise(resolve => setTimeout(resolve, 3000));
+      const response = await api.processPayment({
+        bookingData,
+        paymentData,
+        paymentMethod,
+        totalAmount,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => null);
+        alert(errorData?.message || 'Payment failed. Please try again.');
+        return;
+      }
+
+      const result = await response.json();
+      const bookingIdFromServer = result && result.booking && result.booking.booking_id;
+      const bookingStatusFromServer = result && result.booking && result.booking.status;
       
       // Store confirmation data for dashboard display
       const confirmationData = {
-        bookingId: 'LGH-' + Math.random().toString(36).substr(2, 9).toUpperCase(),
+        bookingId: bookingIdFromServer || 'LGH-' + Math.random().toString(36).substr(2, 9).toUpperCase(),
         bookingData,
         paymentData,
         paymentMethod,
         timestamp: new Date().toISOString(),
-        status: 'confirmed'
+        status: bookingStatusFromServer || 'confirmed'
       };
       
       // Store booking in user's booking history
