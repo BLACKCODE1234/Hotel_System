@@ -714,7 +714,7 @@ def userdetails():
         db = database_connection()
         cursor = db.cursor(cursor_factory=RealDictCursor)
         cursor.execute("""select first_name,last_name,email,
-                       role from loginusers where email =%s """,
+                       role,phone from loginusers where email =%s """,
                        (useremail,))
         details = cursor.fetchone()
         
