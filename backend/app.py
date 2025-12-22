@@ -110,16 +110,35 @@ def send_otp():
         hashed_otp = bcrypt.hashpw(otp.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
     except Exception:
         return jsonify({"message":"Failed to generate OTP"}),500
+    
+    try:
+        db = database_connection()
+        cursor = db.cursor(cursor_factory=RealDictCursor)
 
-    otp_store[email] = {
-        "otp": hashed_otp,
-        "expires_at": time.time() + 300  # 5 minutes
-    }
+        # Remove any existing OTPs for this email
+        cursor.execute("DELETE FROM email_otps WHERE email = %s", (email,))
+
+        expires_at = datetime.utcnow() + timedelta(minutes=5)
+
+        cursor.execute("""
+            INSERT INTO email_otps (email, otp_hash, expires_at, used, created_at)
+            VALUES (%s, %s, %s, %s, NOW())
+        """, (email, hashed_otp, expires_at, False))
+
+        db.commit()
+    except psycopg2.Error as e:
+        if 'db' in locals():
+            db.rollback()
+        return jsonify({"message":"Server error","error":str(e)}),500
+    finally:
+        if 'cursor' in locals():
+            cursor.close()
+        if 'db' in locals():
+            db.close()
 
     try:
         send_otp_email(email, otp)
     except Exception:
-        otp_store.pop(email, None)
         return jsonify({"message":"Failed to send OTP email"}),500
 
     return jsonify({"message":"OTP sent to email"}),200
@@ -136,23 +155,59 @@ def verify_otp():
 
     if not email or not user_otp:
         return jsonify({"message":"Email and OTP are required"}),400
-
-    record = otp_store.get(email)
-    if not record:
-        return jsonify({"message":"OTP NOT FOUND"}),400
-
-    if time.time() > record['expires_at']:
-        del otp_store[email]
-        return jsonify({"message":"OTP has expired"}),400
-
+    
     try:
-        if not bcrypt.checkpw(user_otp.encode('utf-8'), record['otp'].encode('utf-8')):
-            return jsonify({"message":"Invalid OTP"}),400
-    except Exception:
-        return jsonify({"message":"Invalid OTP"}),400
+        db = database_connection()
+        cursor = db.cursor(cursor_factory=RealDictCursor)
 
-    del otp_store[email]
-    return jsonify({"message":"OTP verified successfully"})
+        cursor.execute("""
+            SELECT id, otp_hash, expires_at, used, created_at
+            FROM email_otps
+            WHERE email = %s
+            ORDER BY created_at DESC
+            LIMIT 1
+        """, (email,))
+
+        record = cursor.fetchone()
+        if not record:
+            return jsonify({"message":"OTP NOT FOUND"}),400
+
+        if record.get('used'):
+            return jsonify({"message":"OTP has already been used"}),400
+
+        expires_at = record['expires_at']
+        if isinstance(expires_at, datetime):
+            now = datetime.utcnow()
+        else:
+            # Fallback: treat non-datetime as expired
+            now = datetime.utcnow()
+
+        if now > expires_at:
+            cursor.execute("UPDATE email_otps SET used = TRUE WHERE id = %s", (record['id'],))
+            db.commit()
+            return jsonify({"message":"OTP has expired"}),400
+
+        otp_hash = record['otp_hash']
+
+        try:
+            if not bcrypt.checkpw(user_otp.encode('utf-8'), otp_hash.encode('utf-8')):
+                return jsonify({"message":"Invalid OTP"}),400
+        except Exception:
+            return jsonify({"message":"Invalid OTP"}),400
+
+        cursor.execute("UPDATE email_otps SET used = TRUE WHERE id = %s", (record['id'],))
+        db.commit()
+
+        return jsonify({"message":"OTP verified successfully"}),200
+    except psycopg2.Error as e:
+        if 'db' in locals():
+            db.rollback()
+        return jsonify({"message":"Server error","error":str(e)}),500
+    finally:
+        if 'cursor' in locals():
+            cursor.close()
+        if 'db' in locals():
+            db.close()
 
 
 
