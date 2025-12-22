@@ -93,10 +93,49 @@ def send_otp_email(receiver_email,otp):
         server.send_message(msg)
 
 
+@app.route('/send-otp',methods=['POST'])
+def send_otp():
+    if not request.is_json:
+        return jsonify({"message":"Request must be JSON"}),400
+
+    data = request.get_json()
+    email = data.get("email")
+
+    if not email:
+        return jsonify({"message":"Email is required"}),400
+
+    otp = generate_otp()
+
+    try:
+        hashed_otp = bcrypt.hashpw(otp.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+    except Exception:
+        return jsonify({"message":"Failed to generate OTP"}),500
+
+    otp_store[email] = {
+        "otp": hashed_otp,
+        "expires_at": time.time() + 300  # 5 minutes
+    }
+
+    try:
+        send_otp_email(email, otp)
+    except Exception:
+        otp_store.pop(email, None)
+        return jsonify({"message":"Failed to send OTP email"}),500
+
+    return jsonify({"message":"OTP sent to email"}),200
+
+
 @app.route('/verify-otp',methods=['POST'])
 def verify_otp():
-    email = request.json.get("email")
-    user_otp = request.json.get("otp")
+    if not request.is_json:
+        return jsonify({"message":"Request must be JSON"}),400
+
+    data = request.get_json()
+    email = data.get("email")
+    user_otp = data.get("otp")
+
+    if not email or not user_otp:
+        return jsonify({"message":"Email and OTP are required"}),400
 
     record = otp_store.get(email)
     if not record:
@@ -106,7 +145,10 @@ def verify_otp():
         del otp_store[email]
         return jsonify({"message":"OTP has expired"}),400
 
-    if not bcrypt.checkpw(user_otp.encode('utf-8'), record['otp'].encode('utf-8')):
+    try:
+        if not bcrypt.checkpw(user_otp.encode('utf-8'), record['otp'].encode('utf-8')):
+            return jsonify({"message":"Invalid OTP"}),400
+    except Exception:
         return jsonify({"message":"Invalid OTP"}),400
 
     del otp_store[email]
