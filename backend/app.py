@@ -735,7 +735,7 @@ def userdetails():
 
 
 
-@app.route('/change-profile', methods=['POST'])
+
 @app.route('/change-password', methods=['POST'])
 def change_profile():
     access_token = request.cookies.get('access_token')
