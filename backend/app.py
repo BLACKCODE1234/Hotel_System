@@ -727,8 +727,84 @@ def payments():
     if not decoded:
         return jsonify({"message":"No Token was returned"}),401
 
-    # TODO: Implement payment processing logic
-    return jsonify({"message":"Payment functionality not yet implemented"}),501
+    data = request.get_json() or {}
+    booking_data = data.get('bookingData') or {}
+    payment_data = data.get('paymentData') or {}
+    payment_method = data.get('paymentMethod')
+    total_amount = data.get('totalAmount')
+
+    missing_fields = []
+    if not booking_data:
+        missing_fields.append('bookingData')
+    if not payment_method:
+        missing_fields.append('paymentMethod')
+    if total_amount is None:
+        missing_fields.append('totalAmount')
+
+    if missing_fields:
+        return jsonify({"message": f"Required fields missing: {', '.join(missing_fields)}"}), 400
+
+    user_email = decoded.get('email') or booking_data.get('email')
+
+    in_date = booking_data.get('checkIn')
+    out_date = booking_data.get('checkOut')
+    room_type = booking_data.get('roomType')
+
+    booking_status = 'pending' if payment_method == 'cash-front-desk' else 'confirmed'
+
+    try:
+        db = database_connection()
+        cursor = db.cursor(cursor_factory=RealDictCursor)
+
+        cursor.execute("""
+            INSERT INTO bookings (user_email, room_type, in_date, out_date, status, created_at)
+            VALUES (%s, %s, %s, %s, %s, NOW())
+            RETURNING booking_id, user_email, room_type, in_date, out_date, status, created_at
+        """, (user_email, room_type, in_date, out_date, booking_status))
+        booking = cursor.fetchone()
+
+        method_description = None
+        if payment_method == 'credit-card':
+            card_number = (payment_data.get('cardNumber') or '').replace(' ', '')
+            last4 = card_number[-4:] if len(card_number) >= 4 else ''
+            method_description = f"Card **** {last4}" if last4 else 'Card'
+        elif payment_method == 'paypal':
+            paypal_email = payment_data.get('paypalEmail')
+            method_description = f"PayPal ({paypal_email})" if paypal_email else 'PayPal'
+        elif payment_method == 'mobile-money':
+            carrier = payment_data.get('mobileCarrier') or 'Mobile Money'
+            phone_number = payment_data.get('phoneNumber') or ''
+            method_description = f"{carrier} {phone_number}".strip()
+        elif payment_method == 'cash-front-desk':
+            method_description = 'Cash at front desk'
+        else:
+            method_description = payment_method
+
+        payment_status = 'pending' if payment_method == 'cash-front-desk' else 'completed'
+
+        cursor.execute("""
+            INSERT INTO payments (booking_id, user_email, amount, payment_method, status, created_at)
+            VALUES (%s, %s, %s, %s, %s, NOW())
+            RETURNING payment_id, booking_id, user_email, amount, payment_method, status, created_at
+        """, (booking['booking_id'], user_email, total_amount, method_description, payment_status))
+        payment = cursor.fetchone()
+
+        db.commit()
+
+        return jsonify({
+            "message": "Payment processed successfully",
+            "booking": booking,
+            "payment": payment
+        }), 201
+    except psycopg2.Error as e:
+        if 'db' in locals():
+            db.rollback()
+        return jsonify({"message": "Server error", "error": str(e)}), 500
+    finally:
+        if 'cursor' in locals():
+            cursor.close()
+        if 'db' in locals():
+            db.close()
 
 
 if __name__ == '__main__':
