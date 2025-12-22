@@ -98,7 +98,7 @@ def verify_otp():
     email = request.json.get("email")
     user_otp = request.json.get("otp")
 
-    record = otp_store.get("email")
+    record = otp_store.get(email)
     if not record:
         return jsonify({"message":"OTP NOT FOUND"}),400
 
