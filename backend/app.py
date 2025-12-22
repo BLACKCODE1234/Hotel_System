@@ -368,6 +368,16 @@ def login():
             db.close()
 
 
+
+@app.route('/stafflogin',methods=['POST'])
+def stafflogin():
+    pass
+
+@app.route('/adminlogin',methods=['POST'])
+def adminlogin():
+    pass
+
+
 @app.route('/logout',methods=['POST'])
 def logout():
     secure_cookie, samesite_cookie, domain_cookie = get_cookie_settings()
@@ -1013,6 +1023,8 @@ def payments():
             cursor.close()
         if 'db' in locals():
             db.close()
+
+
 
 
 if __name__ == '__main__':
