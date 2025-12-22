@@ -504,7 +504,7 @@ def delete_admin():
             return jsonify({"message": "Only admins can be deleted"}), 400
 
         
-        cursor.execute("DELETE FROM login_users WHERE email = %s", (email,))
+        cursor.execute("DELETE FROM loginusers WHERE email = %s", (email,))
         db.commit()
 
         # Audit log: Admin deleted successfully
@@ -697,7 +697,7 @@ def list_admins():
 
         cursor.execute("""
             SELECT id, first_name, last_name, email, role, last_login, status
-            FROM login_users
+            FROM loginusers
             WHERE role = 'admin'
             ORDER BY created_at DESC
         """)
