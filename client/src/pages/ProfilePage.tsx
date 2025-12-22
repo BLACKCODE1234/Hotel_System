@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { api } from '../services/api';
 import { 
@@ -40,6 +40,33 @@ const ProfilePage: React.FC = () => {
     membershipTier: 'Gold'
   });
 
+  useEffect(() => {
+    const loadUserDetails = async () => {
+      try {
+        const response = await api.getUserDetails();
+        if (!response.ok) {
+          return;
+        }
+
+        const data = await response.json().catch(() => ({}));
+        const firstName = data.first_name || data.firstname || '';
+        const lastName = data.last_name || data.lastname || '';
+        const fullName = [firstName, lastName].filter(Boolean).join(' ');
+
+        setProfileData(prev => ({
+          ...prev,
+          name: fullName || prev.name,
+          email: data.email || prev.email,
+          phone: data.phone || prev.phone
+        }));
+      } catch (error) {
+        // Silently fail; profile can still be edited manually
+      }
+    };
+
+    loadUserDetails();
+  }, []);
+
   const handlePasswordUpdate = async () => {
     if (passwordData.newPassword !== passwordData.confirmPassword) {
       alert('New passwords do not match!');
@@ -52,7 +79,7 @@ const ProfilePage: React.FC = () => {
     }
 
     try {
-      const response = await api.changePassword({
+      const response = await api.updateProfile({
         currentPassword: passwordData.currentPassword,
         newPassword: passwordData.newPassword,
         confirmPassword: passwordData.confirmPassword
@@ -65,6 +92,30 @@ const ProfilePage: React.FC = () => {
       } else {
         const data = await response.json().catch(() => ({}));
         alert(data.message || 'Failed to update password');
+      }
+    } catch (error) {
+      alert('Network error. Please try again.');
+    }
+  };
+
+  const handleSaveProfile = async () => {
+    const nameParts = profileData.name.trim().split(' ');
+    const first_name = nameParts[0] || '';
+    const last_name = nameParts.slice(1).join(' ');
+
+    try {
+      const response = await api.updateProfile({
+        first_name,
+        last_name,
+        email: profileData.email,
+        phone: profileData.phone
+      });
+
+      if (response.ok) {
+        alert('Profile updated successfully!');
+      } else {
+        const data = await response.json().catch(() => ({}));
+        alert(data.message || 'Failed to update profile');
       }
     } catch (error) {
       alert('Network error. Please try again.');
@@ -324,7 +375,10 @@ const ProfilePage: React.FC = () => {
 
                   {/* Save Button */}
                   <div className="flex justify-end pt-6 border-t border-gray-200">
-                    <button className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-medium rounded-lg hover:shadow-lg transform transition-all duration-200 hover:scale-105">
+                    <button
+                      onClick={handleSaveProfile}
+                      className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-medium rounded-lg hover:shadow-lg transform transition-all duration-200 hover:scale-105"
+                    >
                       <Save className="h-5 w-5 mr-2" />
                       Save Changes
                     </button>

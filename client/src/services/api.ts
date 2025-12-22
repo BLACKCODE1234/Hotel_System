@@ -103,8 +103,16 @@ export const api = {
       credentials: 'include'
     }),
 
-  changePassword: (data: { currentPassword: string; newPassword: string; confirmPassword?: string }) =>
-    fetch(`${API_BASE_URL}/change-password`, {
+  updateProfile: (data: { 
+    first_name?: string;
+    last_name?: string;
+    email?: string;
+    phone?: string;
+    currentPassword?: string;
+    newPassword?: string;
+    confirmPassword?: string;
+  }) =>
+    fetch(`${API_BASE_URL}/change-profile`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
