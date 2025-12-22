@@ -735,8 +735,9 @@ def userdetails():
 
 
 
+@app.route('/change-profile', methods=['POST'])
 @app.route('/change-password', methods=['POST'])
-def change_password():
+def change_profile():
     access_token = request.cookies.get('access_token')
     if not access_token:
         return jsonify({"message": "No Token was returned"}), 401
@@ -745,45 +746,89 @@ def change_password():
     if not decoded:
         return jsonify({"message": "Invalid or expired token"}), 401
 
+    user_email = decoded.get('email')
+    if not user_email:
+        return jsonify({"message": "Invalid token payload"}), 401
+
     data = request.get_json() or {}
+
+    # Profile fields (all optional)
+    first_name = data.get('first_name')
+    last_name = data.get('last_name')
+    new_email = data.get('email')
+    phone = data.get('phone')
+
+    # Password fields (optional)
     current_password = data.get('currentPassword') or data.get('current_password')
     new_password = data.get('newPassword') or data.get('new_password')
     confirm_password = data.get('confirmPassword') or data.get('confirm_password')
 
-    if not current_password or not new_password:
-        return jsonify({"message": "Current and new password are required"}), 400
+    change_password_flag = bool(new_password or confirm_password)
 
-    if confirm_password and new_password != confirm_password:
-        return jsonify({"message": "New passwords do not match"}), 400
+    if change_password_flag:
+        if not current_password or not new_password:
+            return jsonify({"message": "Current and new password are required"}), 400
 
-    if len(new_password) < 6:
-        return jsonify({"message": "Password should be more than 6 characters"}), 400
+        if confirm_password and new_password != confirm_password:
+            return jsonify({"message": "New passwords do not match"}), 400
 
-    user_email = decoded.get('email')
-    if not user_email:
-        return jsonify({"message": "Invalid token payload"}), 401
+        if len(new_password) < 6:
+            return jsonify({"message": "Password should be more than 6 characters"}), 400
 
     try:
         db = database_connection()
         cursor = db.cursor(cursor_factory=RealDictCursor)
 
-        cursor.execute("SELECT password FROM loginusers WHERE email = %s", (user_email,))
+        cursor.execute("SELECT email, password FROM loginusers WHERE email = %s", (user_email,))
         user = cursor.fetchone()
 
         if not user:
             return jsonify({"message": "User not found"}), 404
 
-        stored_password = user['password'].encode('utf-8') if isinstance(user['password'], str) else user['password']
+        # If changing email, ensure new email is not already taken
+        if new_email and new_email != user['email']:
+            cursor.execute("SELECT 1 FROM loginusers WHERE email = %s", (new_email,))
+            if cursor.fetchone():
+                return jsonify({"message": "Email already in use"}), 400
 
-        if not bcrypt.checkpw(current_password.encode('utf-8'), stored_password):
-            return jsonify({"message": "Current password is incorrect"}), 400
+        new_hashed = None
+        if change_password_flag:
+            stored_password = user['password'].encode('utf-8') if isinstance(user['password'], str) else user['password']
 
-        new_hashed = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+            if not bcrypt.checkpw(current_password.encode('utf-8'), stored_password):
+                return jsonify({"message": "Current password is incorrect"}), 400
 
-        cursor.execute("UPDATE loginusers SET password = %s WHERE email = %s", (new_hashed, user_email))
+            new_hashed = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+
+        update_fields = []
+        params = []
+
+        if first_name is not None:
+            update_fields.append("first_name = %s")
+            params.append(first_name)
+        if last_name is not None:
+            update_fields.append("last_name = %s")
+            params.append(last_name)
+        if new_email is not None:
+            update_fields.append("email = %s")
+            params.append(new_email)
+        if phone is not None:
+            update_fields.append("phone = %s")
+            params.append(phone)
+        if new_hashed is not None:
+            update_fields.append("password = %s")
+            params.append(new_hashed)
+
+        if not update_fields:
+            return jsonify({"message": "No profile fields to update"}), 400
+
+        update_sql = "UPDATE loginusers SET " + ", ".join(update_fields) + " WHERE email = %s"
+        params.append(user_email)
+
+        cursor.execute(update_sql, tuple(params))
         db.commit()
 
-        return jsonify({"message": "Password updated successfully"}), 200
+        return jsonify({"message": "Profile updated successfully"}), 200
 
     except psycopg2.Error:
         if 'db' in locals():
