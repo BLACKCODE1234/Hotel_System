@@ -762,13 +762,13 @@ def change_profile():
 
     data = request.get_json() or {}
 
-    # Profile fields (all optional)
+    
     first_name = data.get('first_name')
     last_name = data.get('last_name')
     new_email = data.get('email')
     phone = data.get('phone')
 
-    # Password fields (optional)
+    
     current_password = data.get('currentPassword') or data.get('current_password')
     new_password = data.get('newPassword') or data.get('new_password')
     confirm_password = data.get('confirmPassword') or data.get('confirm_password')
@@ -795,7 +795,7 @@ def change_profile():
         if not user:
             return jsonify({"message": "User not found"}), 404
 
-        # If changing email, ensure new email is not already taken
+    
         if new_email and new_email != user['email']:
             cursor.execute("SELECT 1 FROM loginusers WHERE email = %s", (new_email,))
             if cursor.fetchone():
