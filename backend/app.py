@@ -371,7 +371,8 @@ def login():
 
 @app.route('/stafflogin',methods=['POST'])
 def stafflogin():
-    pass
+    if not request.is_json():
+        return jsonify({"message":"ALL fields are required","status":"error"}),404
 
 @app.route('/adminlogin',methods=['POST'])
 def adminlogin():
