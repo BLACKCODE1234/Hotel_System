@@ -391,6 +391,10 @@ def adminlogin():
 
     if not all([staff_id,password]):
         return jsonify({"message":"All fields are required","status":"error"}),404
+
+
+
+        
 @app.route('/logout',methods=['POST'])
 def logout():
     secure_cookie, samesite_cookie, domain_cookie = get_cookie_settings()
