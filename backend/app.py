@@ -378,10 +378,14 @@ def stafflogin():
     staff_id = data.get("staff_id")
     password = data.get("password")
 
+    if not all([email,password]):
+        return jsonify({"message":"All fields are required","status":"error"}),404
 
 @app.route('/adminlogin',methods=['POST'])
 def adminlogin():
-    pass
+    if not request.is_json():
+        return jsonify({"message":"ALL fields are required","status":"error"}),404
+
 
 
 @app.route('/logout',methods=['POST'])
