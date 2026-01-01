@@ -382,7 +382,7 @@ def stafflogin():
         return jsonify({"message":"All fields are required","status":"error"}),404
 
 
-     try:
+    try:
         db = database_connection()
         cursor = db.cursor(cursor_factory=RealDictCursor)
         cursor.execute("select password,role,email from loginusers where email = %s",(email,))
@@ -396,10 +396,12 @@ def stafflogin():
         if not bcrypt.checkpw(password.encode('utf-8'),hashedpassword):
             return jsonify({"message":"Password incorrect","status":"error"}),404
 
-        role = user.get('role','user')
+        role = user.get('role','staff')
+
+    except Exception as e:
+        return jsonify({"message":"Something occured","status":"error"})
 
 
-        
 @app.route('/adminlogin',methods=['POST'])
 def adminlogin():
     if not request.is_json():
