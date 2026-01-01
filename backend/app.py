@@ -381,6 +381,25 @@ def stafflogin():
     if not all([staff_id,password]):
         return jsonify({"message":"All fields are required","status":"error"}),404
 
+
+     try:
+        db = database_connection()
+        cursor = db.cursor(cursor_factory=RealDictCursor)
+        cursor.execute("select password,role,email from loginusers where email = %s",(email,))
+        user = cursor.fetchone()
+
+        if not user:
+            return jsonify({"message":"Account not found","status":"error"}),404
+            
+        hashedpassword = user['password'].encode('utf-8') if isinstance (user['password'],str) else user['password']
+
+        if not bcrypt.checkpw(password.encode('utf-8'),hashedpassword):
+            return jsonify({"message":"Password incorrect","status":"error"}),404
+
+        role = user.get('role','user')
+
+
+        
 @app.route('/adminlogin',methods=['POST'])
 def adminlogin():
     if not request.is_json():
