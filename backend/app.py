@@ -410,14 +410,14 @@ def adminlogin():
     admin_id = data.get("admin_id")
     password = data.get("password")
 
-    if not all([staff_id,password]):
+    if not all([admin_id,password]):
         return jsonify({"message":"All fields are required","status":"error"}),404
 
 
     try:
         db = database_connection()
         cursor = db.cursor(cursor_factory=RealDictCursor)
-        cursor.execute("select password,role,email from loginusers where email = %s",(email,))
+        cursor.execute("select password,role,admin_id from staff where admin_id = %s",(admin_id,))
         user = cursor.fetchone()
 
         if not user:
