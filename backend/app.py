@@ -1083,7 +1083,16 @@ def payments():
 
 @app.route('/staffpayment',methods=['POST'])
 def staff_payment():
-    
+    access_token = request.cookies.get('access_token')
+    if not access_token:
+        return jsonify({"message": "No Token"}), 401
+
+    decoded = decoded_token(access_token)
+    if not decoded:
+        return jsonify({"message": "Invalid or expired token"}), 401
+
+    if decoded.get("role") != "superadmin":
+        return jsonify({"message": "Forbidden: Super Admins only"}), 403
 
 
 
