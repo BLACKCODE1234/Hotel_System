@@ -291,7 +291,7 @@ def signup():
 def login():
     
     if not request.is_json:
-        return jsonify({"message":"All fields are required","status":"error"}),404
+        return jsonify({"message":"All fields are required","status":"error"}),400
     data = request.get_json()
     email = data.get("email")
     password = data.get("password")
@@ -372,7 +372,7 @@ def login():
 @app.route('/stafflogin',methods=['POST'])
 def stafflogin():
     if not request.is_json():
-        return jsonify({"message":"ALL fields are required","status":"error"}),404
+        return jsonify({"message":"ALL fields are required","status":"error"}),400
 
     data = request.get_json()
     staff_id = data.get("staff_id")
@@ -385,7 +385,7 @@ def stafflogin():
     try:
         db = database_connection()
         cursor = db.cursor(cursor_factory=RealDictCursor)
-        cursor.execute("select password,role,email from staff where staff_id = %s",(staff_id,))
+        cursor.execute("select password,role,staff_id from staff where staff_id = %s",(staff_id,))
         user = cursor.fetchone()
 
         if not user:
@@ -399,7 +399,7 @@ def stafflogin():
         role = user.get('role','staff')
 
     except Exception as e:
-        return jsonify({"message":"Something occured","status":"error"})
+        return jsonify({"message":"Something occured","status":"error"}),500
 
     finally:
         if 'cursor' in locals():
@@ -409,11 +409,11 @@ def stafflogin():
 
     
     
-        access_token = generate_access_token(email,role='user')
-        refresh_token = generate_refresh_token(email,role='user')
+        access_token = generate_access_token(staff_id,role='user')
+        refresh_token = generate_refresh_token(staff_id,role='user')
         secure_cookie, samesite_cookie, domain_cookie = get_cookie_settings()
 
-        user = {"first_name": firstname, "last_name": lastname, "email": email}
+        user = {"first_name": firstname, "last_name": lastname, "staff_id": staff_id}
         response = jsonify({"message": "Signup successful", "status": "success", "user": user}),201
 
         response.set_cookie(
@@ -442,13 +442,13 @@ def stafflogin():
 @app.route('/adminlogin',methods=['POST'])
 def adminlogin():
     if not request.is_json():
-        return jsonify({"message":"ALL fields are required","status":"error"}),404
+        return jsonify({"message":"ALL fields are required","status":"error"}),400
     data = request.get_json()
     admin_id = data.get("admin_id")
     password = data.get("password")
 
     if not all([admin_id,password]):
-        return jsonify({"message":"All fields are required","status":"error"}),404
+        return jsonify({"message":"All fields are required","status":"error"}),400
 
 
     try:
@@ -468,7 +468,7 @@ def adminlogin():
         role = user.get('role','admin')
 
     except Exception as e:
-        return jsonify({"message":"something happened","status":"error"})
+        return jsonify({"message":"something happened","status":"error"}),500
 
     finally:
         if 'cursor' in locals():
@@ -478,8 +478,8 @@ def adminlogin():
 
 
     
-        access_token = generate_access_token(email,role='user')
-        refresh_token = generate_refresh_token(email,role='user')
+        access_token = generate_access_token(admin_id,role='user')
+        refresh_token = generate_refresh_token(admin_id,role='user')
         secure_cookie, samesite_cookie, domain_cookie = get_cookie_settings()
 
         user = {"first_name": firstname, "last_name": lastname, "email": email}
