@@ -432,7 +432,14 @@ def adminlogin():
 
     except Exception as e:
         return jsonify({"message":"something happened","status":"error"})
-        
+
+    finally:
+        if 'cursor' in locals():
+            cursor.close()
+        if 'db' in locals():
+            db.close()
+            
+                 
 @app.route('/logout',methods=['POST'])
 def logout():
     secure_cookie, samesite_cookie, domain_cookie = get_cookie_settings()
