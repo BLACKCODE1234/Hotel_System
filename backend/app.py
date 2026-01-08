@@ -401,6 +401,43 @@ def stafflogin():
     except Exception as e:
         return jsonify({"message":"Something occured","status":"error"})
 
+    finally:
+        if 'cursor' in locals():
+            cursor.close()
+        if 'db' in locals():
+            db.close()
+
+    
+    
+        access_token = generate_access_token(email,role='user')
+        refresh_token = generate_refresh_token(email,role='user')
+        secure_cookie, samesite_cookie, domain_cookie = get_cookie_settings()
+
+        user = {"first_name": firstname, "last_name": lastname, "email": email}
+        response = jsonify({"message": "Signup successful", "status": "success", "user": user}),201
+
+        response.set_cookie(
+            'refresh_token',
+            refresh_token,
+            httponly=True,
+            secure=secure_cookie,
+            samesite=samesite_cookie,
+            domain=domain_cookie,
+            max_age=7 * 24 * 60 * 60
+        )
+        response.set_cookie(
+            'access_token',
+            access_token,
+            httponly=True,
+            secure=secure_cookie,
+            samesite=samesite_cookie,
+            domain=domain_cookie,
+            max_age=15 * 60
+        )
+        return response, 201
+
+
+    
 
 @app.route('/adminlogin',methods=['POST'])
 def adminlogin():
@@ -438,8 +475,36 @@ def adminlogin():
             cursor.close()
         if 'db' in locals():
             db.close()
-            
-                 
+
+
+    
+        access_token = generate_access_token(email,role='user')
+        refresh_token = generate_refresh_token(email,role='user')
+        secure_cookie, samesite_cookie, domain_cookie = get_cookie_settings()
+
+        user = {"first_name": firstname, "last_name": lastname, "email": email}
+        response = jsonify({"message": "Signup successful", "status": "success", "user": user}),201
+
+        response.set_cookie(
+            'refresh_token',
+            refresh_token,
+            httponly=True,
+            secure=secure_cookie,
+            samesite=samesite_cookie,
+            domain=domain_cookie,
+            max_age=7 * 24 * 60 * 60
+        )
+        response.set_cookie(
+            'access_token',
+            access_token,
+            httponly=True,
+            secure=secure_cookie,
+            samesite=samesite_cookie,
+            domain=domain_cookie,
+            max_age=15 * 60
+        )
+        return response, 201
+
 @app.route('/logout',methods=['POST'])
 def logout():
     secure_cookie, samesite_cookie, domain_cookie = get_cookie_settings()
