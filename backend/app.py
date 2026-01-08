@@ -385,7 +385,7 @@ def stafflogin():
     try:
         db = database_connection()
         cursor = db.cursor(cursor_factory=RealDictCursor)
-        cursor.execute("select password,role,email from loginusers where email = %s",(email,))
+        cursor.execute("select password,role,email from staff where staff_id = %s",(staff_id,))
         user = cursor.fetchone()
 
         if not user:
