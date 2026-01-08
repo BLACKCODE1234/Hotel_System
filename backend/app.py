@@ -1081,6 +1081,11 @@ def payments():
 
 
 
+@app.route('/staffpayment',methods=['POST'])
+def staff_payment():
+    
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
