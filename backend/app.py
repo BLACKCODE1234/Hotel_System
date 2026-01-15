@@ -968,6 +968,12 @@ def list_admins():
         if not me or me['role'] != 'superadmin':
             return jsonify({"message": "Unauthorized - SuperAdmin access required"}), 403
 
+
+
+    
+
+
+
         cursor.execute("""
             SELECT id, first_name, last_name, email, role, last_login, status
             FROM loginusers
@@ -986,6 +992,9 @@ def list_admins():
                 'status': a.get('status','active')
             } for a in admins
         ])
+
+
+        
     except Exception as e:
         return jsonify({"message": f"Error listing admins: {str(e)}"}), 500
 
@@ -999,6 +1008,12 @@ def payments():
     decoded = decoded_token(access_token)
     if not decoded:
         return jsonify({"message":"No Token was returned"}),401
+
+    if decoded.get("role") !=  "superadmin":
+        return jsonify({"message":"Forbidden: General Manager only"}),401
+
+    
+
 
     data = request.get_json() or {}
     booking_data = data.get('bookingData') or {}
@@ -1069,6 +1084,10 @@ def payments():
             "booking": booking,
             "payment": payment
         }), 201
+
+
+
+
     except psycopg2.Error as e:
         if 'db' in locals():
             db.rollback()
@@ -1095,6 +1114,25 @@ def staff_payment():
         return jsonify({"message": "Forbidden: Super Admins only"}), 403
 
     
+    
+    try:
+        new_access_token = generate_access_token(decoded['email'], decoded['role'])
+        secure_cookie, samesite_cookie, domain_cookie = get_cookie_settings()
+        response = jsonify({"message": "Token refreshed successfully"})
+        response.set_cookie('access_token', new_access_token,
+                            httponly=True,
+                            secure=secure_cookie,
+                            samesite=samesite_cookie,
+                            domain=domain_cookie,
+                            max_age=15*60,
+                            path='/'
+                            )
+        return response
+    except Exception as e:
+        return jsonify({"message": "Failed to generate new token", "error": "a token issue"}), 500
+
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
