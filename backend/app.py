@@ -291,7 +291,7 @@ def signup():
 def login():
     
     if not request.is_json:
-        return jsonify({"message":"All fields are required","status":"error"}),404
+        return jsonify({"message":"All fields are required","status":"error"}),400
     data = request.get_json()
     email = data.get("email")
     password = data.get("password")
@@ -311,7 +311,7 @@ def login():
         hashedpassword = user['password'].encode('utf-8') if isinstance (user['password'],str) else user['password']
 
         if not bcrypt.checkpw(password.encode('utf-8'),hashedpassword):
-            return jsonify({"message":"Password incorrect","status":"error"}),404
+            return jsonify({"message":"Password incorrect","status":"error"}),401
 
         role = user.get('role','user')
 
@@ -372,14 +372,14 @@ def login():
 @app.route('/stafflogin',methods=['POST'])
 def stafflogin():
     if not request.is_json():
-        return jsonify({"message":"ALL fields are required","status":"error"}),404
+        return jsonify({"message":"ALL fields are required","status":"error"}),400
 
     data = request.get_json()
     staff_id = data.get("staff_id")
     password = data.get("password")
 
     if not all([staff_id,password]):
-        return jsonify({"message":"All fields are required","status":"error"}),404
+        return jsonify({"message":"All fields are required","status":"error"}),400
 
 
     try:
@@ -394,24 +394,24 @@ def stafflogin():
         hashedpassword = user['password'].encode('utf-8') if isinstance (user['password'],str) else user['password']
 
         if not bcrypt.checkpw(password.encode('utf-8'),hashedpassword):
-            return jsonify({"message":"Password incorrect","status":"error"}),404
+            return jsonify({"message":"Password incorrect","status":"error"}),401
 
         role = user.get('role','staff')
 
     except Exception as e:
-        return jsonify({"message":"Something occured","status":"error"})
+        return jsonify({"message":"Something occured","status":"error"}),500
 
 
 @app.route('/adminlogin',methods=['POST'])
 def adminlogin():
     if not request.is_json():
-        return jsonify({"message":"ALL fields are required","status":"error"}),404
+        return jsonify({"message":"ALL fields are required","status":"error"}),400
     data = request.get_json()
     admin_id = data.get("admin_id")
     password = data.get("password")
 
     if not all([staff_id,password]):
-        return jsonify({"message":"All fields are required","status":"error"}),404
+        return jsonify({"message":"All fields are required","status":"error"}),400
 
 
     try:
@@ -426,17 +426,17 @@ def adminlogin():
         hashedpassword = user['password'].encode('utf-8') if isinstance (user['password'],str) else user['password']
 
         if not bcrypt.checkpw(password.encode('utf-8'),hashedpassword):
-            return jsonify({"message":"Password incorrect","status":"error"}),404
+            return jsonify({"message":"Password incorrect","status":"error"}),401
 
         role = user.get('role','admin')
 
     except Exception as e:
-        return jsonify({"message":"something happened","status":"error"})
+        return jsonify({"message":"something happened","status":"error"}),500
         
 @app.route('/logout',methods=['POST'])
 def logout():
     secure_cookie, samesite_cookie, domain_cookie = get_cookie_settings()
-    response = jsonify({"message": "Logout successful", "status": "success"})
+    response = jsonify({"message": "Logout successful", "status": "success"}),200
 
     
     response.delete_cookie('access_token', path='/', secure=secure_cookie, samesite=samesite_cookie, domain=domain_cookie)
