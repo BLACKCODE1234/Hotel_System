@@ -5,3 +5,5 @@ flask-jwt-extended
 psycopg2
 python-dotenv
 jwt
+
+Flask Flask-Mail

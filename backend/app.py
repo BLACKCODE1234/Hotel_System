@@ -291,7 +291,7 @@ def signup():
 def login():
     
     if not request.is_json:
-        return jsonify({"message":"All fields are required","status":"error"}),400
+        return jsonify({"message":"All fields are required","status":"error"}),404
     data = request.get_json()
     email = data.get("email")
     password = data.get("password")
@@ -372,7 +372,7 @@ def login():
 @app.route('/stafflogin',methods=['POST'])
 def stafflogin():
     if not request.is_json():
-        return jsonify({"message":"ALL fields are required","status":"error"}),400
+        return jsonify({"message":"ALL fields are required","status":"error"}),404
 
     data = request.get_json()
     staff_id = data.get("staff_id")
@@ -385,7 +385,7 @@ def stafflogin():
     try:
         db = database_connection()
         cursor = db.cursor(cursor_factory=RealDictCursor)
-        cursor.execute("select password,role,staff_id from staff where staff_id = %s",(staff_id,))
+        cursor.execute("select password,role,email from loginusers where email = %s",(email,))
         user = cursor.fetchone()
 
         if not user:
@@ -399,62 +399,25 @@ def stafflogin():
         role = user.get('role','staff')
 
     except Exception as e:
-        return jsonify({"message":"Something occured","status":"error"}),500
+        return jsonify({"message":"Something occured","status":"error"})
 
-    finally:
-        if 'cursor' in locals():
-            cursor.close()
-        if 'db' in locals():
-            db.close()
-
-    
-    
-        access_token = generate_access_token(staff_id,role='user')
-        refresh_token = generate_refresh_token(staff_id,role='user')
-        secure_cookie, samesite_cookie, domain_cookie = get_cookie_settings()
-
-        user = {"first_name": firstname, "last_name": lastname, "staff_id": staff_id}
-        response = jsonify({"message": "Signup successful", "status": "success", "user": user}),201
-
-        response.set_cookie(
-            'refresh_token',
-            refresh_token,
-            httponly=True,
-            secure=secure_cookie,
-            samesite=samesite_cookie,
-            domain=domain_cookie,
-            max_age=7 * 24 * 60 * 60
-        )
-        response.set_cookie(
-            'access_token',
-            access_token,
-            httponly=True,
-            secure=secure_cookie,
-            samesite=samesite_cookie,
-            domain=domain_cookie,
-            max_age=15 * 60
-        )
-        return response, 201
-
-
-    
 
 @app.route('/adminlogin',methods=['POST'])
 def adminlogin():
     if not request.is_json():
-        return jsonify({"message":"ALL fields are required","status":"error"}),400
+        return jsonify({"message":"ALL fields are required","status":"error"}),404
     data = request.get_json()
     admin_id = data.get("admin_id")
     password = data.get("password")
 
-    if not all([admin_id,password]):
-        return jsonify({"message":"All fields are required","status":"error"}),400
+    if not all([staff_id,password]):
+        return jsonify({"message":"All fields are required","status":"error"}),404
 
 
     try:
         db = database_connection()
         cursor = db.cursor(cursor_factory=RealDictCursor)
-        cursor.execute("select password,role,admin_id from staff where admin_id = %s",(admin_id,))
+        cursor.execute("select password,role,email from loginusers where email = %s",(email,))
         user = cursor.fetchone()
 
         if not user:
@@ -468,43 +431,8 @@ def adminlogin():
         role = user.get('role','admin')
 
     except Exception as e:
-        return jsonify({"message":"something happened","status":"error"}),500
-
-    finally:
-        if 'cursor' in locals():
-            cursor.close()
-        if 'db' in locals():
-            db.close()
-
-
-    
-        access_token = generate_access_token(admin_id,role='user')
-        refresh_token = generate_refresh_token(admin_id,role='user')
-        secure_cookie, samesite_cookie, domain_cookie = get_cookie_settings()
-
-        user = {"first_name": firstname, "last_name": lastname, "email": email}
-        response = jsonify({"message": "Signup successful", "status": "success", "user": user}),201
-
-        response.set_cookie(
-            'refresh_token',
-            refresh_token,
-            httponly=True,
-            secure=secure_cookie,
-            samesite=samesite_cookie,
-            domain=domain_cookie,
-            max_age=7 * 24 * 60 * 60
-        )
-        response.set_cookie(
-            'access_token',
-            access_token,
-            httponly=True,
-            secure=secure_cookie,
-            samesite=samesite_cookie,
-            domain=domain_cookie,
-            max_age=15 * 60
-        )
-        return response, 201
-
+        return jsonify({"message":"something happened","status":"error"})
+        
 @app.route('/logout',methods=['POST'])
 def logout():
     secure_cookie, samesite_cookie, domain_cookie = get_cookie_settings()
@@ -1166,76 +1094,7 @@ def staff_payment():
     if decoded.get("role") != "superadmin":
         return jsonify({"message": "Forbidden: Super Admins only"}), 403
 
-
-
-@app.route('/superadmin/payouts', methods=['GET'])
-def list_payouts():
-    try:
-        # 1. Auth check (same as list_admins)
-        auth_header = request.headers.get('Authorization')
-        if not auth_header or not auth_header.startswith('Bearer '):
-            return jsonify({"message": "No token provided"}), 401
-        token = auth_header.split(' ')[1]
-        decoded = decoded_token(token)
-        
-        if not decoded:
-            return jsonify({"message": "Invalid token"}), 401
-        
-        email = decoded.get('email')
-        db = database_connection()
-        cursor = db.cursor(cursor_factory=RealDictCursor)
-        
-        # 2. Verify superadmin role
-        cursor.execute("SELECT role FROM loginusers WHERE email = %s", (email,))
-        me = cursor.fetchone()
-        if not me or me['role'] != 'superadmin':
-            return jsonify({"message": "Unauthorized - SuperAdmin access required"}), 403
-        
-        # 3. Get query parameters for filtering
-        period = request.args.get('period')  # e.g., "2024-11"
-        status = request.args.get('status')   # e.g., "pending", "completed"
-        employee_email = request.args.get('employee_email')
-        
-        # 4. Build query with filters
-        query = """
-            SELECT p.payout_id, p.employee_email, p.amount, p.payment_method, 
-                   p.status, p.created_at, p.paid_at,
-                   u.first_name, u.last_name, u.role
-            FROM payouts p
-            JOIN loginusers u ON p.employee_email = u.email
-            WHERE 1=1
-        """
-        params = []
-        
-        if period:
-            query += " AND DATE_TRUNC('month', p.created_at) = %s"
-            params.append(period + "-01")  # Convert "2024-11" to "2024-11-01"
-        
-        if status:
-            query += " AND p.status = %s"
-            params.append(status)
-        
-        if employee_email:
-            query += " AND p.employee_email = %s"
-            params.append(employee_email)
-        
-        query += " ORDER BY p.created_at DESC"
-        
-        cursor.execute(query, tuple(params))
-        payouts = cursor.fetchall()
-        
-        cursor.close()
-        db.close()
-        
-        return jsonify(payouts), 200
-        
-    except Exception as e:
-        return jsonify({"message": f"Error listing payouts: {str(e)}"}), 500
-    finally:
-        if 'cursor' in locals():
-            cursor.close()
-        if 'db' in locals():
-            db.close()
+    
 
 if __name__ == '__main__':
     app.run(debug=True)
