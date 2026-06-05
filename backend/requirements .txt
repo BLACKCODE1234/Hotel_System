@@ -6,4 +6,5 @@ psycopg2
 python-dotenv
 jwt
 
-Flask Flask-Mail
+Flask 
+Flask-Mail
