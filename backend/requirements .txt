@@ -5,6 +5,8 @@ flask-jwt-extended
 psycopg2
 python-dotenv
 jwt
-
+requests
 Flask 
 Flask-Mail
+passlib
+argon2_cfii
