@@ -15,7 +15,14 @@ pwd = CryptContext(
 
 
 def hash_otp(otp):
-    print(pwd.hash(otp))
-    print()
-    
-hash_otp("567")
+    return pwd.hash(otp)
+
+def verify_otp(otp,hashed_otp):
+    return pwd.verify(otp,hashed_otp)
+
+def hash_password(password:str):
+    return pwd.hash(password)
+
+
+def verify_password(password:str,hashed_password:str):
+    return pwd.verify(password,hashed_password)
