@@ -1,42 +1,13 @@
-from database.db import database_connection
+from datetime import datetime, timedelta
+from utility.security import hash_otp, hash_password, verify_otp, verify_password, create_access_token
+from utility.otp import generate_otp
+from utility.utility_email import send_email
 
 
+from repository.user_repository import (
+    create_user,
+    user_account_check,
+    get_user_by_email
+)
 
-def user_account_check(email: str):
-    database = database_connection()
-    cursor = database.cursor()
-    cursor.execute("select 1 from users where email = %s", (email,))
-    user = cursor.fetchone()
-    cursor.close()
-    database.close()
-    return user
-
-
-
-
-def get_user_by_email(email: str):
-    database = database_connection()
-    cursor = database.cursor()
-    cursor.execute(
-        "select username, email, password from users where email = %s",
-        (email,),
-    )
-    user = cursor.fetchone()
-    cursor.close()
-    database.close()
-    return user
-
-
-
-def create_user(username: str, email: str, password: str):
-    database = database_connection()
-    cursor = database.cursor()
-    cursor.execute("""
-        insert into users (username,email,password) 
-        values (%s, %s, %s)
-        """, 
-        (username, email, password))
-    
-    database.commit()
-    cursor.close()
-    database.close()
+from models.schemas import 
