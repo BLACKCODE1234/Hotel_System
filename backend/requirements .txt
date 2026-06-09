@@ -1,4 +1,4 @@
-flask
+fastapi
 passlib
 flask-cors
 flask-jwt-extended

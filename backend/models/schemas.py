@@ -1,5 +1,6 @@
 from datetime import date
 from typing import Any, Optional
+from decimal import Decimal
 
 from pydantic import BaseModel, EmailStr, Field, model_validator
 
@@ -7,8 +8,8 @@ from pydantic import BaseModel, EmailStr, Field, model_validator
 class UserSignup(BaseModel):
     email: EmailStr
     password: str
-    firstname: str 
-    lastname: str
+    first_name: str 
+    last_name: str
     confirm_password: str  # Required — no ambiguity
 
     @model_validator(mode="after")
@@ -106,4 +107,4 @@ class PaymentRequest(BaseModel):
     booking_data: dict[str, Any]
     payment_data: Optional[dict[str, Any]] = None
     payment_method: str
-    total_amount: float
+    total_amount: Decimal
