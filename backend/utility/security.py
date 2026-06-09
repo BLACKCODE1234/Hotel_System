@@ -1,28 +1,25 @@
-from passlib.context import CryptContext
-
-from dotenv import load_dotenv
-# from otp import generate_otp
+import bcrypt
 
 
-load_dotenv()
+def hash_password(password: str) -> str:
+    return bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
 
 
-pwd = CryptContext(
-    schemes=['argon2'],
-    deprecated='auto'
-)
+def verify_password(password: str, hashed_password: str) -> bool:
+    stored = (
+        hashed_password.encode("utf-8")
+        if isinstance(hashed_password, str)
+        else hashed_password
+    )
+    return bcrypt.checkpw(password.encode("utf-8"), stored)
 
 
-
-def hash_otp(otp):
-    return pwd.hash(otp)
-
-def verify_otp(otp,hashed_otp):
-    return pwd.verify(otp,hashed_otp)
-
-def hash_password(password:str):
-    return pwd.hash(password)
+def hash_otp(otp: str) -> str:
+    return bcrypt.hashpw(otp.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
 
 
-def verify_password(password:str,hashed_password:str):
-    return pwd.verify(password,hashed_password)
+def verify_otp(otp: str, hashed_otp: str) -> bool:
+    try:
+        return bcrypt.checkpw(otp.encode("utf-8"), hashed_otp.encode("utf-8"))
+    except Exception:
+        return False

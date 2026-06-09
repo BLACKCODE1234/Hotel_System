@@ -1,29 +1,25 @@
-import smtplib
 import os
-from flask import jsonify
+import smtplib
 from email.message import EmailMessage
-from dotenv import load_dotenv
 
-from utility.otp import generate_otp
+from dotenv import load_dotenv
 
 load_dotenv()
 
-EMAIL_USER = os.getenv("EMAIL_USER")
-EMAIL_PASS = os.getenv("EMAIL_PASS")
+GMAIL_USER = os.getenv("GMAIL_USER") or os.getenv("EMAIL_USER")
+GMAIL_APP_PASSWORD = os.getenv("GMAIL_APP_PASSWORD") or os.getenv("EMAIL_PASS")
 
-def send_email(email: str, otp: str):
-    
+
+def send_otp_email(receiver_email: str, otp: str) -> None:
+    if not GMAIL_USER or not GMAIL_APP_PASSWORD:
+        raise RuntimeError("System email is not configured")
+
     msg = EmailMessage()
-    msg["From"] = EMAIL_USER
-    msg["To"] = email
-    msg["Subject"] = "Your OTP"
-    msg.set_content(f"Your OTP is {otp}. It expires in 5 minutes.")
+    msg["Subject"] = "Your OTP code"
+    msg["From"] = GMAIL_USER
+    msg["To"] = receiver_email
+    msg.set_content(f"Your otp is {otp}. It will expire in 5 minutes")
 
-    try:
-        with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
-            server.login(EMAIL_USER,EMAIL_PASS)
-            server.send_message(msg)
-    except Exception as e:
-        print("Email error:", e)
-        return jsonify({"message":"Email Server is down","status":"error"}),500
-            
+    with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+        server.login(GMAIL_USER, GMAIL_APP_PASSWORD)
+        server.send_message(msg)

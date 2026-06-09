@@ -1,0 +1,81 @@
+from fastapi import HTTPException, Request, Response
+
+from helper.generate_token import generate_access_token
+from models.schemas import PaymentRequest
+from repository.booking_repository import create_booking
+from repository.payment_repository import create_payment
+from utility.cookies import set_access_cookie
+
+
+def process_payment(email: str, data: PaymentRequest):
+    missing_fields = []
+    if not data.bookingData:
+        missing_fields.append("bookingData")
+    if not data.paymentMethod:
+        missing_fields.append("paymentMethod")
+    if data.totalAmount is None:
+        missing_fields.append("totalAmount")
+
+    if missing_fields:
+        raise HTTPException(
+            status_code=400,
+            detail={"message": f"Required fields missing: {', '.join(missing_fields)}"},
+        )
+
+    user_email = email or data.bookingData.get("email")
+    in_date = data.bookingData.get("checkIn")
+    out_date = data.bookingData.get("checkOut")
+    room_type = data.bookingData.get("roomType")
+    booking_status = "pending" if data.paymentMethod == "cash-front-desk" else "confirmed"
+
+    try:
+        booking = create_booking(user_email, room_type, in_date, out_date, booking_status)
+        method_description = _payment_method_description(data.paymentMethod, data.paymentData or {})
+        payment_status = "pending" if data.paymentMethod == "cash-front-desk" else "completed"
+        payment = create_payment(
+            booking["booking_id"],
+            user_email,
+            data.totalAmount,
+            method_description,
+            payment_status,
+        )
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail={"message": "Server error", "error": str(e)},
+        )
+
+    return {
+        "message": "Payment processed successfully",
+        "booking": booking,
+        "payment": payment,
+    }
+
+
+def staff_payment_refresh(request: Request, response: Response, decoded: dict):
+    try:
+        new_access_token = generate_access_token(decoded["email"], decoded["role"])
+        set_access_cookie(response, request, new_access_token)
+        return {"message": "Token refreshed successfully"}
+    except Exception:
+        raise HTTPException(
+            status_code=500,
+            detail={"message": "Failed to generate new token", "error": "a token issue"},
+        )
+
+
+def _payment_method_description(payment_method: str, payment_data: dict) -> str:
+    if payment_method == "credit-card":
+        card_number = (payment_data.get("cardNumber") or "").replace(" ", "")
+        last4 = card_number[-4:] if len(card_number) >= 4 else ""
+        return f"Card **** {last4}" if last4 else "Card"
+    if payment_method == "paypal":
+        paypal_email = payment_data.get("paypalEmail")
+        return f"PayPal ({paypal_email})" if paypal_email else "PayPal"
+    if payment_method == "mobile-money":
+        carrier = payment_data.get("mobileCarrier") or "Mobile Money"
+        phone_number = payment_data.get("phoneNumber") or ""
+        return f"{carrier} {phone_number}".strip()
+    if payment_method == "cash-front-desk":
+        return "Cash at front desk"
+    return payment_method

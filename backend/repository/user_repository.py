@@ -1,42 +1,202 @@
-from database.db import database_connection
+from database.db import database_connection, get_cursor
 
 
-
-def user_account_check(email: str):
-    database = database_connection()
-    cursor = database.cursor()
-    cursor.execute("select 1 from users where email = %s", (email,))
-    user = cursor.fetchone()
-    cursor.close()
-    database.close()
-    return user
-
-
+def email_exists(email: str) -> bool:
+    db = database_connection()
+    cursor = get_cursor(db)
+    try:
+        cursor.execute("SELECT email FROM loginusers WHERE email = %s", (email,))
+        return cursor.fetchone() is not None
+    finally:
+        cursor.close()
+        db.close()
 
 
 def get_user_by_email(email: str):
-    database = database_connection()
-    cursor = database.cursor()
-    cursor.execute(
-        "select username, email, password from users where email = %s",
-        (email,),
-    )
-    user = cursor.fetchone()
-    cursor.close()
-    database.close()
-    return user
+    db = database_connection()
+    cursor = get_cursor(db)
+    try:
+        cursor.execute(
+            """
+            SELECT first_name, last_name, email, password, role, phone, verified
+            FROM loginusers
+            WHERE email = %s
+            """,
+            (email,),
+        )
+        return cursor.fetchone()
+    finally:
+        cursor.close()
+        db.close()
 
 
+def get_user_credentials(email: str):
+    db = database_connection()
+    cursor = get_cursor(db)
+    try:
+        cursor.execute(
+            "SELECT password, role, email, first_name, last_name FROM loginusers WHERE email = %s",
+            (email,),
+        )
+        return cursor.fetchone()
+    finally:
+        cursor.close()
+        db.close()
 
-def create_user(username: str, email: str, password: str):
-    database = database_connection()
-    cursor = database.cursor()
-    cursor.execute("""
-        insert into users (username,email,password) 
-        values (%s, %s, %s)
-        """, 
-        (username, email, password))
-    
-    database.commit()
-    cursor.close()
-    database.close()
+
+def get_user_by_email_and_role(email: str, role: str):
+    db = database_connection()
+    cursor = get_cursor(db)
+    try:
+        cursor.execute(
+            """
+            SELECT password, role, email, first_name, last_name
+            FROM loginusers
+            WHERE email = %s AND role = %s
+            """,
+            (email, role),
+        )
+        return cursor.fetchone()
+    finally:
+        cursor.close()
+        db.close()
+
+
+def create_user(firstname: str, lastname: str, email: str, hashed_password: str, role: str = "user"):
+    db = database_connection()
+    cursor = get_cursor(db)
+    try:
+        cursor.execute(
+            """
+            INSERT INTO loginusers (first_name, last_name, email, password, role)
+            VALUES (%s, %s, %s, %s, %s)
+            """,
+            (firstname, lastname, email, hashed_password, role),
+        )
+        db.commit()
+    except Exception:
+        db.rollback()
+        raise
+    finally:
+        cursor.close()
+        db.close()
+
+
+def update_last_login(email: str):
+    db = database_connection()
+    cursor = get_cursor(db)
+    try:
+        cursor.execute(
+            """
+            UPDATE loginusers SET last_login = NOW()
+            WHERE email = %s AND role IN ('admin', 'superadmin')
+            """,
+            (email,),
+        )
+        db.commit()
+    except Exception:
+        db.rollback()
+    finally:
+        cursor.close()
+        db.close()
+
+
+def mark_verified(email: str):
+    db = database_connection()
+    cursor = get_cursor(db)
+    try:
+        cursor.execute(
+            "UPDATE loginusers SET verified = TRUE WHERE email = %s",
+            (email,),
+        )
+        db.commit()
+    except Exception:
+        db.rollback()
+        raise
+    finally:
+        cursor.close()
+        db.close()
+
+
+def get_user_details(email: str):
+    db = database_connection()
+    cursor = get_cursor(db)
+    try:
+        cursor.execute(
+            """
+            SELECT first_name, last_name, email, role, phone
+            FROM loginusers
+            WHERE email = %s
+            """,
+            (email,),
+        )
+        return cursor.fetchone()
+    finally:
+        cursor.close()
+        db.close()
+
+
+def update_user_profile(email: str, fields: dict):
+    if not fields:
+        return
+
+    update_parts = []
+    params = []
+    for column, value in fields.items():
+        update_parts.append(f"{column} = %s")
+        params.append(value)
+
+    params.append(email)
+    db = database_connection()
+    cursor = get_cursor(db)
+    try:
+        cursor.execute(
+            f"UPDATE loginusers SET {', '.join(update_parts)} WHERE email = %s",
+            tuple(params),
+        )
+        db.commit()
+    except Exception:
+        db.rollback()
+        raise
+    finally:
+        cursor.close()
+        db.close()
+
+
+def delete_admin_by_email(email: str):
+    db = database_connection()
+    cursor = get_cursor(db)
+    try:
+        cursor.execute("SELECT role FROM loginusers WHERE email = %s", (email,))
+        user = cursor.fetchone()
+        if not user:
+            return None
+        if user["role"] != "admin":
+            return "not_admin"
+        cursor.execute("DELETE FROM loginusers WHERE email = %s", (email,))
+        db.commit()
+        return "deleted"
+    except Exception:
+        db.rollback()
+        raise
+    finally:
+        cursor.close()
+        db.close()
+
+
+def list_admins():
+    db = database_connection()
+    cursor = get_cursor(db)
+    try:
+        cursor.execute(
+            """
+            SELECT id, first_name, last_name, email, role, last_login, status
+            FROM loginusers
+            WHERE role = 'admin'
+            ORDER BY created_at DESC
+            """
+        )
+        return cursor.fetchall()
+    finally:
+        cursor.close()
+        db.close()
