@@ -7,7 +7,11 @@ from dotenv import load_dotenv
 load_dotenv()
 
 GMAIL_USER = os.getenv("GMAIL_USER") or os.getenv("EMAIL_USER")
-GMAIL_APP_PASSWORD = os.getenv("GMAIL_APP_PASSWORD") or os.getenv("EMAIL_PASS")
+GMAIL_APP_PASSWORD = (
+    os.getenv("GMAIL_APP_PASSWORD")
+    or os.getenv("EMAIL_PASS")
+    or os.getenv("EMAIL_PASSWORD")
+)
 
 
 def send_otp_email(receiver_email: str, otp: str) -> None:

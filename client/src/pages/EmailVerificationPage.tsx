@@ -1,86 +1,118 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { 
-  Mail, 
-  CheckCircle, 
-  XCircle, 
-  RefreshCw, 
+import {
+  Mail,
+  CheckCircle,
+  XCircle,
+  RefreshCw,
   ArrowLeft,
   Clock,
   Shield,
-  AlertCircle
+  AlertCircle,
 } from 'lucide-react';
+import { api } from '../services/api';
 
 const EmailVerificationPage: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const [verificationStatus, setVerificationStatus] = useState<'pending' | 'success' | 'error' | 'expired'>('pending');
+  const [verificationStatus, setVerificationStatus] = useState<
+    'pending' | 'success' | 'error' | 'expired'
+  >('pending');
   const [isLoading, setIsLoading] = useState(false);
   const [resendLoading, setResendLoading] = useState(false);
   const [resendMessage, setResendMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [otp, setOtp] = useState('');
   const [countdown, setCountdown] = useState(60);
   const [canResend, setCanResend] = useState(false);
+  const [initialOtpSent, setInitialOtpSent] = useState(false);
 
   const email = searchParams.get('email') || '';
-  const token = searchParams.get('token') || '';
 
-  // Countdown timer for resend button
   useEffect(() => {
     if (countdown > 0 && !canResend) {
       const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
       return () => clearTimeout(timer);
-    } else if (countdown === 0) {
+    }
+    if (countdown === 0) {
       setCanResend(true);
     }
   }, [countdown, canResend]);
 
-  // Auto-verify if token is present in URL
   useEffect(() => {
-    if (token) {
-      verifyEmail(token);
+    if (email && !initialOtpSent) {
+      sendOtpEmail();
+      setInitialOtpSent(true);
     }
-  }, [token]);
+  }, [email, initialOtpSent]);
 
-  const verifyEmail = async (verificationToken: string) => {
-    setIsLoading(true);
+  const sendOtpEmail = async () => {
+    if (!email) {
+      setErrorMessage('Email address is missing. Please sign up again.');
+      return;
+    }
+
+    setResendLoading(true);
+    setResendMessage('');
+    setErrorMessage('');
+
     try {
-      // Simulate API call - replace with actual verification endpoint
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // Mock verification logic
-      if (verificationToken === 'valid-token') {
-        setVerificationStatus('success');
-        // Redirect to login after successful verification
-        setTimeout(() => {
-          navigate('/login?verified=true');
-        }, 3000);
-      } else if (verificationToken === 'expired-token') {
-        setVerificationStatus('expired');
+      const response = await api.sendOtp(email);
+      const data = await response.json().catch(() => ({}));
+
+      if (response.ok) {
+        setResendMessage(data.message || 'OTP sent to your email.');
+        setCanResend(false);
+        setCountdown(60);
       } else {
-        setVerificationStatus('error');
+        setResendMessage(data.message || 'Failed to send OTP. Please try again.');
       }
-    } catch (error) {
-      setVerificationStatus('error');
+    } catch {
+      setResendMessage('Network error. Please try again.');
     } finally {
-      setIsLoading(false);
+      setResendLoading(false);
     }
   };
 
-  const resendVerificationEmail = async () => {
-    setResendLoading(true);
-    setResendMessage('');
-    
+  const verifyOtp = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!email) {
+      setErrorMessage('Email address is missing.');
+      return;
+    }
+
+    if (!otp.trim()) {
+      setErrorMessage('Please enter the OTP from your email.');
+      return;
+    }
+
+    setIsLoading(true);
+    setErrorMessage('');
+
     try {
-      // Simulate API call - replace with actual resend endpoint
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      setResendMessage('Verification email sent successfully!');
-      setCanResend(false);
-      setCountdown(60);
-    } catch (error) {
-      setResendMessage('Failed to send verification email. Please try again.');
+      const response = await api.verifyOtp(email, otp.trim());
+      const data = await response.json().catch(() => ({}));
+
+      if (response.ok) {
+        setVerificationStatus('success');
+        setTimeout(() => {
+          navigate('/login?verified=true');
+        }, 3000);
+      } else {
+        const message = data.message || 'Verification failed';
+        if (message.toLowerCase().includes('expired')) {
+          setVerificationStatus('expired');
+        } else {
+          setVerificationStatus('error');
+        }
+        setErrorMessage(message);
+      }
+    } catch {
+      setVerificationStatus('error');
+      setErrorMessage('Network error. Please try again.');
     } finally {
-      setResendLoading(false);
+      setIsLoading(false);
     }
   };
 
@@ -104,41 +136,38 @@ const EmailVerificationPage: React.FC = () => {
       case 'error':
         return 'Verification Failed';
       case 'expired':
-        return 'Verification Link Expired';
+        return 'OTP Expired';
       default:
-        return 'Check Your Email';
+        return 'Verify Your Email';
     }
   };
 
   const getStatusMessage = () => {
     switch (verificationStatus) {
       case 'success':
-        return 'Your email has been verified. You can now log in to your account. Redirecting to login page...';
+        return 'Your email has been verified. Redirecting to login...';
       case 'error':
-        return 'The verification link is invalid or has already been used. Please request a new verification email.';
+        return errorMessage || 'The OTP is invalid or has already been used.';
       case 'expired':
-        return 'The verification link has expired. Please request a new verification email to complete your registration.';
+        return 'The OTP has expired. Request a new code below.';
       default:
-        return `We've sent a verification email to ${email}. Please check your inbox and click the verification link to activate your account.`;
+        return `Enter the 6-character OTP sent to ${email || 'your email'}.`;
     }
   };
 
   return (
-    <div 
+    <div
       className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative"
       style={{
         backgroundImage: `url('/signup.jpg')`,
         backgroundSize: 'cover',
-        backgroundPosition: 'center'
+        backgroundPosition: 'center',
       }}
     >
-      {/* Overlay */}
       <div className="absolute inset-0 bg-black bg-opacity-50"></div>
-      
-      {/* Verification Content */}
+
       <div className="relative max-w-md w-full space-y-8">
         <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl p-8 border border-white/20">
-          {/* Header */}
           <div className="text-center mb-8">
             <div className="mx-auto mb-4 flex justify-center">
               {isLoading ? (
@@ -148,43 +177,74 @@ const EmailVerificationPage: React.FC = () => {
               )}
             </div>
             <h2 className="text-2xl font-bold text-gray-900 mb-2">
-              {isLoading ? 'Verifying Email...' : getStatusTitle()}
+              {isLoading ? 'Verifying OTP...' : getStatusTitle()}
             </h2>
-            <p className="text-gray-600 text-sm leading-relaxed">
-              {getStatusMessage()}
-            </p>
+            <p className="text-gray-600 text-sm leading-relaxed">{getStatusMessage()}</p>
           </div>
 
-          {/* Email Display */}
-          {email && !token && (
+          {email && verificationStatus === 'pending' && (
             <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
               <div className="flex items-center gap-3">
                 <Mail className="w-5 h-5 text-blue-600" />
                 <div>
-                  <p className="text-sm font-medium text-blue-900">Email sent to:</p>
+                  <p className="text-sm font-medium text-blue-900">OTP sent to:</p>
                   <p className="text-sm text-blue-800 break-all">{email}</p>
                 </div>
               </div>
             </div>
           )}
 
-          {/* Resend Section */}
-          {(verificationStatus === 'pending' || verificationStatus === 'expired' || verificationStatus === 'error') && (
+          {verificationStatus === 'pending' && (
+            <form onSubmit={verifyOtp} className="space-y-4 mb-6">
+              <div>
+                <label htmlFor="otp" className="block text-sm font-medium text-gray-700 mb-2">
+                  One-Time Password
+                </label>
+                <input
+                  id="otp"
+                  name="otp"
+                  type="text"
+                  value={otp}
+                  onChange={(e) => setOtp(e.target.value)}
+                  maxLength={6}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent tracking-widest text-center text-lg uppercase"
+                  placeholder="Enter OTP"
+                  autoComplete="one-time-code"
+                />
+              </div>
+
+              {errorMessage && verificationStatus === 'pending' && (
+                <p className="text-sm text-red-600">{errorMessage}</p>
+              )}
+
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 disabled:opacity-50 transition-colors duration-200"
+              >
+                {isLoading ? 'Verifying...' : 'Verify Email'}
+              </button>
+            </form>
+          )}
+
+          {(verificationStatus === 'pending' ||
+            verificationStatus === 'expired' ||
+            verificationStatus === 'error') && (
             <div className="space-y-4">
-              {/* Resend Message */}
               {resendMessage && (
-                <div className={`p-3 rounded-lg text-sm ${
-                  resendMessage.includes('successfully') 
-                    ? 'bg-green-50 text-green-800 border border-green-200' 
-                    : 'bg-red-50 text-red-800 border border-red-200'
-                }`}>
+                <div
+                  className={`p-3 rounded-lg text-sm ${
+                    resendMessage.toLowerCase().includes('sent')
+                      ? 'bg-green-50 text-green-800 border border-green-200'
+                      : 'bg-red-50 text-red-800 border border-red-200'
+                  }`}
+                >
                   {resendMessage}
                 </div>
               )}
 
-              {/* Resend Button */}
               <button
-                onClick={resendVerificationEmail}
+                onClick={sendOtpEmail}
                 disabled={!canResend || resendLoading}
                 className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
               >
@@ -196,14 +256,13 @@ const EmailVerificationPage: React.FC = () => {
                 ) : (
                   <>
                     <RefreshCw className="w-4 h-4" />
-                    {canResend ? 'Resend Verification Email' : `Resend in ${countdown}s`}
+                    {canResend ? 'Resend OTP' : `Resend in ${countdown}s`}
                   </>
                 )}
               </button>
             </div>
           )}
 
-          {/* Success Actions */}
           {verificationStatus === 'success' && (
             <div className="space-y-4">
               <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
@@ -214,7 +273,7 @@ const EmailVerificationPage: React.FC = () => {
                   </span>
                 </div>
               </div>
-              
+
               <Link
                 to="/login"
                 className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 transition-colors duration-200"
@@ -225,7 +284,6 @@ const EmailVerificationPage: React.FC = () => {
             </div>
           )}
 
-          {/* Navigation Links */}
           <div className="mt-8 space-y-4">
             <div className="flex flex-col sm:flex-row gap-3">
               <Link
@@ -244,20 +302,15 @@ const EmailVerificationPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Help Section */}
           <div className="mt-6 p-4 bg-gray-50 rounded-lg">
             <div className="flex items-start gap-3">
               <AlertCircle className="w-5 h-5 text-gray-600 mt-0.5" />
               <div>
                 <h4 className="font-medium text-gray-900 mb-1">Need Help?</h4>
-                <p className="text-sm text-gray-600 mb-2">
-                  If you don't receive the email within a few minutes:
-                </p>
                 <ul className="text-xs text-gray-600 space-y-1">
                   <li>• Check your spam/junk folder</li>
-                  <li>• Make sure the email address is correct</li>
-                  <li>• Try resending the verification email</li>
-                  <li>• Contact support if the problem persists</li>
+                  <li>• OTP expires after 5 minutes</li>
+                  <li>• Use resend if you did not receive the code</li>
                 </ul>
               </div>
             </div>

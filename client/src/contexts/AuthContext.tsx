@@ -1,10 +1,10 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { api, User } from '../services/api';
+import { api, normalizeUser, SignupData, User } from '../services/api';
 
 interface AuthContextType {
   user: User | null;
   login: (email: string, password: string) => Promise<boolean>;
-  signup: (userData: any) => Promise<boolean>;
+  signup: (userData: SignupData) => Promise<boolean>;
   logout: () => Promise<void>;
   loading: boolean;
   error: string | null;
@@ -30,11 +30,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     try {
       const response = await api.getCurrentUser();
       if (response.ok) {
-        const userData = await response.json();
-        setUser(userData);
+        const data = await response.json();
+        setUser(normalizeUser(data.user));
+      } else {
+        setUser(null);
       }
-    } catch (error) {
-      console.error('Auth check failed:', error);
+    } catch (authError) {
+      console.error('Auth check failed:', authError);
+      setUser(null);
     } finally {
       setLoading(false);
     }
@@ -43,19 +46,25 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const login = async (email: string, password: string): Promise<boolean> => {
     setLoading(true);
     setError(null);
-    
+
     try {
       const response = await api.login({ email, password });
-      
+
       if (response.ok) {
-        await checkAuth();
+        const data = await response.json();
+        const loggedInUser = normalizeUser(data.user);
+        if (loggedInUser) {
+          setUser(loggedInUser);
+        } else {
+          await checkAuth();
+        }
         return true;
-      } else {
-        const errorData = await response.json();
-        setError(errorData.message || 'Login failed');
-        return false;
       }
-    } catch (error) {
+
+      const errorData = await response.json().catch(() => ({}));
+      setError(errorData.message || 'Login failed');
+      return false;
+    } catch (loginError) {
       setError('Network error. Please try again.');
       return false;
     } finally {
@@ -63,22 +72,26 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  const signup = async (userData: any): Promise<boolean> => {
+  const signup = async (userData: SignupData): Promise<boolean> => {
     setLoading(true);
     setError(null);
-    
+
     try {
       const response = await api.signup(userData);
-      
+
       if (response.ok) {
-        await checkAuth();
+        const data = await response.json();
+        const signedUpUser = normalizeUser(data.user);
+        if (signedUpUser) {
+          setUser(signedUpUser);
+        }
         return true;
-      } else {
-        const errorData = await response.json();
-        setError(errorData.message || 'Signup failed');
-        return false;
       }
-    } catch (error) {
+
+      const errorData = await response.json().catch(() => ({}));
+      setError(errorData.message || 'Signup failed');
+      return false;
+    } catch (signupError) {
       setError('Network error. Please try again.');
       return false;
     } finally {
@@ -89,8 +102,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const logout = async () => {
     try {
       await api.logout();
-    } catch (error) {
-      console.error('Logout error:', error);
+    } catch (logoutError) {
+      console.error('Logout error:', logoutError);
     } finally {
       setUser(null);
     }
@@ -101,15 +114,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ 
-      user, 
-      login, 
-      signup, 
-      logout, 
-      loading, 
-      error,
-      clearError 
-    }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        login,
+        signup,
+        logout,
+        loading,
+        error,
+        clearError,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

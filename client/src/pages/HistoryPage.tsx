@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { api } from '../services/api';
 import { 
   ArrowLeft,
   Calendar,
@@ -40,8 +41,54 @@ const HistoryPage: React.FC = () => {
   const [activeFilter, setActiveFilter] = useState<'all' | 'completed' | 'cancelled' | 'upcoming'>('all');
   const [searchTerm, setSearchTerm] = useState('');
 
-  // Mock booking data
-  const [bookings] = useState<Booking[]>([
+  const [bookings, setBookings] = useState<Booking[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadHistory = async () => {
+      try {
+        const response = await api.getBookingHistory();
+        if (!response.ok) {
+          return;
+        }
+
+        const data = await response.json();
+        if (!Array.isArray(data)) {
+          return;
+        }
+
+        const mapped = data.map((item: Record<string, string>, index: number) => ({
+          id: String(item.booking_id || index),
+          reservationId: String(item.booking_id || `BK-${index + 1}`),
+          hotelName: 'LuxuryStay Hotel',
+          hotelBranch: 'Main Branch',
+          roomType: item.room_type || 'Standard Room',
+          checkIn: item.in_date || '',
+          checkOut: item.out_date || '',
+          guests: 2,
+          totalAmount: 0,
+          status: (item.status === 'cancelled'
+            ? 'cancelled'
+            : item.status === 'confirmed'
+            ? 'upcoming'
+            : 'completed') as Booking['status'],
+          bookingDate: item.created_at || '',
+          paymentMethod: 'N/A',
+          paymentDate: item.created_at || '',
+        }));
+
+        setBookings(mapped);
+      } catch {
+        // Keep empty list on failure
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadHistory();
+  }, []);
+
+  const mockBookings: Booking[] = [
     {
       id: '1',
       reservationId: 'HTL-2024-001',
@@ -109,9 +156,11 @@ const HistoryPage: React.FC = () => {
       receiptUrl: '/receipts/HTL-2024-004.pdf',
       invoiceUrl: '/invoices/HTL-2024-004.pdf'
     }
-  ]);
+  ];
 
-  const filteredBookings = bookings.filter(booking => {
+  const displayBookings = bookings.length > 0 ? bookings : mockBookings;
+
+  const filteredBookings = displayBookings.filter(booking => {
     const matchesFilter = activeFilter === 'all' || booking.status === activeFilter;
     const matchesSearch = booking.hotelName.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          booking.hotelBranch.toLowerCase().includes(searchTerm.toLowerCase()) ||

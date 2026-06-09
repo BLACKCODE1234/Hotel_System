@@ -1,14 +1,22 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Hotel, Menu, X, User, LogOut, Settings, Star, MessageCircle, ChevronDown, Calendar } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const location = useLocation();
-  
-  // Simulate user authentication state (in real app, this would come from context/state management)
+  const navigate = useNavigate();
+  const { user, logout } = useAuth();
+
   const isHome = location.pathname === '/';
   const isAuthPage = location.pathname === '/login' || location.pathname === '/signup';
+
+  const handleLogout = async () => {
+    await logout();
+    setIsMenuOpen(false);
+    navigate('/');
+  };
 
   return (
     <header 
@@ -36,18 +44,40 @@ const Header: React.FC = () => {
           {/* Desktop Navigation */}
           {isHome ? (
             <nav className="hidden md:flex items-center space-x-3">
-              <Link 
-                to="/login" 
-                className="px-5 py-2 text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200 rounded-full hover:bg-gray-50"
-              >
-                Login
-              </Link>
-              <Link 
-                to="/signup" 
-                className="px-5 py-2 bg-blue-600 text-white font-medium rounded-full shadow-md hover:bg-blue-700 transition-colors duration-200"
-              >
-                Sign Up
-              </Link>
+              {user ? (
+                <>
+                  <span className="text-sm text-gray-600">
+                    Hi, {user.first_name || user.email}
+                  </span>
+                  <Link
+                    to="/dashboard"
+                    className="px-5 py-2 text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200 rounded-full hover:bg-gray-50"
+                  >
+                    Dashboard
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className="px-5 py-2 bg-red-600 text-white font-medium rounded-full shadow-md hover:bg-red-700 transition-colors duration-200"
+                  >
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link
+                    to="/login"
+                    className="px-5 py-2 text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200 rounded-full hover:bg-gray-50"
+                  >
+                    Login
+                  </Link>
+                  <Link
+                    to="/signup"
+                    className="px-5 py-2 bg-blue-600 text-white font-medium rounded-full shadow-md hover:bg-blue-700 transition-colors duration-200"
+                  >
+                    Sign Up
+                  </Link>
+                </>
+              )}
             </nav>
           ) : isAuthPage ? (
             <nav className="hidden md:flex items-center space-x-1">
@@ -118,13 +148,13 @@ const Header: React.FC = () => {
                       Support
                     </Link>
                     <div className="border-t border-gray-100 my-1"></div>
-                    <Link 
-                      to="/"
+                    <button
+                      onClick={handleLogout}
                       className="flex items-center w-full text-left px-4 py-3 text-sm text-red-600 hover:bg-red-50 transition-colors duration-200"
                     >
                       <LogOut className="h-4 w-4 mr-3" />
                       Logout
-                    </Link>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -230,14 +260,13 @@ const Header: React.FC = () => {
                     <MessageCircle className="h-4 w-4 mr-3" />
                     Support
                   </Link>
-                  <Link 
-                    to="/"
+                  <button
+                    onClick={handleLogout}
                     className="flex items-center w-full px-4 py-2 text-red-600 hover:text-red-700 font-medium transition-colors rounded-md hover:bg-red-50"
-                    onClick={() => setIsMenuOpen(false)}
                   >
                     <LogOut className="h-4 w-4 mr-3" />
                     Logout
-                  </Link>
+                  </button>
                 </div>
               </nav>
             )}

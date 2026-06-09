@@ -12,6 +12,7 @@ class UserSignup(BaseModel):
     last_name: Optional[str] = None
     repassword: Optional[str] = None
     confirmpassword: Optional[str] = None
+    confirmPassword: Optional[str] = None
 
     model_config = {"populate_by_name": True}
 
@@ -24,7 +25,7 @@ class UserSignup(BaseModel):
         return self
 
     def confirm_password(self) -> str:
-        return self.repassword or self.confirmpassword or ""
+        return self.repassword or self.confirmpassword or self.confirmPassword or ""
 
 
 class UserLogin(BaseModel):

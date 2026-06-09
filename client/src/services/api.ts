@@ -1,4 +1,4 @@
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+const API_BASE_URL = process.env.REACT_APP_API_URL ?? '';
 
 export interface LoginCredentials {
   email: string;
@@ -10,6 +10,7 @@ export interface SignupData {
   last_name: string;
   email: string;
   password: string;
+  confirmpassword?: string;
   phone?: string;
 }
 
@@ -35,75 +36,129 @@ export interface User {
   first_name: string;
   last_name: string;
   phone?: string;
+  role?: string;
+}
+
+export interface ApiUserPayload {
+  email: string;
+  first_name?: string;
+  last_name?: string;
+  firstname?: string;
+  lastname?: string;
+  phone?: string;
+  role?: string;
+}
+
+export function normalizeUser(data: ApiUserPayload | null | undefined): User | null {
+  if (!data?.email) {
+    return null;
+  }
+
+  return {
+    email: data.email,
+    first_name: data.first_name || data.firstname || '',
+    last_name: data.last_name || data.lastname || '',
+    phone: data.phone,
+    role: data.role,
+  };
+}
+
+async function apiFetch(path: string, options: RequestInit = {}, retry = true): Promise<Response> {
+  const headers: Record<string, string> = {
+    ...((options.headers as Record<string, string>) || {}),
+  };
+
+  if (options.body) {
+    headers['Content-Type'] = 'application/json';
+  }
+
+  const response = await fetch(`${API_BASE_URL}${path}`, {
+    credentials: 'include',
+    ...options,
+    headers,
+  });
+
+  if (
+    retry &&
+    response.status === 401 &&
+    !['/refresh', '/login', '/signup', '/send-otp', '/verify-otp'].includes(path)
+  ) {
+    const refreshResponse = await fetch(`${API_BASE_URL}/refresh`, {
+      method: 'POST',
+      credentials: 'include',
+    });
+
+    if (refreshResponse.ok) {
+      return apiFetch(path, options, false);
+    }
+  }
+
+  return response;
 }
 
 export const api = {
-  // Authentication
-  login: (credentials: LoginCredentials) => 
-    fetch(`${API_BASE_URL}/login`, {
+  login: (credentials: LoginCredentials) =>
+    apiFetch('/login', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(credentials),
-      credentials: 'include'
     }),
 
   signup: (userData: SignupData) =>
-    fetch(`${API_BASE_URL}/signup`, {
+    apiFetch('/signup', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(userData),
-      credentials: 'include'
     }),
 
   logout: () =>
-    fetch(`${API_BASE_URL}/logout`, {
+    apiFetch('/logout', {
       method: 'POST',
-      credentials: 'include'
     }),
 
   getCurrentUser: () =>
-    fetch(`${API_BASE_URL}/me`, {
+    apiFetch('/me', {
       method: 'POST',
-      credentials: 'include'
     }),
 
   refreshToken: () =>
-    fetch(`${API_BASE_URL}/refresh`, {
+    apiFetch('/refresh', {
       method: 'POST',
-      credentials: 'include'
     }),
 
-  // Bookings
-  createBooking: (bookingData: BookingData) =>
-    fetch(`${API_BASE_URL}/bookings`, {
+  sendOtp: (email: string) =>
+    apiFetch('/send-otp', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email }),
+    }),
+
+  verifyOtp: (email: string, otp: string) =>
+    apiFetch('/verify-otp', {
+      method: 'POST',
+      body: JSON.stringify({ email, otp }),
+    }),
+
+  createBooking: (bookingData: BookingData) =>
+    apiFetch('/bookings', {
+      method: 'POST',
       body: JSON.stringify(bookingData),
-      credentials: 'include'
     }),
 
   getBookingHistory: () =>
-    fetch(`${API_BASE_URL}/user/history`, {
+    apiFetch('/user/history', {
       method: 'GET',
-      credentials: 'include'
     }),
 
   cancelBooking: (bookingId: string) =>
-    fetch(`${API_BASE_URL}/cancelbooking`, {
+    apiFetch('/cancelbooking', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ booking_id: bookingId }),
-      credentials: 'include'
     }),
 
-  // User details
   getUserDetails: () =>
-    fetch(`${API_BASE_URL}/userdetails`, {
+    apiFetch('/userdetails', {
       method: 'GET',
-      credentials: 'include'
     }),
 
-  updateProfile: (data: { 
+  updateProfile: (data: {
     first_name?: string;
     last_name?: string;
     email?: string;
@@ -112,19 +167,36 @@ export const api = {
     newPassword?: string;
     confirmPassword?: string;
   }) =>
-    fetch(`${API_BASE_URL}/change-profile`, {
+    apiFetch('/change-profile', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
-      credentials: 'include'
     }),
 
-  // Payments
-  processPayment: (paymentData: any) =>
-    fetch(`${API_BASE_URL}/payments`, {
+  processPayment: (paymentData: Record<string, unknown>) =>
+    apiFetch('/payments', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(paymentData),
-      credentials: 'include'
-    })
+    }),
+
+  listAdmins: () =>
+    apiFetch('/superadmin/list_admin', {
+      method: 'GET',
+    }),
+
+  createAdmin: (data: {
+    firstname: string;
+    lastname: string;
+    email: string;
+    password: string;
+  }) =>
+    apiFetch('/superadmin/create_admin', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+
+  deleteAdmin: (email: string) =>
+    apiFetch('/superadmin/deleteadmin', {
+      method: 'DELETE',
+      body: JSON.stringify({ email }),
+    }),
 };
