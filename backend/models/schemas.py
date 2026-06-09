@@ -1,3 +1,4 @@
+from datetime import date
 from typing import Any, Optional
 
 from pydantic import BaseModel, EmailStr, Field, model_validator
@@ -6,26 +7,15 @@ from pydantic import BaseModel, EmailStr, Field, model_validator
 class UserSignup(BaseModel):
     email: EmailStr
     password: str
-    firstname: Optional[str] = None
-    lastname: Optional[str] = None
-    first_name: Optional[str] = None
-    last_name: Optional[str] = None
-    repassword: Optional[str] = None
-    confirmpassword: Optional[str] = None
-    confirmPassword: Optional[str] = None
-
-    model_config = {"populate_by_name": True}
+    firstname: str 
+    lastname: str
+    confirm_password: str  # Required — no ambiguity
 
     @model_validator(mode="after")
-    def normalize_names(self):
-        if not self.firstname:
-            self.firstname = self.first_name
-        if not self.lastname:
-            self.lastname = self.last_name
+    def passwords_must_match(self) -> "UserSignup":
+        if self.password != self.confirm_password:
+            raise ValueError("Passwords do not match")
         return self
-
-    def confirm_password(self) -> str:
-        return self.repassword or self.confirmpassword or self.confirmPassword or ""
 
 
 class UserLogin(BaseModel):
@@ -60,13 +50,19 @@ class BookingCreate(BaseModel):
     street: Optional[str] = None
     city: Optional[str] = None
     country: Optional[str] = None
-    in_date: str
-    out_date: str
-    adult: int
-    children: int
-    rooms: int
+    in_date: date  # Parsed + validated automatically
+    out_date: date
+    adult: int = Field(ge=1)
+    children: int = Field(ge=0)
+    rooms: int = Field(ge=1)
     room_type: str
-    special_request: Optional[str] = Field(default=None, alias="special_request")
+    special_request: Optional[str] = None
+
+    @model_validator(mode="after")
+    def checkout_after_checkin(self) -> "BookingCreate":
+        if self.out_date <= self.in_date:
+            raise ValueError("out_date must be after in_date")
+        return self
 
 
 class CancelBooking(BaseModel):
@@ -74,8 +70,8 @@ class CancelBooking(BaseModel):
 
 
 class CreateAdmin(BaseModel):
-    firstname: str
-    lastname: str
+    first_name: str
+    last_name: str
     email: EmailStr
     password: str
 
@@ -89,25 +85,25 @@ class ProfileUpdate(BaseModel):
     last_name: Optional[str] = None
     email: Optional[EmailStr] = None
     phone: Optional[str] = None
-    currentPassword: Optional[str] = None
     current_password: Optional[str] = None
-    newPassword: Optional[str] = None
     new_password: Optional[str] = None
-    confirmPassword: Optional[str] = None
     confirm_password: Optional[str] = None
 
-    def current_pwd(self) -> Optional[str]:
-        return self.currentPassword or self.current_password
-
-    def new_pwd(self) -> Optional[str]:
-        return self.newPassword or self.new_password
-
-    def confirm_pwd(self) -> Optional[str]:
-        return self.confirmPassword or self.confirm_password
+    @model_validator(mode="after")
+    def password_change_is_complete(self) -> "ProfileUpdate":
+        pwd_fields = [self.current_password, self.new_password, self.confirm_password]
+        if any(pwd_fields) and not all(pwd_fields):
+            raise ValueError(
+                "current_password, new_password, and confirm_password "
+                "must all be provided together"
+            )
+        if self.new_password and self.new_password != self.confirm_password:
+            raise ValueError("new_password and confirm_password do not match")
+        return self
 
 
 class PaymentRequest(BaseModel):
-    bookingData: dict[str, Any]
-    paymentData: Optional[dict[str, Any]] = None
-    paymentMethod: str
-    totalAmount: float
+    booking_data: dict[str, Any]
+    payment_data: Optional[dict[str, Any]] = None
+    payment_method: str
+    total_amount: float
