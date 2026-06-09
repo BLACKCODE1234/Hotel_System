@@ -1,5 +1,5 @@
 flask
-bcrypt
+passlib
 flask-cors
 flask-jwt-extended
 psycopg2

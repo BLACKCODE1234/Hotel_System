@@ -1,25 +1,28 @@
-import bcrypt
+from passlib.context import CryptContext
+
+pwd_context = CryptContext(
+    schemes=["argon2"],
+    deprecated="auto",
+)
 
 
 def hash_password(password: str) -> str:
-    return bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
+    return pwd_context.hash(password)
 
 
 def verify_password(password: str, hashed_password: str) -> bool:
-    stored = (
-        hashed_password.encode("utf-8")
-        if isinstance(hashed_password, str)
-        else hashed_password
-    )
-    return bcrypt.checkpw(password.encode("utf-8"), stored)
+    try:
+        return pwd_context.verify(password, hashed_password)
+    except Exception:
+        return False
 
 
 def hash_otp(otp: str) -> str:
-    return bcrypt.hashpw(otp.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
+    return pwd_context.hash(otp)
 
 
 def verify_otp(otp: str, hashed_otp: str) -> bool:
     try:
-        return bcrypt.checkpw(otp.encode("utf-8"), hashed_otp.encode("utf-8"))
+        return pwd_context.verify(otp, hashed_otp)
     except Exception:
         return False
