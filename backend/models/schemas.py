@@ -2,21 +2,17 @@ from datetime import date
 from typing import Any, Optional
 from decimal import Decimal
 
-from pydantic import BaseModel, EmailStr, Field, model_validator
+from pydantic import BaseModel, EmailStr, Field
 
 
 class UserSignup(BaseModel):
     email: EmailStr
     password: str
+    mobile_number: str
     first_name: str 
     last_name: str
-    confirm_password: str  # Required — no ambiguity
+    confirm_password: str  
 
-    @model_validator(mode="after")
-    def passwords_must_match(self) -> "UserSignup":
-        if self.password != self.confirm_password:
-            raise ValueError("Passwords do not match")
-        return self
 
 
 class UserLogin(BaseModel):
@@ -59,11 +55,6 @@ class BookingCreate(BaseModel):
     room_type: str
     special_request: Optional[str] = None
 
-    @model_validator(mode="after")
-    def checkout_after_checkin(self) -> "BookingCreate":
-        if self.out_date <= self.in_date:
-            raise ValueError("out_date must be after in_date")
-        return self
 
 
 class CancelBooking(BaseModel):
