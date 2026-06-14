@@ -1,9 +1,9 @@
-from typing import Optional
 
+from datetime import date
 from database.db import database_connection, get_cursor
+from models.schemas import ProfileUpdate
 
-
-def get_booking_by_id(booking_id: str, user_email: Optional[str] = None):
+def get_booking_by_id(booking_id: str, user_email: ProfileUpdate.email):
     db = database_connection()
     cursor = get_cursor(db)
     try:
@@ -28,10 +28,13 @@ def cancel_booking(booking_id: str):
     cursor = get_cursor(db)
     try:
         cursor.execute(
-            """
-            UPDATE bookings SET status = %s WHERE booking_id = %s RETURNING *
+            """UPDATE bookings
+            SET status = %s
+            WHERE booking_id = %s
+            AND status != %s
+            RETURNING *
             """,
-            ("cancelled", booking_id),
+            ("cancelled", booking_id, "cancelled"),
         )
         updated = cursor.fetchone()
         db.commit()
@@ -67,6 +70,9 @@ def create_booking(user_email: str, room_type: str, in_date: str, out_date: str,
     db = database_connection()
     cursor = get_cursor(db)
     try:
+
+        if in_date >= out_date:
+            raise ValueError("Check-out date must be after check-in date")
         cursor.execute(
             """
             INSERT INTO bookings (user_email, room_type, in_date, out_date, status, created_at)
