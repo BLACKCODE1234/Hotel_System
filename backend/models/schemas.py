@@ -90,17 +90,7 @@ class ProfileUpdate(BaseModel):
     new_password: Optional[str] = None
     confirm_password: Optional[str] = None
 
-    @model_validator(mode="after")
-    def password_change_is_complete(self) -> "ProfileUpdate":
-        pwd_fields = [self.current_password, self.new_password, self.confirm_password]
-        if any(pwd_fields) and not all(pwd_fields):
-            raise ValueError(
-                "current_password, new_password, and confirm_password "
-                "must all be provided together"
-            )
-        if self.new_password and self.new_password != self.confirm_password:
-            raise ValueError("new_password and confirm_password do not match")
-        return self
+
 
 
 class PaymentRequest(BaseModel):
