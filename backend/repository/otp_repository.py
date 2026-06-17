@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 
-from database.db import database_connection, get_cursor
+from configuration.settings import database_connection, get_cursor
 
 
 def delete_otps_for_email(email: str):

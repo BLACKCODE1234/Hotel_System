@@ -1,6 +1,6 @@
 
 from datetime import date
-from database.db import database_connection, get_cursor
+from configuration.settings import database_connection, get_cursor
 from models.schemas import ProfileUpdate
 
 def get_booking_by_id(booking_id: str, user_email: ProfileUpdate.email):

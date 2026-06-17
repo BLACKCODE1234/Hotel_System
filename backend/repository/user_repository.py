@@ -1,4 +1,4 @@
-from database.db import database_connection, get_cursor
+from configuration.settings import database_connection, get_cursor
 
 
 def email_exists(email: str) -> bool:

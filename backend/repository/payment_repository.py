@@ -1,4 +1,4 @@
-from database.db import database_connection, get_cursor
+from configuration.settings import database_connection, get_cursor
 
 
 def create_payment(booking_id, user_email: str, amount: float, payment_method: str, status: str):
