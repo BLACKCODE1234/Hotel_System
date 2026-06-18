@@ -17,9 +17,9 @@ def get_details(email: str):
 
 
 def update_profile(email: str, data: ProfileUpdate):
-    new_password = data.new_pwd()
-    confirm_password = data.confirm_pwd()
-    current_password = data.current_pwd()
+    new_password = data.new_password
+    confirm_password = data.confirm_password
+    current_password = data.current_password
     change_password_flag = bool(new_password or confirm_password)
 
     if change_password_flag:

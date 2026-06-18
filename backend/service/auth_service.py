@@ -42,7 +42,7 @@ def signup(data: UserSignup, request: Request, response: Response):
             detail={"message": "Password should be more than 6 characters", "status": "error"},
         )
 
-    confirm = data.confirm_password()
+    confirm = data.confirm_password
     if confirm != data.password:
         raise HTTPException(
             status_code=400,

@@ -6,7 +6,7 @@ from utility.security import hash_password
 
 
 def create_admin_account(data: CreateAdmin):
-    if not all([data.firstname, data.lastname, data.email, data.password]):
+    if not all([data.first_name, data.last_name, data.email, data.password]):
         raise HTTPException(status_code=400, detail={"message": "All fields are required"})
 
     if email_exists(data.email):
@@ -14,7 +14,7 @@ def create_admin_account(data: CreateAdmin):
 
     try:
         hashed_password = hash_password(data.password)
-        create_user(data.firstname, data.lastname, data.email, hashed_password, role="admin")
+        create_user(data.first_name, data.last_name, data.email, hashed_password, role="admin")
     except Exception:
         raise HTTPException(status_code=500, detail={"message": "Server error"})
 
