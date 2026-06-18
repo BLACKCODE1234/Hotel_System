@@ -6,7 +6,11 @@ psycopg2
 python-dotenv
 jwt
 requests
-Flask 
-Flask-Mail
+# Flask 
+# Flask-Mail
 passlib
 argon2_cfii
+uvicorn 
+pydantic
+email-validator
+PyJWT
