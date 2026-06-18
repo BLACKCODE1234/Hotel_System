@@ -28,11 +28,11 @@ const SuperAdminDashboard: React.FC = () => {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
-    confirmPassword: '',
-    firstName: '',
-    lastName: '',
-    phone: '',
-    employeeId: '',
+    confirm_password: '',
+    first_name: '',
+    last_name: '',
+    mobile_number: '',
+    employee_id: '',
     department: 'Hotel Management',
     position: 'Hotel Administrator'
   });
