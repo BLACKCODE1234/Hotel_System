@@ -69,8 +69,8 @@ const SuperAdminDashboard: React.FC = () => {
     }
 
     // Confirm password validation
-    if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
+    if (formData.password !== formData.confirm_password) {
+      newErrors.confirm_password = 'Passwords do not match';
     }
 
     setErrors(newErrors);
@@ -114,11 +114,11 @@ const SuperAdminDashboard: React.FC = () => {
       setFormData({
         email: '',
         password: '',
-        confirmPassword: '',
-        firstName: '',
-        lastName: '',
-        phone: '',
-        employeeId: '',
+        confirm_password: '',
+        first_name: '',
+        last_name: '',
+        mobile_number: '',
+        employee_id: '',
         department: 'Hotel Management',
         position: 'Hotel Administrator'
       });

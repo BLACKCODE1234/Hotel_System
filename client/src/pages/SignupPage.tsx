@@ -7,11 +7,12 @@ const SignupPage: React.FC = () => {
   const navigate = useNavigate();
   const { signup, loading, error, clearError } = useAuth();
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
+    first_name: '',
+    last_name: '',
+    mobile_number: '',
     email: '',
     password: '',
-    confirmPassword: ''
+    confirm_password: ''
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -27,12 +28,12 @@ const SignupPage: React.FC = () => {
   const validateForm = () => {
     const newErrors: {[key: string]: string} = {};
 
-    if (!formData.firstName.trim()) {
-      newErrors.firstName = 'First name is required';
+    if (!formData.first_name.trim()) {
+      newErrors.first_name = 'First name is required';
     }
 
-    if (!formData.lastName.trim()) {
-      newErrors.lastName = 'Last name is required';
+    if (!formData.last_name.trim()) {
+      newErrors.last_name = 'Last name is required';
     }
 
     if (!formData.email.trim()) {
@@ -46,8 +47,8 @@ const SignupPage: React.FC = () => {
       newErrors.password = passwordError;
     }
 
-    if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
+    if (formData.password !== formData.confirm_password) {
+      newErrors.confirm_password = 'Passwords do not match';
     }
 
     setErrors(newErrors);
@@ -60,11 +61,11 @@ const SignupPage: React.FC = () => {
     
     if (validateForm()) {
       const userData = {
-        first_name: formData.firstName,
-        last_name: formData.lastName,
+        first_name: formData.first_ame,
+        last_name: formData.last_name,
         email: formData.email,
         password: formData.password,
-        confirmpassword: formData.confirmPassword,
+        confirm_password: formData.confirm_password,
       };
       
       const success = await signup(userData);

@@ -100,9 +100,9 @@ const UserDashboard: React.FC = () => {
   });
 
   const [passwordData, setPasswordData] = useState({
-    currentPassword: '',
-    newPassword: '',
-    confirmPassword: ''
+    current_password: '',
+    new_password: '',
+    confirm_password: ''
   });
 
   const [showPasswordSection, setShowPasswordSection] = useState(false);
