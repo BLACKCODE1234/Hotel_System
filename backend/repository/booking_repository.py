@@ -1,9 +1,7 @@
 
-from datetime import date
 from configuration.settings import database_connection, get_cursor
-from models.schemas import ProfileUpdate
 
-def get_booking_by_id(booking_id: str, user_email: ProfileUpdate.email):
+def get_booking_by_id(booking_id: str, user_email: str | None = None):
     db = database_connection()
     cursor = get_cursor(db)
     try:

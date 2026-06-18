@@ -9,12 +9,12 @@ from utility.cookies import set_access_cookie
 
 def process_payment(email: str, data: PaymentRequest):
     missing_fields = []
-    if not data.bookingData:
-        missing_fields.append("bookingData")
-    if not data.paymentMethod:
-        missing_fields.append("paymentMethod")
-    if data.totalAmount is None:
-        missing_fields.append("totalAmount")
+    if not data.booking_data:
+        missing_fields.append("booking data")
+    if not data.payment_method:
+        missing_fields.append("payment method")
+    if data.total_amount is None:
+        missing_fields.append("total amount")
 
     if missing_fields:
         raise HTTPException(
@@ -22,20 +22,20 @@ def process_payment(email: str, data: PaymentRequest):
             detail={"message": f"Required fields missing: {', '.join(missing_fields)}"},
         )
 
-    user_email = email or data.bookingData.get("email")
-    in_date = data.bookingData.get("checkIn")
-    out_date = data.bookingData.get("checkOut")
-    room_type = data.bookingData.get("roomType")
-    booking_status = "pending" if data.paymentMethod == "cash-front-desk" else "confirmed"
+    user_email = email or data.booking_data.get("email")
+    in_date = data.booking_data.get("check_in")
+    out_date = data.booking_data.get("check_out")
+    room_type = data.booking_data.get("room_type")
+    booking_status = "pending" if data.payment_method == "cash-front-desk" else "confirmed"
 
     try:
         booking = create_booking(user_email, room_type, in_date, out_date, booking_status)
-        method_description = _payment_method_description(data.paymentMethod, data.paymentData or {})
-        payment_status = "pending" if data.paymentMethod == "cash-front-desk" else "completed"
+        method_description = _payment_method_description(data.payment_method, data.payment_data or {})
+        payment_status = "pending" if data.payment_method == "cash-front-desk" else "completed"
         payment = create_payment(
             booking["booking_id"],
             user_email,
-            data.totalAmount,
+            data.total_amount,
             method_description,
             payment_status,
         )
