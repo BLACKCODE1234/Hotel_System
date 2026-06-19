@@ -142,12 +142,19 @@ def staff_login(data: StaffLogin, request: Request, response: Response):
             detail={"message": "Account not found", "status": "error"},
         )
 
+    if not user.get("verified"):
+        raise HTTPException(
+            status_code=403,
+            detail={"message": "Please verify your email before logging in", "status": "error"},
+        )
+
     if not verify_password(data.password, user["password"]):
         raise HTTPException(
             status_code=401,
             detail={"message": "Password incorrect", "status": "error"},
         )
 
+    update_last_login(data.email)
     return _login_response(user, request, response, default_role="staff")
 
 
@@ -170,6 +177,12 @@ def admin_login(data: AdminLogin, request: Request, response: Response):
         raise HTTPException(
             status_code=404,
             detail={"message": "Account not found", "status": "error"},
+        )
+
+    if not user.get("verified"):
+        raise HTTPException(
+            status_code=403,
+            detail={"message": "Please verify your email before logging in", "status": "error"},
         )
 
     if not verify_password(data.password, user["password"]):

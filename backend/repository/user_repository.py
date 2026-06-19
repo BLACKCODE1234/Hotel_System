@@ -35,7 +35,7 @@ def get_user_credentials(email: str):
     cursor = get_cursor(db)
     try:
         cursor.execute(
-            "SELECT password, role, email, first_name, last_name FROM loginusers WHERE email = %s",
+            "SELECT password, role, email, first_name, last_name, verified FROM loginusers WHERE email = %s",
             (email,),
         )
         return cursor.fetchone()
@@ -50,7 +50,7 @@ def get_user_by_email_and_role(email: str, role: str):
     try:
         cursor.execute(
             """
-            SELECT password, role, email, first_name, last_name
+            SELECT password, role, email, first_name, last_name, verified
             FROM loginusers
             WHERE email = %s AND role = %s
             """,
