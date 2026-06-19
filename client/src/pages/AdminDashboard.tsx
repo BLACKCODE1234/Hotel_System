@@ -37,7 +37,7 @@ interface Booking {
   checkIn: string;
   checkOut: string;
   guests: number;
-  totalAmount: number;
+  total_amount: number;
   status: 'confirmed' | 'pending' | 'cancelled' | 'checked-in' | 'checked-out';
   paymentMethod: string;
   bookingDate: string;
@@ -91,7 +91,7 @@ const AdminDashboard: React.FC = () => {
         checkIn: '2024-11-10',
         checkOut: '2024-11-13',
         guests: 2,
-        totalAmount: 899,
+        total_amount: 899,
         status: 'confirmed',
         paymentMethod: 'Credit Card',
         bookingDate: '2024-11-08'
@@ -105,7 +105,7 @@ const AdminDashboard: React.FC = () => {
         checkIn: '2024-11-12',
         checkOut: '2024-11-15',
         guests: 1,
-        totalAmount: 1299,
+        total_amount: 1299,
         status: 'pending',
         paymentMethod: 'PayPal',
         bookingDate: '2024-11-08'

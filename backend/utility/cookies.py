@@ -1,3 +1,5 @@
+import os
+
 from fastapi import Request, Response
 
 ACCESS_TOKEN_MAX_AGE = 15 * 60
@@ -5,8 +7,8 @@ REFRESH_TOKEN_MAX_AGE = 7 * 24 * 60 * 60
 
 
 def get_cookie_settings(request: Request):
-    host = request.headers.get("host", "")
-    is_local = ("localhost" in host) or ("127.0.0.1" in host)
+    env = os.getenv("ENVIRONMENT", "development")
+    is_local = env == "development"
     secure_cookie = False if is_local else True
     samesite_cookie = "lax" if is_local else "none"
     domain_cookie = None

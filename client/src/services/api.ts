@@ -196,7 +196,7 @@ export const api = {
 
   deleteAdmin: (email: string) =>
     apiFetch('/superadmin/deleteadmin', {
-      method: 'DELETE',
+      method: 'POST',
       body: JSON.stringify({ email }),
     }),
 };

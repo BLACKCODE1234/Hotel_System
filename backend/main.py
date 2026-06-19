@@ -16,6 +16,8 @@ load_dotenv()
 
 frontend_origins = os.getenv("FRONTEND_ORIGINS", "")
 allowed_origins = [origin.strip() for origin in frontend_origins.split(",") if origin.strip()]
+if "*" in allowed_origins:
+    allowed_origins = ["http://localhost:3000"]
 
 app = FastAPI(title="Hotel System API")
 

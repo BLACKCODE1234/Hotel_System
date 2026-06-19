@@ -22,7 +22,7 @@ def process_payment(email: str, data: PaymentRequest):
             detail={"message": f"Required fields missing: {', '.join(missing_fields)}"},
         )
 
-    user_email = email or data.booking_data.get("email")
+    user_email = email
     in_date = data.booking_data.get("check_in")
     out_date = data.booking_data.get("check_out")
     room_type = data.booking_data.get("room_type")

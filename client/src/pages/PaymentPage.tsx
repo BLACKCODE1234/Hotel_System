@@ -206,10 +206,13 @@ const PaymentPage: React.FC = () => {
       const bookingStatusFromServer = result && result.booking && result.booking.status;
       
       // Store confirmation data for dashboard display
+      const safePaymentData = { ...paymentData };
+      delete safePaymentData.cvv;
+      delete safePaymentData.cardNumber;
       const confirmationData = {
         bookingId: bookingIdFromServer || 'LGH-' + Math.random().toString(36).substr(2, 9).toUpperCase(),
         bookingData,
-        paymentData,
+        paymentData: safePaymentData,
         paymentMethod,
         timestamp: new Date().toISOString(),
         status: bookingStatusFromServer || 'confirmed'

@@ -87,10 +87,7 @@ def update_last_login(email: str):
     cursor = get_cursor(db)
     try:
         cursor.execute(
-            """
-            UPDATE loginusers SET last_login = NOW()
-            WHERE email = %s AND role IN ('admin', 'superadmin')
-            """,
+            "UPDATE loginusers SET last_login = NOW() WHERE email = %s",
             (email,),
         )
         db.commit()
@@ -140,9 +137,12 @@ def update_user_profile(email: str, fields: dict):
     if not fields:
         return
 
+    allowed_columns = {"first_name", "last_name", "email", "phone", "password"}
     update_parts = []
     params = []
     for column, value in fields.items():
+        if column not in allowed_columns:
+            continue
         update_parts.append(f"{column} = %s")
         params.append(value)
 

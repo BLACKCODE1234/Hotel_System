@@ -25,7 +25,7 @@ def decode_access_token(request: Request, allow_bearer: bool = False) -> dict:
         raise HTTPException(status_code=401, detail={"message": "No token", "user": None})
 
     decoded = decoded_token(token)
-    if not decoded:
+    if not decoded or decoded.get("error"):
         raise HTTPException(
             status_code=401,
             detail={"message": "Invalid or expired token", "user": None},

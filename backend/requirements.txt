@@ -1,16 +1,9 @@
 fastapi
-passlib
-flask-cors
-flask-jwt-extended
+passlib[argon2]
 psycopg2
 python-dotenv
-jwt
-requests
-# Flask 
-# Flask-Mail
-passlib
-argon2_cfii
-uvicorn 
+PyJWT
+argon2-cffi
+uvicorn
 pydantic
 email-validator
-PyJWT

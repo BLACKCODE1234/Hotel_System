@@ -1,7 +1,9 @@
+from datetime import date
+
 from fastapi import HTTPException
 
 from models.schemas import BookingCreate, CancelBooking
-from repository.booking_repository import cancel_booking, get_booking_by_id
+from repository.booking_repository import cancel_booking, create_booking as repo_create_booking, get_booking_by_id
 
 
 def create_booking(_email: str, data: BookingCreate):
@@ -33,10 +35,23 @@ def create_booking(_email: str, data: BookingCreate):
             detail={"message": f"Required fields missing: {', '.join(missing_fields)}"},
         )
 
-    raise HTTPException(
-        status_code=501,
-        detail={"message": "Booking functionality not yet implemented"},
-    )
+    if data.out_date <= data.in_date:
+        raise HTTPException(
+            status_code=400,
+            detail={"message": "Check-out date must be after check-in date"},
+        )
+
+    try:
+        booking = repo_create_booking(
+            user_email=_email,
+            room_type=data.room_type,
+            in_date=data.in_date.isoformat() if isinstance(data.in_date, date) else str(data.in_date),
+            out_date=data.out_date.isoformat() if isinstance(data.out_date, date) else str(data.out_date),
+            status="confirmed",
+        )
+        return {"message": "Booking created", "booking": booking}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail={"message": "Server error", "error": str(e)})
 
 
 def cancel_user_booking(email: str, role: str, data: CancelBooking):

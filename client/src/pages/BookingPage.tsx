@@ -11,10 +11,10 @@ const BookingPage: React.FC = () => {
     children: '0',
     roomQuantity: '1',
     roomType: 'deluxe',
-    first_name: '',
-    last_name: '',
+    firstName: '',
+    lastName: '',
     email: '',
-    mobile_phone: '',
+    phone: '',
     address: '',
     city: '',
     country: '',
@@ -140,10 +140,10 @@ const BookingPage: React.FC = () => {
     const newErrors: {[key: string]: string} = {};
     
     // Required field validation
-    if (!formData.first_name.trim()) newErrors.first_name = 'First name is required';
-    if (!formData.last_name.trim()) newErrors.last_name = 'Last name is required';
+    if (!formData.firstName.trim()) newErrors.firstName = 'First name is required';
+    if (!formData.lastName.trim()) newErrors.lastName = 'Last name is required';
     if (!formData.email.trim()) newErrors.email = 'Email is required';
-    if (!formData.mobile_number.trim()) newErrors.mobile_number = 'Phone number is required';
+    if (!formData.phone.trim()) newErrors.phone = 'Phone number is required';
     if (!formData.checkIn) newErrors.checkIn = 'Check-in date is required';
     if (!formData.checkOut) newErrors.checkOut = 'Check-out date is required';
     if (!formData.country) newErrors.country = 'Country is required';
@@ -191,8 +191,15 @@ const BookingPage: React.FC = () => {
       return;
     }
     
-    // Store booking data in localStorage for payment page
-    localStorage.setItem('bookingData', JSON.stringify({ ...formData, nights, isWeekend }));
+    const paymentData = {
+      ...formData,
+      nights,
+      isWeekend,
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      phone: formData.phone,
+    };
+    localStorage.setItem('bookingData', JSON.stringify(paymentData));
     
     // Navigate to payment page
     navigate('/payment');

@@ -10,7 +10,7 @@ def create_admin_account(data: CreateAdmin):
         raise HTTPException(status_code=400, detail={"message": "All fields are required"})
 
     if email_exists(data.email):
-        raise HTTPException(status_code=401, detail={"message": "Account already exist"})
+        raise HTTPException(status_code=409, detail={"message": "Account already exists"})
 
     try:
         hashed_password = hash_password(data.password)
@@ -18,7 +18,7 @@ def create_admin_account(data: CreateAdmin):
     except Exception:
         raise HTTPException(status_code=500, detail={"message": "Server error"})
 
-    return {"message": "ADmin Created Successfully"}
+    return {"message": "Admin created successfully"}
 
 
 def remove_admin(data: DeleteAdmin):

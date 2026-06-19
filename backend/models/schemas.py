@@ -2,16 +2,40 @@ from datetime import date
 from typing import Any, Optional
 from decimal import Decimal
 
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, EmailStr, Field, field_validator
+
+
+from pydantic import BaseModel, EmailStr, Field, field_validator
 
 
 class UserSignup(BaseModel):
     email: EmailStr
     password: str
     mobile_number: str
-    first_name: str 
+    first_name: str
     last_name: str
-    confirm_password: str  
+    confirm_password: str
+
+    @field_validator("password")
+    @classmethod
+    def password_min_length(cls, v: str) -> str:
+        if len(v) < 8:
+            raise ValueError("Password must be at least 8 characters")
+        return v
+
+    @field_validator("first_name", "last_name")
+    @classmethod
+    def name_non_empty(cls, v: str) -> str:
+        if not v.strip():
+            raise ValueError("Name cannot be empty")
+        return v
+
+    @field_validator("mobile_number")
+    @classmethod
+    def phone_non_empty(cls, v: str) -> str:
+        if not v.strip():
+            raise ValueError("Phone number cannot be empty")
+        return v
 
 
 
@@ -30,12 +54,12 @@ class OTPVerify(BaseModel):
 
 
 class StaffLogin(BaseModel):
-    staff_id: str
+    email: str
     password: str
 
 
 class AdminLogin(BaseModel):
-    admin_id: str
+    email: str
     password: str
 
 

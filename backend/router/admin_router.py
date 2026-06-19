@@ -13,7 +13,7 @@ def create_admin(data: CreateAdmin, request: Request):
     return admin_service.create_admin_account(data)
 
 
-@router.delete("/superadmin/deleteadmin")
+@router.post("/superadmin/deleteadmin")
 def delete_admin(data: DeleteAdmin, request: Request):
     require_role(request, ["superadmin"])
     return admin_service.remove_admin(data)

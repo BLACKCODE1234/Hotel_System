@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, HTTPException, Request
 
 from dependencies import get_current_user_payload
 from models.schemas import BookingCreate, CancelBooking
@@ -12,8 +12,6 @@ def create_booking(data: BookingCreate, request: Request):
     decoded = get_current_user_payload(request)
     email = decoded.get("email")
     if not email:
-        from fastapi import HTTPException
-
         raise HTTPException(status_code=401, detail={"message": "Account not found"})
     return booking_service.create_booking(email, data)
 

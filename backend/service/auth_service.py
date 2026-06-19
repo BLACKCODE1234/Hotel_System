@@ -25,21 +25,20 @@ def _login_response(user: dict, request: Request, response: Response, default_ro
 
     return {
         "message": "Login successful",
-        "access_token": access_token,
         "user": {
             "email": user["email"],
             "role": role,
-            "firstname": user.get("first_name"),
-            "lastname": user.get("last_name"),
+            "first_name": user.get("first_name"),
+            "last_name": user.get("last_name"),
         },
     }
 
 
 def signup(data: UserSignup, request: Request, response: Response):
-    if len(data.password) < 6:
+    if len(data.password) < 8:
         raise HTTPException(
             status_code=400,
-            detail={"message": "Password should be more than 6 characters", "status": "error"},
+            detail={"message": "Password should be at least 8 characters", "status": "error"},
         )
 
     confirm = data.confirm_password
@@ -49,7 +48,7 @@ def signup(data: UserSignup, request: Request, response: Response):
             detail={"message": "Passwords do not match", "status": "error"},
         )
 
-    if not all([data.firstname, data.lastname, data.email, data.password, confirm]):
+    if not all([data.first_name, data.last_name, data.email, data.password, confirm]):
         raise HTTPException(
             status_code=400,
             detail={"message": "All fields are required", "status": "error", "user": None},
@@ -63,7 +62,7 @@ def signup(data: UserSignup, request: Request, response: Response):
 
     try:
         hashed = hash_password(data.password)
-        create_user(data.firstname, data.lastname, data.email, hashed, role="user")
+        create_user(data.first_name, data.last_name, data.email, hashed, role="user")
     except Exception:
         raise HTTPException(
             status_code=500,
@@ -78,8 +77,8 @@ def signup(data: UserSignup, request: Request, response: Response):
         "message": "Signup successful",
         "status": "success",
         "user": {
-            "first_name": data.firstname,
-            "last_name": data.lastname,
+            "first_name": data.first_name,
+            "last_name": data.last_name,
             "email": data.email,
         },
     }
@@ -106,6 +105,12 @@ def login(data: UserLogin, request: Request, response: Response):
             detail={"message": "Account not found", "status": "error"},
         )
 
+    if not user.get("verified"):
+        raise HTTPException(
+            status_code=403,
+            detail={"message": "Please verify your email before logging in", "status": "error"},
+        )
+
     if not verify_password(data.password, user["password"]):
         raise HTTPException(
             status_code=401,
@@ -117,18 +122,18 @@ def login(data: UserLogin, request: Request, response: Response):
 
 
 def staff_login(data: StaffLogin, request: Request, response: Response):
-    if not all([data.staff_id, data.password]):
+    if not all([data.email, data.password]):
         raise HTTPException(
             status_code=400,
             detail={"message": "All fields are required", "status": "error"},
         )
 
     try:
-        user = get_user_by_email_and_role(data.staff_id, "staff")
+        user = get_user_by_email_and_role(data.email, "staff")
     except Exception:
         raise HTTPException(
             status_code=500,
-            detail={"message": "Something occured", "status": "error"},
+            detail={"message": "Something occurred", "status": "error"},
         )
 
     if not user:
@@ -147,14 +152,14 @@ def staff_login(data: StaffLogin, request: Request, response: Response):
 
 
 def admin_login(data: AdminLogin, request: Request, response: Response):
-    if not all([data.admin_id, data.password]):
+    if not all([data.email, data.password]):
         raise HTTPException(
             status_code=400,
             detail={"message": "All fields are required", "status": "error"},
         )
 
     try:
-        user = get_user_by_email_and_role(data.admin_id, "admin")
+        user = get_user_by_email_and_role(data.email, "admin")
     except Exception:
         raise HTTPException(
             status_code=500,
@@ -173,7 +178,7 @@ def admin_login(data: AdminLogin, request: Request, response: Response):
             detail={"message": "Password incorrect", "status": "error"},
         )
 
-    update_last_login(data.admin_id)
+    update_last_login(data.email)
     return _login_response(user, request, response, default_role="admin")
 
 
@@ -210,10 +215,18 @@ def refresh_token(request: Request, response: Response):
             status_code=401,
             detail={"message": "Invalid or expired refresh token", "code": "INVALID_REFRESH_TOKEN"},
         )
+    if decoded.get("error"):
+        raise HTTPException(
+            status_code=401,
+            detail={"message": "Refresh token expired", "code": "EXPIRED_REFRESH_TOKEN"},
+        )
 
     try:
-        new_access_token = generate_access_token(decoded["email"], decoded["role"])
-        set_access_cookie(response, request, new_access_token)
+        email = decoded["email"]
+        role = decoded["role"]
+        new_access_token = generate_access_token(email, role)
+        new_refresh_token = generate_refresh_token(email, role)
+        set_auth_cookies(response, request, new_access_token, new_refresh_token)
         return {"message": "Token refreshed successfully"}
     except Exception as e:
         raise HTTPException(

@@ -19,8 +19,8 @@ const SignupPage: React.FC = () => {
   const [errors, setErrors] = useState<{[key: string]: string}>({});
 
   const validatePassword = (password: string) => {
-    if (password.length <= 6) {
-      return 'Password must be more than 6 characters';
+    if (password.length < 8) {
+      return 'Password must be at least 8 characters';
     }
     return '';
   };
@@ -61,7 +61,7 @@ const SignupPage: React.FC = () => {
     
     if (validateForm()) {
       const userData = {
-        first_name: formData.first_ame,
+        first_name: formData.first_name,
         last_name: formData.last_name,
         email: formData.email,
         password: formData.password,
@@ -93,7 +93,7 @@ const SignupPage: React.FC = () => {
     }
   };
 
-  const isPasswordValid = formData.password.length > 6;
+  const isPasswordValid = formData.password.length >= 8;
 
   return (
     <div 
@@ -119,24 +119,24 @@ const SignupPage: React.FC = () => {
             {/* First Name & Last Name */}
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="first_name" className="block text-sm font-medium text-gray-700 mb-2">
                   First Name
                 </label>
                 <div className="relative">
                   <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
                   <input
-                    id="firstName"
-                    name="firstName"
+                    id="first_name"
+                    name="first_name"
                     type="text"
-                    value={formData.firstName}
+                    value={formData.first_name}
                     onChange={handleInputChange}
                     className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ${
-                      errors.firstName ? 'border-red-500' : 'border-gray-300'
+                      errors.first_name ? 'border-red-500' : 'border-gray-300'
                     }`}
                     placeholder="First name"
                   />
                 </div>
-                {errors.firstName && (
+                {errors.first_name && (
                   <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
                     <XCircle className="h-4 w-4" />
                     {errors.firstName}
@@ -144,25 +144,25 @@ const SignupPage: React.FC = () => {
                 )}
               </div>
 
-              <div>
-                <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-2">
+                  <div>
+                <label htmlFor="last_name" className="block text-sm font-medium text-gray-700 mb-2">
                   Last Name
                 </label>
                 <div className="relative">
                   <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
                   <input
-                    id="lastName"
-                    name="lastName"
+                    id="last_name"
+                    name="last_name"
                     type="text"
-                    value={formData.lastName}
+                    value={formData.last_name}
                     onChange={handleInputChange}
                     className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ${
-                      errors.lastName ? 'border-red-500' : 'border-gray-300'
+                      errors.last_name ? 'border-red-500' : 'border-gray-300'
                     }`}
                     placeholder="Last name"
                   />
                 </div>
-                {errors.lastName && (
+                {errors.last_name && (
                   <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
                     <XCircle className="h-4 w-4" />
                     {errors.lastName}
@@ -232,7 +232,7 @@ const SignupPage: React.FC = () => {
                     <XCircle className="h-4 w-4 text-red-500" />
                   )}
                   <span className={`text-sm ${isPasswordValid ? 'text-green-600' : 'text-red-600'}`}>
-                    Password must be more than 6 characters
+                    Password must be at least 8 characters
                   </span>
                 </div>
               )}
@@ -246,17 +246,17 @@ const SignupPage: React.FC = () => {
 
             {/* Confirm Password */}
             <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-2">
-                Confirm Password
-              </label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                <input
-                  id="confirmPassword"
-                  name="confirmPassword"
-                  type={showConfirmPassword ? 'text' : 'password'}
-                  value={formData.confirmPassword}
-                  onChange={handleInputChange}
+                <label htmlFor="confirm_password" className="block text-sm font-medium text-gray-700 mb-2">
+                  Confirm Password
+                </label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                  <input
+                    id="confirm_password"
+                    name="confirm_password"
+                    type={showConfirmPassword ? 'text' : 'password'}
+                    value={formData.confirm_password}
+                    onChange={handleInputChange}
                   className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ${
                     errors.confirmPassword ? 'border-red-500' : 'border-gray-300'
                   }`}
@@ -297,8 +297,7 @@ const SignupPage: React.FC = () => {
                   </>
                 ) : (
                   <>
-                    Create Account
-                    🚀 Create Account
+                      Create Account
                   </>
                 )}
               </span>
