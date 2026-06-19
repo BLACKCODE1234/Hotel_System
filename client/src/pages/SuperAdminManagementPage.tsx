@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { api } from '../services/api';
 import { 
   Shield, 
   Users, 
@@ -37,6 +38,15 @@ interface User {
   position?: string;
 }
 
+interface AdminFromApi {
+  id: number;
+  name: string;
+  email: string;
+  permissions: string[];
+  lastLogin: string | null;
+  status: string;
+}
+
 const SuperAdminManagementPage: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -46,72 +56,45 @@ const SuperAdminManagementPage: React.FC = () => {
   const [showUserModal, setShowUserModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [actionError, setActionError] = useState('');
 
-  // Mock data - replace with actual API calls
   useEffect(() => {
-    const mockUsers: User[] = [
-      {
-        id: 1,
-        email: 'superadmin@hotel.com',
-        firstName: 'John',
-        lastName: 'Doe',
-        phone: '+1 (555) 123-4567',
-        role: 'superadmin',
-        isActive: true,
-        createdAt: '2024-01-15T10:00:00Z',
-        lastLogin: '2024-11-14T08:30:00Z',
-        employeeId: 'SA-001',
-        department: 'Hotel Management',
-        position: 'Super Administrator'
-      },
-      {
-        id: 2,
-        email: 'admin@hotel.com',
-        firstName: 'Jane',
-        lastName: 'Smith',
-        phone: '+1 (555) 234-5678',
-        role: 'admin',
-        isActive: true,
-        createdAt: '2024-02-20T14:30:00Z',
-        lastLogin: '2024-11-13T16:45:00Z',
-        employeeId: 'ADM-002',
-        department: 'Operations',
-        position: 'Hotel Administrator'
-      },
-      {
-        id: 3,
-        email: 'user@hotel.com',
-        firstName: 'Mike',
-        lastName: 'Johnson',
-        phone: '+1 (555) 345-6789',
-        role: 'user',
-        isActive: true,
-        createdAt: '2024-03-10T09:15:00Z',
-        lastLogin: '2024-11-12T12:20:00Z'
-      },
-      {
-        id: 4,
-        email: 'inactive@hotel.com',
-        firstName: 'Sarah',
-        lastName: 'Wilson',
-        role: 'user',
-        isActive: false,
-        createdAt: '2024-04-05T11:00:00Z'
+    const fetchAdmins = async () => {
+      setIsLoading(true);
+      try {
+        const response = await api.listAdmins();
+        if (response.ok) {
+          const data: AdminFromApi[] = await response.json();
+          setUsers(data.map((admin) => {
+            const nameParts = admin.name.split(' ');
+            return {
+              id: admin.id,
+              email: admin.email,
+              firstName: nameParts[0] || '',
+              lastName: nameParts.slice(1).join(' ') || '',
+              role: 'admin' as const,
+              isActive: admin.status === 'active',
+              createdAt: '',
+              lastLogin: admin.lastLogin || undefined,
+              department: '',
+              position: '',
+            };
+          }));
+        }
+      } catch {
+        // fallback silently
+      } finally {
+        setIsLoading(false);
       }
-    ];
-
-    setTimeout(() => {
-      setUsers(mockUsers);
-      setIsLoading(false);
-    }, 1000);
+    };
+    fetchAdmins();
   }, []);
 
   const filteredUsers = users.filter(user => {
     const matchesSearch = 
       user.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (user.employeeId && user.employeeId.toLowerCase().includes(searchTerm.toLowerCase()));
+      user.email.toLowerCase().includes(searchTerm.toLowerCase());
     
     const matchesRole = roleFilter === 'all' || user.role === roleFilter;
     const matchesStatus = statusFilter === 'all' || 
@@ -155,10 +138,21 @@ const SuperAdminManagementPage: React.FC = () => {
     );
   };
 
-  const handleDeleteUser = (userId: number) => {
-    setUsers(prevUsers => prevUsers.filter(user => user.id !== userId));
-    setShowDeleteModal(false);
-    setSelectedUser(null);
+  const handleDeleteUser = async (userId: number, email: string) => {
+    setActionError('');
+    try {
+      const response = await api.deleteAdmin(email);
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
+        throw new Error(data?.detail?.message || data?.message || 'Failed to delete user');
+      }
+      setUsers(prevUsers => prevUsers.filter(user => user.id !== userId));
+    } catch (err: any) {
+      setActionError(err.message || 'Failed to delete user');
+    } finally {
+      setShowDeleteModal(false);
+      setSelectedUser(null);
+    }
   };
 
   const formatDate = (dateString: string) => {
@@ -314,6 +308,14 @@ const SuperAdminManagementPage: React.FC = () => {
           </div>
         </div>
 
+        {/* Error Message */}
+        {actionError && (
+          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-3">
+            <AlertTriangle className="w-5 h-5 text-red-600" />
+            <span className="text-red-800">{actionError}</span>
+          </div>
+        )}
+
         {/* Users Table */}
         <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
           <div className="px-6 py-4 border-b border-gray-200">
@@ -370,9 +372,9 @@ const SuperAdminManagementPage: React.FC = () => {
                               <Mail className="w-3 h-3" />
                               {user.email}
                             </div>
-                            {user.employeeId && (
+                            {user.department && (
                               <div className="text-xs text-gray-400">
-                                ID: {user.employeeId}
+                                {user.department}
                               </div>
                             )}
                           </div>
@@ -519,14 +521,10 @@ const SuperAdminManagementPage: React.FC = () => {
                   </div>
                 </div>
 
-                {selectedUser.employeeId && (
+                {(selectedUser.department || selectedUser.position) && (
                   <div className="md:col-span-2">
-                    <h5 className="font-medium text-gray-900 mb-3">Employee Information</h5>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
-                      <div>
-                        <span className="text-gray-500">Employee ID:</span>
-                        <p className="font-medium">{selectedUser.employeeId}</p>
-                      </div>
+                    <h5 className="font-medium text-gray-900 mb-3">Additional Information</h5>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
                       {selectedUser.department && (
                         <div>
                           <span className="text-gray-500">Department:</span>
@@ -574,7 +572,7 @@ const SuperAdminManagementPage: React.FC = () => {
                   Cancel
                 </button>
                 <button
-                  onClick={() => handleDeleteUser(selectedUser.id)}
+                  onClick={() => handleDeleteUser(selectedUser.id, selectedUser.email)}
                   className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
                 >
                   Delete

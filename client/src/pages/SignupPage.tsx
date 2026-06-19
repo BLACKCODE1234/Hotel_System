@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Eye, EyeOff, User, Mail, Lock, CheckCircle, XCircle } from 'lucide-react';
+import { Eye, EyeOff, User, Mail, Lock, Phone, CheckCircle, XCircle } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
 const SignupPage: React.FC = () => {
@@ -36,6 +36,10 @@ const SignupPage: React.FC = () => {
       newErrors.last_name = 'Last name is required';
     }
 
+    if (!formData.mobile_number.trim()) {
+      newErrors.mobile_number = 'Phone number is required';
+    }
+
     if (!formData.email.trim()) {
       newErrors.email = 'Email is required';
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
@@ -63,6 +67,7 @@ const SignupPage: React.FC = () => {
       const userData = {
         first_name: formData.first_name,
         last_name: formData.last_name,
+        mobile_number: formData.mobile_number,
         email: formData.email,
         password: formData.password,
         confirm_password: formData.confirm_password,
@@ -139,7 +144,7 @@ const SignupPage: React.FC = () => {
                 {errors.first_name && (
                   <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
                     <XCircle className="h-4 w-4" />
-                    {errors.firstName}
+                    {errors.first_name}
                   </p>
                 )}
               </div>
@@ -165,10 +170,37 @@ const SignupPage: React.FC = () => {
                 {errors.last_name && (
                   <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
                     <XCircle className="h-4 w-4" />
-                    {errors.lastName}
+                    {errors.last_name}
                   </p>
                 )}
               </div>
+            </div>
+
+            {/* Mobile Number */}
+            <div>
+              <label htmlFor="mobile_number" className="block text-sm font-medium text-gray-700 mb-2">
+                Phone Number
+              </label>
+              <div className="relative">
+                <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <input
+                  id="mobile_number"
+                  name="mobile_number"
+                  type="tel"
+                  value={formData.mobile_number}
+                  onChange={handleInputChange}
+                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ${
+                    errors.mobile_number ? 'border-red-500' : 'border-gray-300'
+                  }`}
+                  placeholder="+1 (555) 123-4567"
+                />
+              </div>
+              {errors.mobile_number && (
+                <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
+                  <XCircle className="h-4 w-4" />
+                  {errors.mobile_number}
+                </p>
+              )}
             </div>
 
             {/* Email */}
@@ -257,8 +289,8 @@ const SignupPage: React.FC = () => {
                     type={showConfirmPassword ? 'text' : 'password'}
                     value={formData.confirm_password}
                     onChange={handleInputChange}
-                  className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ${
-                    errors.confirmPassword ? 'border-red-500' : 'border-gray-300'
+                    className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ${
+                    errors.confirm_password ? 'border-red-500' : 'border-gray-300'
                   }`}
                   placeholder="Confirm your password"
                 />
@@ -270,10 +302,10 @@ const SignupPage: React.FC = () => {
                   {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                 </button>
               </div>
-              {errors.confirmPassword && (
+                {errors.confirm_password && (
                 <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
                   <XCircle className="h-4 w-4" />
-                  {errors.confirmPassword}
+                  {errors.confirm_password}
                 </p>
               )}
             </div>

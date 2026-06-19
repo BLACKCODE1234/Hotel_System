@@ -8,10 +8,10 @@ export interface LoginCredentials {
 export interface SignupData {
   first_name: string;
   last_name: string;
+  mobile_number: string;
   email: string;
   password: string;
-  confirmpassword?: string;
-  phone?: string;
+  confirm_password: string;
 }
 
 export interface BookingData {

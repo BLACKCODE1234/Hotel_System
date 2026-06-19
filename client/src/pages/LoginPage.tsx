@@ -46,11 +46,17 @@ const LoginPage: React.FC = () => {
     clearError();
     
     if (validateForm()) {
-      const success = await login(formData.email, formData.password);
-      
-      if (success) {
-        // Redirect based on user role (you can enhance this based on your backend response)
-        navigate('/dashboard');
+      const result = await login(formData.email, formData.password);
+
+      if (result.success) {
+        const role = result.role;
+        if (role === 'admin' || role === 'staff') {
+          navigate('/admin');
+        } else if (role === 'superadmin') {
+          navigate('/superadmin');
+        } else {
+          navigate('/dashboard');
+        }
       }
     }
   };

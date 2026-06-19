@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { api } from '../services/api';
 import { 
   Crown, 
   Shield, 
@@ -32,7 +33,6 @@ const SuperAdminDashboard: React.FC = () => {
     first_name: '',
     last_name: '',
     mobile_number: '',
-    employee_id: '',
     department: 'Hotel Management',
     position: 'Hotel Administrator'
   });
@@ -46,32 +46,16 @@ const SuperAdminDashboard: React.FC = () => {
   const validateForm = () => {
     const newErrors: {[key: string]: string} = {};
 
-    // Required field validation
-    const requiredFields = ['email', 'password', 'confirmPassword', 'firstName', 'lastName', 'employeeId'];
-    requiredFields.forEach(field => {
-      if (!formData[field as keyof typeof formData].trim()) {
-        newErrors[field] = `${field.replace(/([A-Z])/g, ' $1').toLowerCase().replace(/^./, str => str.toUpperCase())} is required`;
-      }
-    });
+    if (!formData.first_name.trim()) newErrors.first_name = 'First name is required';
+    if (!formData.last_name.trim()) newErrors.last_name = 'Last name is required';
+    if (!formData.email.trim()) newErrors.email = 'Email is required';
+    else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = 'Email is invalid';
 
-    // Email validation
-    if (formData.email && !/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email address';
-    }
-
-    // Password validation
     if (formData.password) {
-      if (formData.password.length < 8) {
-        newErrors.password = 'Password must be at least 8 characters long';
-      } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(formData.password)) {
-        newErrors.password = 'Password must contain at least one uppercase letter, one lowercase letter, and one number';
-      }
+      if (formData.password.length < 8) newErrors.password = 'Password must be at least 8 characters';
+      else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(formData.password)) newErrors.password = 'Password must contain uppercase, lowercase, and a number';
     }
-
-    // Confirm password validation
-    if (formData.password !== formData.confirm_password) {
-      newErrors.confirm_password = 'Passwords do not match';
-    }
+    if (formData.password !== formData.confirm_password) newErrors.confirm_password = 'Passwords do not match';
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -79,52 +63,38 @@ const SuperAdminDashboard: React.FC = () => {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-
-    // Clear error when user starts typing
-    if (errors[name]) {
-      setErrors(prev => ({
-        ...prev,
-        [name]: ''
-      }));
-    }
+    setFormData(prev => ({ ...prev, [name]: value }));
+    if (errors[name]) setErrors(prev => ({ ...prev, [name]: '' }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!validateForm()) {
-      return;
-    }
+    if (!validateForm()) return;
 
     setIsLoading(true);
     setSuccessMessage('');
 
     try {
-      // Simulate API call - replace with actual API endpoint
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // Mock success response
-      setSuccessMessage('Administrator created successfully!');
-      
-      // Reset form
-      setFormData({
-        email: '',
-        password: '',
-        confirm_password: '',
-        first_name: '',
-        last_name: '',
-        mobile_number: '',
-        employee_id: '',
-        department: 'Hotel Management',
-        position: 'Hotel Administrator'
+      const response = await api.createAdmin({
+        firstname: formData.first_name,
+        lastname: formData.last_name,
+        email: formData.email,
+        password: formData.password,
       });
 
-    } catch (error) {
-      setErrors({ submit: 'Failed to create administrator. Please try again.' });
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
+        throw new Error(data?.detail?.message || data?.message || 'Failed to create administrator');
+      }
+
+      setSuccessMessage('Administrator created successfully!');
+      setFormData({
+        email: '', password: '', confirm_password: '',
+        first_name: '', last_name: '', mobile_number: '',
+        department: 'Hotel Management', position: 'Hotel Administrator'
+      });
+    } catch (error: any) {
+      setErrors({ submit: error.message || 'Failed to create administrator. Please try again.' });
     } finally {
       setIsLoading(false);
     }
@@ -258,18 +228,18 @@ const SuperAdminDashboard: React.FC = () => {
                           </label>
                           <input
                             type="text"
-                            name="firstName"
-                            value={formData.firstName}
+                            name="first_name"
+                            value={formData.first_name}
                             onChange={handleInputChange}
                             className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 ${
-                              errors.firstName ? 'border-red-500' : 'border-gray-300'
+                              errors.first_name ? 'border-red-500' : 'border-gray-300'
                             }`}
                             placeholder="Enter first name"
                           />
-                          {errors.firstName && (
+                          {errors.first_name && (
                             <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
                               <XCircle className="w-4 h-4" />
-                              {errors.firstName}
+                              {errors.first_name}
                             </p>
                           )}
                         </div>
@@ -281,18 +251,18 @@ const SuperAdminDashboard: React.FC = () => {
                           </label>
                           <input
                             type="text"
-                            name="lastName"
-                            value={formData.lastName}
+                            name="last_name"
+                            value={formData.last_name}
                             onChange={handleInputChange}
-                            className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 ${
-                              errors.lastName ? 'border-red-500' : 'border-gray-300'
+                            className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 ${
+                              errors.last_name ? 'border-red-500' : 'border-gray-300'
                             }`}
                             placeholder="Enter last name"
                           />
-                          {errors.lastName && (
+                          {errors.last_name && (
                             <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
                               <XCircle className="w-4 h-4" />
-                              {errors.lastName}
+                              {errors.last_name}
                             </p>
                           )}
                         </div>
@@ -332,8 +302,8 @@ const SuperAdminDashboard: React.FC = () => {
                             <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                             <input
                               type="tel"
-                              name="phone"
-                              value={formData.phone}
+                              name="mobile_number"
+                              value={formData.mobile_number}
                               onChange={handleInputChange}
                               className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
                               placeholder="+1 (555) 123-4567"
@@ -411,11 +381,11 @@ const SuperAdminDashboard: React.FC = () => {
                             <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                             <input
                               type={showConfirmPassword ? 'text' : 'password'}
-                              name="confirmPassword"
-                              value={formData.confirmPassword}
+                              name="confirm_password"
+                              value={formData.confirm_password}
                               onChange={handleInputChange}
                               className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 ${
-                                errors.confirmPassword ? 'border-red-500' : 'border-gray-300'
+                                errors.confirm_password ? 'border-red-500' : 'border-gray-300'
                               }`}
                               placeholder="Confirm password"
                             />
@@ -427,36 +397,10 @@ const SuperAdminDashboard: React.FC = () => {
                               {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                             </button>
                           </div>
-                          {errors.confirmPassword && (
+                          {errors.confirm_password && (
                             <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
                               <XCircle className="w-4 h-4" />
-                              {errors.confirmPassword}
-                            </p>
-                          )}
-                        </div>
-
-                        {/* Employee ID */}
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Employee ID *
-                          </label>
-                          <div className="relative">
-                            <UserCheck className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-                            <input
-                              type="text"
-                              name="employeeId"
-                              value={formData.employeeId}
-                              onChange={handleInputChange}
-                              className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 ${
-                                errors.employeeId ? 'border-red-500' : 'border-gray-300'
-                              }`}
-                              placeholder="ADM-001"
-                            />
-                          </div>
-                          {errors.employeeId && (
-                            <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
-                              <XCircle className="w-4 h-4" />
-                              {errors.employeeId}
+                              {errors.confirm_password}
                             </p>
                           )}
                         </div>
@@ -520,11 +464,10 @@ const SuperAdminDashboard: React.FC = () => {
                     onClick={() => setFormData({
                       email: '',
                       password: '',
-                      confirmPassword: '',
-                      firstName: '',
-                      lastName: '',
-                      phone: '',
-                      employeeId: '',
+                      confirm_password: '',
+                      first_name: '',
+                      last_name: '',
+                      mobile_number: '',
                       department: 'Hotel Management',
                       position: 'Hotel Administrator'
                     })}

@@ -3,7 +3,7 @@ import { api, normalizeUser, SignupData, User } from '../services/api';
 
 interface AuthContextType {
   user: User | null;
-  login: (email: string, password: string) => Promise<boolean>;
+  login: (email: string, password: string) => Promise<{ success: boolean; role?: string }>;
   signup: (userData: SignupData) => Promise<boolean>;
   logout: () => Promise<void>;
   loading: boolean;
@@ -43,7 +43,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  const login = async (email: string, password: string): Promise<boolean> => {
+  const login = async (email: string, password: string): Promise<{ success: boolean; role?: string }> => {
     setLoading(true);
     setError(null);
 
@@ -58,15 +58,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         } else {
           await checkAuth();
         }
-        return true;
+        return { success: true, role: loggedInUser?.role || data?.user?.role };
       }
 
       const errorData = await response.json().catch(() => ({}));
       setError(errorData.message || 'Login failed');
-      return false;
+      return { success: false };
     } catch (loginError) {
       setError('Network error. Please try again.');
-      return false;
+      return { success: false };
     } finally {
       setLoading(false);
     }

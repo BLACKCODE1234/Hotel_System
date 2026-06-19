@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { api } from '../services/api';
+import { useAuth } from '../contexts/AuthContext';
 import { 
   User, 
   Calendar, 
@@ -70,14 +72,15 @@ interface Payment {
 
 const UserDashboard: React.FC = () => {
   const location = useLocation();
+  const { user: authUser } = useAuth();
   const [user] = useState({
-    name: 'John Doe',
-    email: 'john.doe@example.com',
-    phone: '+1 (555) 123-4567',
-    memberSince: '2023',
-    totalBookings: 12,
-    loyaltyPoints: 2450,
-    membershipTier: 'Gold',
+    name: authUser ? `${authUser.first_name} ${authUser.last_name}`.trim() || authUser.email : 'Guest',
+    email: authUser?.email || 'guest@example.com',
+    phone: authUser?.phone || '+1 (555) 000-0000',
+    memberSince: '2024',
+    totalBookings: 0,
+    loyaltyPoints: 0,
+    membershipTier: 'Silver',
     preferences: {
       roomType: 'Suite',
       bedType: 'King',
@@ -86,15 +89,15 @@ const UserDashboard: React.FC = () => {
   });
 
   const [profileData, setProfileData] = useState({
-    name: 'John Doe',
-    email: 'john.doe@example.com',
-    phone: '+1 (555) 123-4567',
+    name: authUser ? `${authUser.first_name} ${authUser.last_name}`.trim() || authUser.email : '',
+    email: authUser?.email || '',
+    phone: authUser?.phone || '',
     address: {
-      street: '123 Main Street',
-      city: 'New York',
-      state: 'NY',
-      zipCode: '10001',
-      country: 'United States'
+      street: '',
+      city: '',
+      state: '',
+      zipCode: '',
+      country: ''
     },
     profilePicture: null as File | null
   });
@@ -107,41 +110,33 @@ const UserDashboard: React.FC = () => {
 
   const [showPasswordSection, setShowPasswordSection] = useState(false);
 
-  const [bookings] = useState<Booking[]>([
-    {
-      id: '1',
-      hotelName: 'LuxuryStay Grand Hotel',
-      roomType: 'Deluxe Suite',
-      checkIn: '2024-12-15',
-      checkOut: '2024-12-18',
-      guests: 2,
-      status: 'confirmed',
-      totalAmount: 899,
-      image: '/homepage.jpg'
-    },
-    {
-      id: '2',
-      hotelName: 'Ocean View Resort',
-      roomType: 'Premium Room',
-      checkIn: '2024-11-20',
-      checkOut: '2024-11-23',
-      guests: 1,
-      status: 'pending',
-      totalAmount: 650,
-      image: '/homepage.jpg'
-    },
-    {
-      id: '3',
-      hotelName: 'Mountain Retreat',
-      roomType: 'Standard Room',
-      checkIn: '2024-10-10',
-      checkOut: '2024-10-12',
-      guests: 3,
-      status: 'cancelled',
-      totalAmount: 450,
-      image: '/homepage.jpg'
-    }
-  ]);
+  const [bookings, setBookings] = useState<Booking[]>([]);
+
+  useEffect(() => {
+    const fetchBookings = async () => {
+      try {
+        const response = await api.getBookingHistory();
+        if (response.ok) {
+          const data = await response.json();
+          const mapped = (data.bookings || []).map((b: any) => ({
+            id: b.id || b.booking_id || '',
+            hotelName: 'LuxuryStay Grand Hotel',
+            roomType: b.room_type || 'Standard',
+            checkIn: b.check_in || b.checkIn || '',
+            checkOut: b.check_out || b.checkOut || '',
+            guests: b.guests || b.adults || 1,
+            status: b.status || 'confirmed',
+            totalAmount: b.total_amount || b.totalAmount || 0,
+            image: '/homepage.jpg',
+          }));
+          setBookings(mapped);
+        }
+      } catch {
+        // fallback to empty
+      }
+    };
+    fetchBookings();
+  }, []);
 
   const [payments] = useState<Payment[]>([
     {

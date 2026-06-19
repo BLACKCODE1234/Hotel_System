@@ -70,70 +70,96 @@ interface BookingConfirmation {
   confirmationDate: string;
 }
 
+const roomNames: Record<string, string> = {
+  standard: 'Standard Room',
+  deluxe: 'Deluxe Ocean View',
+  executive: 'Executive Suite',
+  presidential: 'Presidential Suite',
+};
+
+const roomTypes: Record<string, string> = {
+  standard: 'Standard',
+  deluxe: 'Deluxe',
+  executive: 'Executive',
+  presidential: 'Presidential',
+};
+
 const BookingConfirmationPage: React.FC = () => {
   const navigate = useNavigate();
   const [booking, setBooking] = useState<BookingConfirmation | null>(null);
   const [isDownloading, setIsDownloading] = useState(false);
 
   useEffect(() => {
-    // In a real app, this would come from the booking process or API
-    // For demo purposes, we'll create mock confirmation data
-    const mockBooking: BookingConfirmation = {
-      bookingId: 'LGH-' + Math.random().toString(36).substr(2, 9).toUpperCase(),
-      hotel: {
-        name: 'Luxury Grand Hotel',
-        location: 'Accra, Ghana',
-        address: '123 Independence Avenue, Accra Central, Ghana',
-        rating: 4.8,
-        image: '/hotel-exterior.jpg'
-      },
-      room: {
-        name: 'Deluxe Ocean View',
-        type: 'Deluxe',
-        image: '/room-deluxe-1.jpg',
-        amenities: ['Ocean View', 'Free Wi-Fi', 'Air Conditioning', 'Mini Bar', 'Balcony']
-      },
-      dates: {
-        checkIn: '2024-12-15',
-        checkOut: '2024-12-18',
-        nights: 3
-      },
-      guests: {
-        adults: 2,
-        children: 0,
-        total: 2
-      },
-      pricing: {
-        roomRate: 279,
-        nights: 3,
-        roomTotal: 837,
-        services: [
-          { name: 'Airport Transfer', price: 45 },
-          { name: 'Daily Breakfast', price: 75 }
-        ],
-        servicesTotal: 120,
-        subtotal: 957,
-        taxes: 115,
-        serviceFee: 25,
-        discount: 96, // 10% promo discount
-        total: 1001
-      },
-      guest: {
-        firstName: 'John',
-        lastName: 'Doe',
-        email: 'john.doe@example.com',
-        phone: '+1 (555) 123-4567'
-      },
-      payment: {
-        method: 'Visa',
-        last4: '4242',
-        amount: 1001
-      },
-      status: 'confirmed',
-      confirmationDate: new Date().toISOString()
-    };
+    const storedBookingData = localStorage.getItem('bookingData');
+    const storedBookings = localStorage.getItem('userBookings');
+    const paymentData = storedBookings ? JSON.parse(storedBookings) : null;
+    const latestPayment = Array.isArray(paymentData) && paymentData.length > 0
+      ? paymentData[paymentData.length - 1]
+      : null;
 
-    setBooking(mockBooking);
+    if (storedBookingData) {
+      const data = JSON.parse(storedBookingData);
+      const roomType = data.roomType || 'deluxe';
+      const nights = data.nights || 1;
+      const roomRate = data.roomRate || 229;
+      const roomTotal = roomRate * nights;
+      const taxes = Math.round(roomTotal * 0.12);
+      const total = roomTotal + taxes;
+
+      setBooking({
+        bookingId: latestPayment?.bookingId || 'LGH-' + Math.random().toString(36).substr(2, 9).toUpperCase(),
+        hotel: {
+          name: 'Luxury Grand Hotel',
+          location: 'Accra, Ghana',
+          address: '123 Independence Avenue, Accra Central, Ghana',
+          rating: 4.8,
+          image: '/hotel-exterior.jpg',
+        },
+        room: {
+          name: roomNames[roomType] || 'Deluxe Ocean View',
+          type: roomTypes[roomType] || 'Deluxe',
+          image: '/room-deluxe-1.jpg',
+          amenities: ['Free Wi-Fi', 'Air Conditioning', 'Mini Bar', 'Ocean View', 'Balcony'],
+        },
+        dates: {
+          checkIn: data.checkIn || '2024-12-15',
+          checkOut: data.checkOut || '2024-12-18',
+          nights,
+        },
+        guests: {
+          adults: parseInt(data.adults) || 2,
+          children: parseInt(data.children) || 0,
+          total: parseInt(data.adults) + parseInt(data.children) || 2,
+        },
+        pricing: {
+          roomRate,
+          nights,
+          roomTotal,
+          services: [],
+          servicesTotal: 0,
+          subtotal: roomTotal,
+          taxes,
+          serviceFee: 0,
+          discount: 0,
+          total,
+        },
+        guest: {
+          firstName: data.firstName || 'Guest',
+          lastName: data.lastName || '',
+          email: data.email || 'guest@example.com',
+          phone: data.phone || '',
+        },
+        payment: {
+          method: latestPayment?.cardType || 'Credit Card',
+          last4: latestPayment?.lastFour || '****',
+          amount: latestPayment?.amount || total,
+        },
+        status: 'confirmed',
+        confirmationDate: new Date().toISOString(),
+      });
+    } else {
+      setBooking(null);
+    }
   }, []);
 
   const handleDownloadReceipt = async () => {
