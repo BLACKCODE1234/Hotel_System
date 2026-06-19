@@ -88,3 +88,59 @@ def create_booking(user_email: str, room_type: str, in_date: str, out_date: str,
     finally:
         cursor.close()
         db.close()
+
+
+def get_all_bookings():
+    db = database_connection()
+    cursor = get_cursor(db)
+    try:
+        cursor.execute("""
+            SELECT b.booking_id, b.user_email AS email, b.room_type, b.in_date AS check_in,
+                   b.out_date AS check_out, b.status, b.created_at AS booking_date,
+                   p.amount AS total_amount, p.payment_method
+            FROM bookings b
+            LEFT JOIN payments p ON b.booking_id::text = p.booking_id::text
+            ORDER BY b.created_at DESC
+        """)
+        return cursor.fetchall()
+    finally:
+        cursor.close()
+        db.close()
+
+
+def update_booking_status(booking_id: str, status: str):
+    db = database_connection()
+    cursor = get_cursor(db)
+    try:
+        cursor.execute(
+            "UPDATE bookings SET status = %s WHERE booking_id = %s RETURNING *",
+            (status, booking_id),
+        )
+        db.commit()
+        return cursor.fetchone()
+    except Exception:
+        db.rollback()
+        raise
+    finally:
+        cursor.close()
+        db.close()
+
+
+def get_booking_stats():
+    db = database_connection()
+    cursor = get_cursor(db)
+    try:
+        cursor.execute("""
+            SELECT
+                COUNT(*) AS total,
+                COUNT(*) FILTER (WHERE status = 'confirmed') AS confirmed,
+                COUNT(*) FILTER (WHERE status = 'pending') AS pending,
+                COUNT(*) FILTER (WHERE status = 'cancelled') AS cancelled,
+                COALESCE(SUM(p.amount), 0) AS total_revenue
+            FROM bookings b
+            LEFT JOIN payments p ON b.booking_id::text = p.booking_id::text
+        """)
+        return cursor.fetchone()
+    finally:
+        cursor.close()
+        db.close()

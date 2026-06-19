@@ -113,3 +113,47 @@ class PaymentRequest(BaseModel):
     payment_data: Optional[dict[str, Any]] = None
     payment_method: str
     total_amount: Decimal
+
+
+class RoomCreate(BaseModel):
+    room_number: str
+    name: str
+    type: str
+    description: str = ""
+    price_base: Decimal = Decimal("0")
+    price_weekend: Decimal = Decimal("0")
+    capacity: int = 2
+    size_sqm: int = 0
+    bed_type: str = ""
+    amenities: list[str] = []
+    floor: int = 1
+
+
+class RoomStatusUpdate(BaseModel):
+    status: str
+
+
+class BookingStatusUpdate(BaseModel):
+    status: str
+
+
+class TaskCreate(BaseModel):
+    title: str
+    description: str = ""
+    priority: str = "medium"
+    assigned_to: str = ""
+    room_number: str = ""
+    department: str = ""
+    due_time: str = ""
+
+
+class TaskStatusUpdate(BaseModel):
+    status: str
+
+
+class ChecklistToggle(BaseModel):
+    completed: bool
+
+
+class ClockInOut(BaseModel):
+    pass

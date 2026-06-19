@@ -8,8 +8,11 @@ from fastapi.responses import JSONResponse
 from router.admin_router import router as admin_router
 from router.auth_router import router as auth_router
 from router.booking_router import router as booking_router
+from router.hotel_router import router as hotel_router
 from router.otp_router import router as otp_router
 from router.payment_router import router as payment_router
+from router.room_router import router as room_router
+from router.staff_router import router as staff_router
 from router.user_router import router as user_router
 
 load_dotenv()
@@ -44,6 +47,9 @@ app.include_router(booking_router)
 app.include_router(user_router)
 app.include_router(admin_router)
 app.include_router(payment_router)
+app.include_router(room_router)
+app.include_router(hotel_router)
+app.include_router(staff_router)
 
 
 @app.get("/health")
