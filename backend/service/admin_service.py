@@ -18,16 +18,26 @@ def create_admin_account(data: CreateAdmin):
         hashed_password = hash_password(data.password)
         create_user(data.first_name, data.last_name, data.email, hashed_password, role="admin")
     except Exception:
+        logger.exception(
+            "Error creating admin account for email: %s",
+            data.email, 
+        )
         raise HTTPException(status_code=500, detail={"message": "Server error"})
 
     try:
         from service.otp_service import send_otp
         send_otp(OTPRequest(email=data.email))
+        otp_sent = True
     except Exception:
-        logger.exception("Error sending OTP to admin",data.email)
-
-    return {"message": "Admin created successfully. A verification email has been sent to the admin."}
-
+        logger.exception(
+            "Error sending OTP to admin for email: %s",
+            data.email, 
+        )
+        otp_sent = False
+    return {
+    "success": True,
+    "otp_sent": otp_sent
+}
 
 def remove_admin(data: DeleteAdmin):
     if not data.email:
@@ -35,8 +45,12 @@ def remove_admin(data: DeleteAdmin):
 
     try:
         result = delete_admin_by_email(data.email)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail={"error": str(e)})
+    except Exception:
+        logger.exception(
+            "Error deleting admin account for email: %s",
+            data.email, 
+        )
+        raise HTTPException(status_code=500, detail={"message":"Server error"})
 
     if result is None:
         raise HTTPException(status_code=404, detail={"message": "User not found"})
@@ -49,9 +63,14 @@ def remove_admin(data: DeleteAdmin):
 def get_admin_list():
     try:
         admins = list_admins()
-    except Exception as e:
-        raise HTTPException(status_code=500, detail={"message": f"Error listing admins: {str(e)}"})
-
+    except Exception:
+        logger.exception("Error listing admins")
+        raise HTTPException(
+            status_code=500,
+            detail={
+                "message": "Server error"
+            }
+        )
     return [
         {
             "id": admin["id"],
