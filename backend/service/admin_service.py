@@ -1,9 +1,11 @@
 from fastapi import HTTPException
+import logging
 
 from models.schemas import CreateAdmin, DeleteAdmin, OTPRequest
 from repository.user_repository import create_user, delete_admin_by_email, email_exists, list_admins
 from utility.security import hash_password
 
+logger = logging.getLogger(__name__)
 
 def create_admin_account(data: CreateAdmin):
     if not all([data.first_name, data.last_name, data.email, data.password]):
@@ -22,7 +24,7 @@ def create_admin_account(data: CreateAdmin):
         from service.otp_service import send_otp
         send_otp(OTPRequest(email=data.email))
     except Exception:
-        pass
+        logger.exception("Error sending OTP to admin",data.email)
 
     return {"message": "Admin created successfully. A verification email has been sent to the admin."}
 
