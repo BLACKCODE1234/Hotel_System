@@ -1,6 +1,6 @@
 from fastapi import HTTPException
 
-from models.schemas import CreateAdmin, DeleteAdmin
+from models.schemas import CreateAdmin, DeleteAdmin, OTPRequest
 from repository.user_repository import create_user, delete_admin_by_email, email_exists, list_admins
 from utility.security import hash_password
 
@@ -18,7 +18,13 @@ def create_admin_account(data: CreateAdmin):
     except Exception:
         raise HTTPException(status_code=500, detail={"message": "Server error"})
 
-    return {"message": "Admin created successfully"}
+    try:
+        from service.otp_service import send_otp
+        send_otp(OTPRequest(email=data.email))
+    except Exception:
+        pass
+
+    return {"message": "Admin created successfully. A verification email has been sent to the admin."}
 
 
 def remove_admin(data: DeleteAdmin):
