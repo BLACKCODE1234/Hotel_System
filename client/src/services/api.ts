@@ -199,4 +199,83 @@ export const api = {
       method: 'POST',
       body: JSON.stringify({ email }),
     }),
+
+  // --- Rooms ---
+  getRooms: (params?: Record<string, string>) =>
+    apiFetch('/rooms?' + new URLSearchParams(params || {}).toString(), {
+      method: 'GET',
+    }),
+
+  getRoomById: (id: number) =>
+    apiFetch(`/rooms/${id}`, {
+      method: 'GET',
+    }),
+
+  // --- Hotels ---
+  getHotelById: (id: number) =>
+    apiFetch(`/hotels/${id}`, {
+      method: 'GET',
+    }),
+
+  // --- Staff ---
+  getStaffTasks: () =>
+    apiFetch('/staff/tasks', { method: 'GET' }),
+
+  updateTaskStatus: (taskId: number, status: string) =>
+    apiFetch(`/staff/tasks/${taskId}/status`, {
+      method: 'PATCH',
+      body: JSON.stringify({ status }),
+    }),
+
+  getStaffChecklist: () =>
+    apiFetch('/staff/checklist', { method: 'GET' }),
+
+  toggleChecklistItem: (itemId: number, completed: boolean) =>
+    apiFetch(`/staff/checklist/${itemId}`, {
+      method: 'PATCH',
+      body: JSON.stringify({ completed }),
+    }),
+
+  getStaffSchedule: () =>
+    apiFetch('/staff/schedule', { method: 'GET' }),
+
+  staffClockIn: () =>
+    apiFetch('/staff/clock-in', { method: 'POST', body: '{}' }),
+
+  staffClockOut: () =>
+    apiFetch('/staff/clock-out', { method: 'POST', body: '{}' }),
+
+  getStaffClockStatus: () =>
+    apiFetch('/staff/clock-status', { method: 'GET' }),
+
+  // --- Admin Dashboard ---
+  getAdminDashboardStats: () =>
+    apiFetch('/admin/dashboard/stats', { method: 'GET' }),
+
+  getAdminBookings: () =>
+    apiFetch('/admin/bookings', { method: 'GET' }),
+
+  updateBookingStatus: (bookingId: string, status: string) =>
+    apiFetch(`/admin/bookings/${bookingId}/status`, {
+      method: 'PATCH',
+      body: JSON.stringify({ status }),
+    }),
+
+  getAdminRooms: () =>
+    apiFetch('/admin/rooms', { method: 'GET' }),
+
+  createRoom: (data: Record<string, unknown>) =>
+    apiFetch('/admin/rooms', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+
+  updateRoomStatus: (roomId: number, status: string) =>
+    apiFetch(`/admin/rooms/${roomId}/status`, {
+      method: 'PATCH',
+      body: JSON.stringify({ status }),
+    }),
+
+  getAdminRoomStats: () =>
+    apiFetch('/admin/rooms/stats', { method: 'GET' }),
 };
