@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { api } from '../services/api';
 import { 
   CheckSquare, 
   Clock, 
@@ -48,6 +49,7 @@ interface StaffContact {
 }
 
 const StaffDashboard: React.FC = () => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('overview');
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const [tasks, setTasks] = useState<Task[]>([
@@ -230,14 +232,17 @@ const StaffDashboard: React.FC = () => {
                         <span>Account Settings</span>
                       </Link>
                       <div className="border-t border-gray-100 my-1" />
-                      <Link
-                        to="/login"
-                        className="flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50"
-                        onClick={() => setShowProfileDropdown(false)}
+                      <button
+                        onClick={async () => {
+                          setShowProfileDropdown(false);
+                          await api.logout();
+                          navigate('/login');
+                        }}
+                        className="flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 w-full text-left"
                       >
                         <LogOut className="w-4 h-4" />
                         <span>Sign Out</span>
-                      </Link>
+                      </button>
                     </div>
                   </div>
                 )}
