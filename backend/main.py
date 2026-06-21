@@ -4,6 +4,9 @@ from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
 
 from router.admin_router import router as admin_router
 from router.auth_router import router as auth_router
@@ -22,7 +25,10 @@ allowed_origins = [origin.strip() for origin in frontend_origins.split(",") if o
 if "*" in allowed_origins:
     allowed_origins = ["http://localhost:3000"]
 
+limiter = Limiter(key_func=get_remote_address)
 app = FastAPI(title="Hotel System API")
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 
 @app.exception_handler(HTTPException)

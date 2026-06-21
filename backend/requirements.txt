@@ -7,3 +7,4 @@ argon2-cffi
 uvicorn
 pydantic
 email-validator
+slowapi

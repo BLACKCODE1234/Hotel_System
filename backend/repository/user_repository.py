@@ -62,7 +62,7 @@ def get_user_by_email_and_role(email: str, role: str):
         db.close()
 
 
-def create_user(firstname: str, lastname: str, email: str, hashed_password: str, role: str = "user"):
+def create_user(first_name: str, last_name: str, email: str, hashed_password: str, role: str = "user"):
     db = database_connection()
     cursor = get_cursor(db)
     try:
@@ -71,7 +71,7 @@ def create_user(firstname: str, lastname: str, email: str, hashed_password: str,
             INSERT INTO loginusers (first_name, last_name, email, password, role)
             VALUES (%s, %s, %s, %s, %s)
             """,
-            (firstname, lastname, email, hashed_password, role),
+            (first_name, last_name, email, hashed_password, role),
         )
         db.commit()
     except Exception:

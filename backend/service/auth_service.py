@@ -29,8 +29,8 @@ def _login_response(user: dict, request: Request, response: Response, default_ro
         "user": {
             "email": user["email"],
             "role": role,
-            "firstname": user.get("first_name"),
-            "lastname": user.get("last_name"),
+            "first_name": user.get("first_name"),
+            "last_name": user.get("last_name"),
         },
     }
 
@@ -58,7 +58,7 @@ def signup(data: UserSignup, request: Request, response: Response):
     if email_exists(data.email):
         raise HTTPException(
             status_code=400,
-            detail={"message": "Account already exist", "status": "error"},
+            detail={"message": "Account already exists", "status": "error"},
         )
 
     try:
@@ -67,7 +67,7 @@ def signup(data: UserSignup, request: Request, response: Response):
     except Exception:
         raise HTTPException(
             status_code=500,
-            detail={"message": "Server is down", "status": "error"},
+            detail={"message": "Internal server error, please try again", "status": "error"},
         )
 
     access_token = generate_access_token(data.email, role="user")
@@ -97,13 +97,13 @@ def login(data: UserLogin, request: Request, response: Response):
     except Exception:
         raise HTTPException(
             status_code=500,
-            detail={"message": "Server is down", "status": "error"},
+            detail={"message": "Internal server error, please try again", "status": "error"},
         )
 
     if not user:
         raise HTTPException(
             status_code=404,
-            detail={"message": "Account not found.", "status": "error"},
+            detail={"message": "Account not found", "status": "error"},
         )
 
     if not verify_password(data.password, user["password"]):
@@ -128,7 +128,7 @@ def staff_login(data: StaffLogin, request: Request, response: Response):
     except Exception:
         raise HTTPException(
             status_code=500,
-            detail={"message": "Server error", "status": "error"},
+            detail={"message": "Internal server error, please try again", "status": "error"},
         )
 
     if not user:
@@ -158,7 +158,7 @@ def admin_login(data: AdminLogin, request: Request, response: Response):
     except Exception:
         raise HTTPException(
             status_code=500,
-            detail={"message": "something happened", "status": "error"},
+            detail={"message": "Internal server error, please try again", "status": "error"},
         )
 
     if not user:
@@ -170,7 +170,7 @@ def admin_login(data: AdminLogin, request: Request, response: Response):
     if not verify_password(data.password, user["password"]):
         raise HTTPException(
             status_code=401,
-            detail={"message": "Password Incorrect", "status": "error"},
+            detail={"message": "Password incorrect", "status": "error"},
         )
 
     update_last_login(data.admin_id)
