@@ -5,7 +5,7 @@ def email_exists(email: str) -> bool:
     db = database_connection()
     cursor = get_cursor(db)
     try:
-        cursor.execute("SELECT email FROM loginusers WHERE email = %s", (email,))
+        cursor.execute("SELECT email FROM users WHERE email = %s", (email,))
         return cursor.fetchone() is not None
     finally:
         cursor.close()
@@ -19,7 +19,7 @@ def get_user_by_email(email: str):
         cursor.execute(
             """
             SELECT first_name, last_name, email, password, role, phone, verified
-            FROM loginusers
+            FROM users
             WHERE email = %s
             """,
             (email,),
@@ -35,7 +35,7 @@ def get_user_credentials(email: str):
     cursor = get_cursor(db)
     try:
         cursor.execute(
-            "SELECT password, role, email, first_name, last_name, verified FROM loginusers WHERE email = %s",
+            "SELECT password, role, email, first_name, last_name, verified FROM users WHERE email = %s",
             (email,),
         )
         return cursor.fetchone()
@@ -51,7 +51,7 @@ def get_user_by_email_and_role(email: str, role: str):
         cursor.execute(
             """
             SELECT password, role, email, first_name, last_name, verified
-            FROM loginusers
+            FROM users
             WHERE email = %s AND role = %s
             """,
             (email, role),
@@ -68,7 +68,7 @@ def create_user(first_name: str, last_name: str, email: str, hashed_password: st
     try:
         cursor.execute(
             """
-            INSERT INTO loginusers (first_name, last_name, email, password, role)
+            INSERT INTO users (first_name, last_name, email, password, role)
             VALUES (%s, %s, %s, %s, %s)
             """,
             (first_name, last_name, email, hashed_password, role),
@@ -87,7 +87,7 @@ def update_last_login(email: str):
     cursor = get_cursor(db)
     try:
         cursor.execute(
-            "UPDATE loginusers SET last_login = NOW() WHERE email = %s",
+            "UPDATE users SET last_login = NOW() WHERE email = %s",
             (email,),
         )
         db.commit()
@@ -103,7 +103,7 @@ def mark_verified(email: str):
     cursor = get_cursor(db)
     try:
         cursor.execute(
-            "UPDATE loginusers SET verified = TRUE WHERE email = %s",
+            "UPDATE users SET verified = TRUE WHERE email = %s",
             (email,),
         )
         db.commit()
@@ -122,7 +122,7 @@ def get_user_details(email: str):
         cursor.execute(
             """
             SELECT first_name, last_name, email, role, phone
-            FROM loginusers
+            FROM users
             WHERE email = %s
             """,
             (email,),
@@ -151,7 +151,7 @@ def update_user_profile(email: str, fields: dict):
     cursor = get_cursor(db)
     try:
         cursor.execute(
-            f"UPDATE loginusers SET {', '.join(update_parts)} WHERE email = %s",
+            "UPDATE users SET {', '.join(update_parts)} WHERE email = %s",
             tuple(params),
         )
         db.commit()
@@ -167,13 +167,13 @@ def delete_admin_by_email(email: str):
     db = database_connection()
     cursor = get_cursor(db)
     try:
-        cursor.execute("SELECT role FROM loginusers WHERE email = %s", (email,))
+        cursor.execute("SELECT role FROM users WHERE email = %s", (email,))
         user = cursor.fetchone()
         if not user:
             return None
         if user["role"] != "admin":
             return "not_admin"
-        cursor.execute("DELETE FROM loginusers WHERE email = %s", (email,))
+        cursor.execute("DELETE FROM users WHERE email = %s", (email,))
         db.commit()
         return "deleted"
     except Exception:
@@ -191,7 +191,7 @@ def list_admins():
         cursor.execute(
             """
             SELECT id, first_name, last_name, email, role, last_login, status
-            FROM loginusers
+            FROM users
             WHERE role = 'admin'
             ORDER BY created_at DESC
             """
