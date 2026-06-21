@@ -38,7 +38,7 @@ const BookingPage: React.FC = () => {
     breakfast: false
   });
   
-  const currentStep = 1; // Static for now, can be made dynamic later
+  const [currentStep, setCurrentStep] = useState(1); // Static for now, can be made dynamic later
 
   // Calculate nights and weekend pricing
   useEffect(() => {
