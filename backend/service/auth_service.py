@@ -36,10 +36,10 @@ def _login_response(user: dict, request: Request, response: Response, default_ro
 
 
 def signup(data: UserSignup, request: Request, response: Response):
-    if len(data.password) < 6:
+    if len(data.password) < 8:
         raise HTTPException(
             status_code=400,
-            detail={"message": "Password should be more than 6 characters", "status": "error"},
+            detail={"message": "Password should be at least 8 characters", "status": "error"},
         )
 
     confirm = data.confirm_password
