@@ -1,16 +1,92 @@
-def check_password_min_length(v: str) -> str:
-    if len(v) < 4:
-        raise ValueError("Password must be at least 4 characters")
-    return v
+from datetime import date
+
+from pydantic import field_validator, model_validator
 
 
-def check_name_non_empty(v: str) -> str:
-    if not v.strip():
-        raise ValueError("Name cannot be empty")
-    return v
+class UserValidators:
+
+    @field_validator("password")
+    @classmethod
+    def validate_password(cls, value: str):
+        value = value.strip()
+
+        if len(value) < 4:
+            raise ValueError("Password must be at least 4 characters")
+
+        return value
+
+    @field_validator("first_name", "last_name")
+    @classmethod
+    def validate_name(cls, value: str):
+        value = value.strip()
+
+        if not value:
+            raise ValueError("Name cannot be empty")
+
+        return value
+
+    @field_validator("mobile_number")
+    @classmethod
+    def validate_phone(cls, value: str):
+        value = value.strip()
+
+        if not value:
+            raise ValueError("Phone number cannot be empty")
+
+        return value
+
+    @model_validator(mode="after")
+    def passwords_match(self):
+        if self.password != self.confirm_password:
+            raise ValueError("Passwords do not match")
+
+        return self
 
 
-def check_phone_non_empty(v: str) -> str:
-    if not v.strip():
-        raise ValueError("Phone number cannot be empty")
-    return v
+class CreateAdminValidators:
+
+    @field_validator("password")
+    @classmethod
+    def validate_password(cls, value: str):
+        value = value.strip()
+
+        if len(value) < 4:
+            raise ValueError("Password must be at least 4 characters")
+
+        return value
+
+    @field_validator("first_name", "last_name")
+    @classmethod
+    def validate_name(cls, value: str):
+        value = value.strip()
+
+        if not value:
+            raise ValueError("Name cannot be empty")
+
+        return value
+
+
+class ProfileValidators:
+
+    @model_validator(mode="after")
+    def passwords_match(self):
+        if self.new_password:
+            if not self.confirm_password:
+                raise ValueError("Confirm password is required")
+
+            if self.new_password != self.confirm_password:
+                raise ValueError("Passwords do not match")
+
+        return self
+
+
+class BookingValidators:
+
+    @model_validator(mode="after")
+    def validate_dates(self):
+        if self.out_date <= self.in_date:
+            raise ValueError(
+                "Check-out date must be after check-in date"
+            )
+
+        return self

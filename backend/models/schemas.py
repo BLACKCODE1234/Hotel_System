@@ -1,33 +1,24 @@
 from datetime import date
-from typing import Any, Optional
 from decimal import Decimal
+from typing import Any, Optional
 
-from pydantic import BaseModel, EmailStr, Field, field_validator, model_validator
+from pydantic import BaseModel, EmailStr, Field
 
 from utility.validators import (
-    check_name_non_empty,
-    check_password_min_length,
-    check_phone_non_empty,
+    UserValidators,
+    CreateAdminValidators,
+    ProfileValidators,
+    BookingValidators,
 )
 
 
-class UserSignup(BaseModel):
+class UserSignup(BaseModel, UserValidators):
     email: EmailStr
     password: str
+    confirm_password: str
     mobile_number: str
     first_name: str
     last_name: str
-    confirm_password: str
-
-    _password_val = field_validator("password", mode="before")(check_password_min_length)
-    _name_val = field_validator("first_name", "last_name", mode="before")(check_name_non_empty)
-    _phone_val = field_validator("mobile_number", mode="before")(check_phone_non_empty)
-
-    @model_validator(mode="after")
-    def passwords_match(self) -> "UserSignup":
-        if self.password != self.confirm_password:
-            raise ValueError("Passwords do not match")
-        return self
 
 
 class UserLogin(BaseModel):
@@ -45,67 +36,60 @@ class OTPVerify(BaseModel):
 
 
 class StaffLogin(BaseModel):
-    email: str
+    email: EmailStr
     password: str
 
 
 class AdminLogin(BaseModel):
-    email: str
+    email: EmailStr
     password: str
 
 
-class BookingCreate(BaseModel):
+class BookingCreate(BaseModel, BookingValidators):
     first_name: str
     last_name: str
     email: EmailStr
     phone: str
+
     street: Optional[str] = None
     city: Optional[str] = None
     country: Optional[str] = None
-    in_date: date  # Parsed + validated automatically
+
+    in_date: date
     out_date: date
+
     adult: int = Field(ge=1)
-    children: int = Field(ge=0)
-    rooms: int = Field(ge=1)
+    children: int = Field(default=0, ge=0)
+    rooms: int = Field(default=1, ge=1)
+
     room_type: str
     special_request: Optional[str] = None
-
 
 
 class CancelBooking(BaseModel):
     booking_id: str
 
 
-class CreateAdmin(BaseModel):
+class CreateAdmin(BaseModel, CreateAdminValidators):
     first_name: str
     last_name: str
     email: EmailStr
     password: str
-
-    _password_val = field_validator("password", mode="before")(check_password_min_length)
-    _name_val = field_validator("first_name", "last_name", mode="before")(check_name_non_empty)
 
 
 class DeleteAdmin(BaseModel):
     email: EmailStr
 
 
-class ProfileUpdate(BaseModel):
+class ProfileUpdate(BaseModel, ProfileValidators):
     first_name: Optional[str] = None
     last_name: Optional[str] = None
     email: Optional[EmailStr] = None
     phone: Optional[str] = None
+
     current_password: Optional[str] = None
     new_password: Optional[str] = None
     confirm_password: Optional[str] = None
-
-    @model_validator(mode="after")
-    def passwords_match(self) -> "ProfileUpdate":
-        if self.new_password and self.new_password != self.confirm_password:
-            raise ValueError("Passwords do not match")
-        return self
-
-
 
 
 class PaymentRequest(BaseModel):
@@ -120,12 +104,17 @@ class RoomCreate(BaseModel):
     name: str
     type: str
     description: str = ""
+
     price_base: Decimal = Decimal("0")
     price_weekend: Decimal = Decimal("0")
+
     capacity: int = 2
     size_sqm: int = 0
+
     bed_type: str = ""
-    amenities: list[str] = []
+
+    amenities: list[str] = Field(default_factory=list)
+
     floor: int = 1
 
 
