@@ -11,7 +11,7 @@ class UserValidators:
         value = value.strip()
 
         if len(value) < 4:
-            raise ValueError("Password must be at least 4 characters")
+            raise ValueError("Pin must be at least 4 characters")
 
         return value
 
@@ -38,7 +38,7 @@ class UserValidators:
     @model_validator(mode="after")
     def passwords_match(self):
         if self.password != self.confirm_password:
-            raise ValueError("Passwords do not match")
+            raise ValueError("Pins do not match")
 
         return self
 
@@ -51,7 +51,7 @@ class CreateAdminValidators:
         value = value.strip()
 
         if len(value) < 4:
-            raise ValueError("Password must be at least 4 characters")
+            raise ValueError("Pin must be at least 4 characters")
 
         return value
 
@@ -72,10 +72,10 @@ class ProfileValidators:
     def passwords_match(self):
         if self.new_password:
             if not self.confirm_password:
-                raise ValueError("Confirm password is required")
+                raise ValueError("Confirm pin is required")
 
             if self.new_password != self.confirm_password:
-                raise ValueError("Passwords do not match")
+                raise ValueError("Pins do not match")
 
         return self
 

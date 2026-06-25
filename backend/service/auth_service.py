@@ -25,7 +25,6 @@ def _login_response(user: dict, request: Request, response: Response, default_ro
 
     return {
         "message": "Login successful",
-        
         "user": {
             "email": user["email"],
             "role": role,
