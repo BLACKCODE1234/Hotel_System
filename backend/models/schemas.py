@@ -5,7 +5,6 @@ from decimal import Decimal
 from pydantic import BaseModel, EmailStr, Field, field_validator
 
 
-from pydantic import BaseModel, EmailStr, Field, field_validator
 
 
 class UserSignup(BaseModel):
