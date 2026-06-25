@@ -4,9 +4,13 @@ from pydantic import BaseModel, field_validator
 class CommonValidators(BaseModel):
     @field_validator("password", check_fields=False)
     @classmethod
-    def password_min_length(cls, v: str) -> str:
-        if len(v) < 6:
-            raise ValueError("Password must be at least 8 characters")
+    def password_digits_only(cls, v: str) -> str:
+        if not v.isdigit():
+            raise ValueError("Password must contain only digits")
+
+        if len(v) < 4:
+            raise ValueError("Password must be at least 4 digits long")
+
         return v
 
     @field_validator("first_name", "last_name", check_fields=False)
