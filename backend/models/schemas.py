@@ -2,12 +2,16 @@ from datetime import date
 from typing import Any, Optional
 from decimal import Decimal
 
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, EmailStr, Field, field_validator, model_validator
 
-from utility.validators import CommonValidators
+from utility.validators import (
+    check_name_non_empty,
+    check_password_min_length,
+    check_phone_non_empty,
+)
 
 
-class UserSignup(CommonValidators):
+class UserSignup(BaseModel):
     email: EmailStr
     password: str
     mobile_number: str
@@ -15,6 +19,15 @@ class UserSignup(CommonValidators):
     last_name: str
     confirm_password: str
 
+    _password_val = field_validator("password", mode="before")(check_password_min_length)
+    _name_val = field_validator("first_name", "last_name", mode="before")(check_name_non_empty)
+    _phone_val = field_validator("mobile_number", mode="before")(check_phone_non_empty)
+
+    @model_validator(mode="after")
+    def passwords_match(self) -> "UserSignup":
+        if self.password != self.confirm_password:
+            raise ValueError("Passwords do not match")
+        return self
 
 
 class UserLogin(BaseModel):
@@ -69,6 +82,9 @@ class CreateAdmin(BaseModel):
     email: EmailStr
     password: str
 
+    _password_val = field_validator("password", mode="before")(check_password_min_length)
+    _name_val = field_validator("first_name", "last_name", mode="before")(check_name_non_empty)
+
 
 class DeleteAdmin(BaseModel):
     email: EmailStr
@@ -82,6 +98,12 @@ class ProfileUpdate(BaseModel):
     current_password: Optional[str] = None
     new_password: Optional[str] = None
     confirm_password: Optional[str] = None
+
+    @model_validator(mode="after")
+    def passwords_match(self) -> "ProfileUpdate":
+        if self.new_password and self.new_password != self.confirm_password:
+            raise ValueError("Passwords do not match")
+        return self
 
 
 

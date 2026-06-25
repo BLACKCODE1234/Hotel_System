@@ -33,7 +33,7 @@ def update_profile(email: str, data: ProfileUpdate):
                 status_code=400,
                 detail={"message": "New passwords do not match"},
             )
-        if len(new_password) < 8:
+        if len(new_password) < 4:
             raise HTTPException(
                 status_code=400,
                 detail={"message": "Password should be at least 8 characters"},

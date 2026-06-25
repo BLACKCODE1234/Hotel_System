@@ -25,7 +25,7 @@ def _login_response(user: dict, request: Request, response: Response, default_ro
 
     return {
         "message": "Login successful",
-        "access_token": access_token,
+        
         "user": {
             "email": user["email"],
             "role": role,
@@ -36,10 +36,10 @@ def _login_response(user: dict, request: Request, response: Response, default_ro
 
 
 def signup(data: UserSignup, request: Request, response: Response):
-    if len(data.password) < 8:
+    if len(data.password) < 4:
         raise HTTPException(
             status_code=400,
-            detail={"message": "Password should be at least 8 characters", "status": "error"},
+            detail={"message": "Password should be more than 4 characters", "status": "error"},
         )
 
     confirm = data.confirm_password
@@ -173,7 +173,7 @@ def admin_login(data: AdminLogin, request: Request, response: Response):
             detail={"message": "Password incorrect", "status": "error"},
         )
 
-    update_last_login(data.admin_id)
+    update_last_login(data.admin_id) in staff_login()
     return _login_response(user, request, response, default_role="admin")
 
 
