@@ -163,9 +163,9 @@ export const api = {
     last_name?: string;
     email?: string;
     phone?: string;
-    currentPassword?: string;
-    newPassword?: string;
-    confirmPassword?: string;
+    current_password?: string;
+    new_password?: string;
+    confirm_password?: string;
   }) =>
     apiFetch('/change-profile', {
       method: 'POST',
@@ -184,8 +184,8 @@ export const api = {
     }),
 
   createAdmin: (data: {
-    firstname: string;
-    lastname: string;
+    first_name: string;
+    last_name: string;
     email: string;
     password: string;
   }) =>

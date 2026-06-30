@@ -26,17 +26,17 @@ def update_profile(email: str, data: ProfileUpdate):
         if not current_password or not new_password:
             raise HTTPException(
                 status_code=400,
-                detail={"message": "Current and new pin are required"},
+                detail={"message": "Current and new password are required"},
             )
         if confirm_password and new_password != confirm_password:
             raise HTTPException(
                 status_code=400,
-                detail={"message": "New pins do not match"},
+                detail={"message": "New passwords do not match"},
             )
         if len(new_password) < 4:
             raise HTTPException(
                 status_code=400,
-                detail={"message": "Pin should be at least 6 characters"},
+                detail={"message": "Password should be at least 4 characters"},
             )
 
     try:
@@ -61,10 +61,10 @@ def update_profile(email: str, data: ProfileUpdate):
         fields["phone"] = data.phone
 
     if change_password_flag:
-        if not verify_password(current_password, user["pin"]):
+        if not verify_password(current_password, user["password"]):
             raise HTTPException(
                 status_code=400,
-                detail={"message": "Current pin is incorrect"},
+                detail={"message": "Current password is incorrect"},
             )
         fields["password"] = hash_password(new_password)
 

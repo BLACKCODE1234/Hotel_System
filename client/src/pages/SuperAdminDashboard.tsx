@@ -76,8 +76,8 @@ const SuperAdminDashboard: React.FC = () => {
 
     try {
       const response = await api.createAdmin({
-        firstname: formData.first_name,
-        lastname: formData.last_name,
+        first_name: formData.first_name,
+        last_name: formData.last_name,
         email: formData.email,
         password: formData.password,
       });

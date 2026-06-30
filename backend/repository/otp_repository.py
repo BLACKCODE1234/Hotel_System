@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime
 
 from configuration.settings import database_connection, get_cursor
 
@@ -43,8 +43,8 @@ def get_latest_otp(email: str):
     try:
         cursor.execute(
             """
-            SELECT id, otp_hash, expiry, used, created_at
-            FROM otp_table
+            SELECT id, otp_hash, expires_at, used, created_at
+            FROM email_otps
             WHERE email = %s
             ORDER BY created_at DESC
             LIMIT 1

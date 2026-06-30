@@ -40,6 +40,26 @@ const BookingPage: React.FC = () => {
   
   const [currentStep, setCurrentStep] = useState(1); // Static for now, can be made dynamic later
 
+  useEffect(() => {
+    const storedSelection = localStorage.getItem('selectedBooking');
+    if (!storedSelection) {
+      return;
+    }
+
+    try {
+      const selection = JSON.parse(storedSelection);
+      setFormData(prev => ({
+        ...prev,
+        checkIn: selection.checkIn || prev.checkIn,
+        checkOut: selection.checkOut || prev.checkOut,
+        adults: selection.guests || prev.adults,
+        roomType: (selection.room?.id || selection.room?.type || prev.roomType).toString().toLowerCase(),
+      }));
+    } catch (error) {
+      localStorage.removeItem('selectedBooking');
+    }
+  }, []);
+
   // Calculate nights and weekend pricing
   useEffect(() => {
     if (formData.checkIn && formData.checkOut) {
@@ -200,6 +220,7 @@ const BookingPage: React.FC = () => {
       phone: formData.phone,
     };
     localStorage.setItem('bookingData', JSON.stringify(paymentData));
+    localStorage.removeItem('selectedBooking');
     
     // Navigate to payment page
     navigate('/payment');

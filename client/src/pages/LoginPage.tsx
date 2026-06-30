@@ -50,8 +50,10 @@ const LoginPage: React.FC = () => {
 
       if (result.success) {
         const role = result.role;
-        if (role === 'admin' || role === 'staff') {
+        if (role === 'admin') {
           navigate('/admin');
+        } else if (role === 'staff') {
+          navigate('/staff');
         } else if (role === 'superadmin') {
           navigate('/superadmin');
         } else {

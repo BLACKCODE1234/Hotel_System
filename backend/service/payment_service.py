@@ -23,10 +23,16 @@ def process_payment(email: str, data: PaymentRequest):
         )
 
     user_email = email
-    in_date = data.booking_data.get("check_in")
-    out_date = data.booking_data.get("check_out")
-    room_type = data.booking_data.get("room_type")
+    in_date = data.booking_data.get("in_date") or data.booking_data.get("check_in") or data.booking_data.get("checkIn")
+    out_date = data.booking_data.get("out_date") or data.booking_data.get("check_out") or data.booking_data.get("checkOut")
+    room_type = data.booking_data.get("room_type") or data.booking_data.get("roomType")
     booking_status = "pending" if data.payment_method == "cash-front-desk" else "confirmed"
+
+    if not all([in_date, out_date, room_type]):
+        raise HTTPException(
+            status_code=400,
+            detail={"message": "Booking dates and room type are required"},
+        )
 
     try:
         booking = create_booking(user_email, room_type, in_date, out_date, booking_status)

@@ -68,26 +68,26 @@ const ProfilePage: React.FC = () => {
   }, []);
 
   const handlePasswordUpdate = async () => {
-    if (passwordData.newPassword !== passwordData.confirmPassword) {
+    if (passwordData.new_password !== passwordData.confirm_password) {
       alert('New passwords do not match!');
       return;
     }
 
-    if (passwordData.newPassword.length < 8) {
-      alert('Password must be at least 8 characters long!');
+    if (passwordData.new_password.length < 4) {
+      alert('Password must be at least 4 characters long!');
       return;
     }
 
     try {
       const response = await api.updateProfile({
-        currentPassword: passwordData.currentPassword,
-        newPassword: passwordData.newPassword,
-        confirmPassword: passwordData.confirmPassword
+        current_password: passwordData.current_password,
+        new_password: passwordData.new_password,
+        confirm_password: passwordData.confirm_password
       });
 
       if (response.ok) {
         alert('Password updated successfully!');
-        setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
+        setPasswordData({ current_password: '', new_password: '', confirm_password: '' });
         setShowPasswordSection(false);
       } else {
         const data = await response.json().catch(() => ({}));
@@ -308,8 +308,8 @@ const ProfilePage: React.FC = () => {
                           <label className="block text-sm font-medium text-gray-700 mb-2">Current Password</label>
                           <input
                             type="password"
-                            value={passwordData.currentPassword}
-                            onChange={(e) => setPasswordData({...passwordData, currentPassword: e.target.value})}
+                            value={passwordData.current_password}
+                            onChange={(e) => setPasswordData({...passwordData, current_password: e.target.value})}
                             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                           />
                         </div>
@@ -317,8 +317,8 @@ const ProfilePage: React.FC = () => {
                           <label className="block text-sm font-medium text-gray-700 mb-2">New Password</label>
                           <input
                             type="password"
-                            value={passwordData.newPassword}
-                            onChange={(e) => setPasswordData({...passwordData, newPassword: e.target.value})}
+                            value={passwordData.new_password}
+                            onChange={(e) => setPasswordData({...passwordData, new_password: e.target.value})}
                             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                           />
                         </div>
@@ -326,8 +326,8 @@ const ProfilePage: React.FC = () => {
                           <label className="block text-sm font-medium text-gray-700 mb-2">Confirm New Password</label>
                           <input
                             type="password"
-                            value={passwordData.confirmPassword}
-                            onChange={(e) => setPasswordData({...passwordData, confirmPassword: e.target.value})}
+                            value={passwordData.confirm_password}
+                            onChange={(e) => setPasswordData({...passwordData, confirm_password: e.target.value})}
                             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                           />
                         </div>

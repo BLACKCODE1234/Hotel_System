@@ -151,7 +151,7 @@ def update_user_profile(email: str, fields: dict):
     cursor = get_cursor(db)
     try:
         cursor.execute(
-            "UPDATE users SET {', '.join(update_parts)} WHERE email = %s",
+            f"UPDATE users SET {', '.join(update_parts)} WHERE email = %s",
             tuple(params),
         )
         db.commit()

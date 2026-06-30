@@ -116,14 +116,14 @@ def login(data: UserLogin, request: Request, response: Response):
 
 
 def staff_login(data: StaffLogin, request: Request, response: Response):
-    if not all([data.staff_id, data.password]):
+    if not all([data.email, data.password]):
         raise HTTPException(
             status_code=400,
             detail={"message": "All fields are required", "status": "error"},
         )
 
     try:
-        user = get_user_by_email_and_role(data.staff_id, "staff")
+        user = get_user_by_email_and_role(data.email, "staff")
     except Exception:
         raise HTTPException(
             status_code=500,
@@ -142,18 +142,19 @@ def staff_login(data: StaffLogin, request: Request, response: Response):
             detail={"message": "Password incorrect", "status": "error"},
         )
 
+    update_last_login(data.email)
     return _login_response(user, request, response, default_role="staff")
 
 
 def admin_login(data: AdminLogin, request: Request, response: Response):
-    if not all([data.admin_id, data.password]):
+    if not all([data.email, data.password]):
         raise HTTPException(
             status_code=400,
             detail={"message": "All fields are required", "status": "error"},
         )
 
     try:
-        user = get_user_by_email_and_role(data.admin_id, "admin")
+        user = get_user_by_email_and_role(data.email, "admin")
     except Exception:
         raise HTTPException(
             status_code=500,
@@ -172,7 +173,7 @@ def admin_login(data: AdminLogin, request: Request, response: Response):
             detail={"message": "Password incorrect", "status": "error"},
         )
 
-    update_last_login(data.admin_id) in staff_login()
+    update_last_login(data.email)
     return _login_response(user, request, response, default_role="admin")
 
 

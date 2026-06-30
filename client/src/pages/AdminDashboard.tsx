@@ -649,7 +649,7 @@ const AdminDashboard: React.FC = () => {
                             <div>{new Date(booking.checkOut).toLocaleDateString()}</div>
                           </div>
                         </td>
-                        <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm font-medium text-gray-900">${booking.totalAmount}</td>
+                        <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm font-medium text-gray-900">${booking.total_amount}</td>
                         <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
                           <button
                             onClick={() => handleStatusChange(booking)}

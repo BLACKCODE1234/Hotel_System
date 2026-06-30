@@ -188,16 +188,33 @@ const PaymentPage: React.FC = () => {
     setIsProcessing(true);
     
     try {
+      const backendBookingData = {
+        first_name: bookingData.firstName,
+        last_name: bookingData.lastName,
+        email: bookingData.email,
+        phone: bookingData.phone,
+        street: bookingData.address,
+        city: bookingData.city,
+        country: bookingData.country,
+        in_date: bookingData.checkIn,
+        out_date: bookingData.checkOut,
+        adult: Number(bookingData.adults),
+        children: Number(bookingData.children),
+        rooms: Number(bookingData.roomQuantity),
+        room_type: bookingData.roomType,
+        special_request: bookingData.specialRequests,
+      };
+
       const response = await api.processPayment({
-        bookingData,
-        paymentData,
-        paymentMethod,
-        totalAmount,
+        booking_data: backendBookingData,
+        payment_data: paymentData,
+        payment_method: paymentMethod,
+        total_amount: totalAmount,
       });
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => null);
-        alert(errorData?.message || 'Payment failed. Please try again.');
+        alert(errorData?.detail?.message || errorData?.message || 'Payment failed. Please try again.');
         return;
       }
 
@@ -206,7 +223,7 @@ const PaymentPage: React.FC = () => {
       const bookingStatusFromServer = result && result.booking && result.booking.status;
       
       // Store confirmation data for dashboard display
-      const safePaymentData = { ...paymentData };
+      const safePaymentData: Partial<typeof paymentData> = { ...paymentData };
       delete safePaymentData.cvv;
       delete safePaymentData.cardNumber;
       const confirmationData = {
