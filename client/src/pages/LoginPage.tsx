@@ -257,27 +257,6 @@ const LoginPage: React.FC = () => {
             </button>
           </div>
 
-          {/* Demo Credentials */}
-          <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
-            <h4 className="text-sm font-semibold text-blue-900 mb-2">Demo Credentials</h4>
-            <div className="space-y-2 text-xs text-blue-800">
-              <div>
-                <strong>Admin Access:</strong>
-                <br />
-                Email: admin@luxurygrandhotel.com
-                <br />
-                Password: admin123
-              </div>
-              <div>
-                <strong>User Access:</strong>
-                <br />
-                Email: user@example.com
-                <br />
-                Password: user123
-              </div>
-            </div>
-          </div>
-
           {/* Signup Link */}
           <div className="mt-6 text-center">
             <p className="text-gray-600">

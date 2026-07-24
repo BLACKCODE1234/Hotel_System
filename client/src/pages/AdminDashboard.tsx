@@ -53,11 +53,25 @@ interface Room {
   floor: number;
 }
 
+interface DashboardStats {
+  totalBookings: number;
+  totalRevenue: number;
+  occupancyRate: number;
+  occupiedRooms: number;
+}
+
 const AdminDashboard: React.FC = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('overview');
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [rooms, setRooms] = useState<Room[]>([]);
+  const [stats, setStats] = useState<DashboardStats>({
+    totalBookings: 0,
+    totalRevenue: 0,
+    occupancyRate: 0,
+    occupiedRooms: 0,
+  });
+  const [dataError, setDataError] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
   const [showStatusModal, setShowStatusModal] = useState(false);
@@ -81,49 +95,52 @@ const AdminDashboard: React.FC = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [showProfileDropdown]);
 
-  
   useEffect(() => {
-    const mockBookings: Booking[] = [
-      {
-        id: 'LGH-001',
-        guestName: 'John Smith',
-        email: 'john@example.com',
-        phone: '+1234567890',
-        roomType: 'Deluxe',
-        checkIn: '2024-11-10',
-        checkOut: '2024-11-13',
-        guests: 2,
-        total_amount: 899,
-        status: 'confirmed',
-        paymentMethod: 'Credit Card',
-        bookingDate: '2024-11-08'
-      },
-      {
-        id: 'LGH-002',
-        guestName: 'Sarah Johnson',
-        email: 'sarah@example.com',
-        phone: '+1234567891',
-        roomType: 'Executive',
-        checkIn: '2024-11-12',
-        checkOut: '2024-11-15',
-        guests: 1,
-        total_amount: 1299,
-        status: 'pending',
-        paymentMethod: 'PayPal',
-        bookingDate: '2024-11-08'
-      }
-    ];
-
-    const mockRooms: Room[] = [
-      { id: '101', number: '101', type: 'Standard', status: 'available', price: 149, floor: 1 },
-      { id: '102', number: '102', type: 'Deluxe', status: 'occupied', price: 229, floor: 1 },
-      { id: '201', number: '201', type: 'Executive', status: 'maintenance', price: 389, floor: 2 },
-      { id: '301', number: '301', type: 'Presidential', status: 'available', price: 749, floor: 3 }
-    ];
-
-    setBookings(mockBookings);
-    setRooms(mockRooms);
+    loadDashboardData();
   }, []);
+
+  const loadDashboardData = async () => {
+    setDataError('');
+    try {
+      const [statsResponse, bookingsResponse, roomsResponse] = await Promise.all([
+        api.getAdminDashboardStats(),
+        api.getAdminBookings(),
+        api.getAdminRooms(),
+      ]);
+
+      if (!statsResponse.ok || !bookingsResponse.ok || !roomsResponse.ok) {
+        throw new Error('Failed to load dashboard data');
+      }
+
+      const [statsData, bookingsData, roomsData] = await Promise.all([
+        statsResponse.json(),
+        bookingsResponse.json(),
+        roomsResponse.json(),
+      ]);
+
+      setStats({
+        totalBookings: Number(statsData.totalBookings || 0),
+        totalRevenue: Number(statsData.totalRevenue || 0),
+        occupancyRate: Number(statsData.occupancyRate || 0),
+        occupiedRooms: Number(statsData.occupiedRooms || 0),
+      });
+      setBookings(Array.isArray(bookingsData) ? bookingsData : []);
+      setRooms(
+        Array.isArray(roomsData)
+          ? roomsData.map((room: any) => ({
+              id: String(room.id),
+              number: room.room_number || String(room.id),
+              type: room.type || room.name || 'Room',
+              status: room.status || 'available',
+              price: Number(room.price || 0),
+              floor: Number(room.floor || 1),
+            }))
+          : [],
+      );
+    } catch (error) {
+      setDataError('Unable to load live admin data. Please check the backend connection.');
+    }
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -153,20 +170,22 @@ const AdminDashboard: React.FC = () => {
     setShowStatusModal(true);
   };
 
-  const updateBookingStatus = (newStatus: Booking['status']) => {
+  const updateBookingStatus = async (newStatus: Booking['status']) => {
     if (selectedBooking) {
-      setBookings(prevBookings =>
-        prevBookings.map(booking =>
-          booking.id === selectedBooking.id
-            ? { ...booking, status: newStatus }
-            : booking
-        )
-      );
-      setShowStatusModal(false);
-      setSelectedBooking(null);
-      
-      // Show success message
-      alert(`Booking ${selectedBooking.id} status updated to ${newStatus}`);
+      const response = await api.updateBookingStatus(selectedBooking.id, newStatus);
+      if (response.ok) {
+        setBookings(prevBookings =>
+          prevBookings.map(booking =>
+            booking.id === selectedBooking.id
+              ? { ...booking, status: newStatus }
+              : booking
+          )
+        );
+        setShowStatusModal(false);
+        setSelectedBooking(null);
+      } else {
+        alert('Failed to update booking status');
+      }
     }
   };
 
@@ -180,20 +199,22 @@ const AdminDashboard: React.FC = () => {
     setShowRoomStatusModal(true);
   };
 
-  const updateRoomStatus = (newStatus: Room['status']) => {
+  const updateRoomStatus = async (newStatus: Room['status']) => {
     if (selectedRoom) {
-      setRooms(prevRooms =>
-        prevRooms.map(room =>
-          room.id === selectedRoom.id
-            ? { ...room, status: newStatus }
-            : room
-        )
-      );
-      setShowRoomStatusModal(false);
-      setSelectedRoom(null);
-      
-      
-      alert(`Room ${selectedRoom.number} status updated to ${newStatus}`);
+      const response = await api.updateRoomStatus(Number(selectedRoom.id), newStatus);
+      if (response.ok) {
+        setRooms(prevRooms =>
+          prevRooms.map(room =>
+            room.id === selectedRoom.id
+              ? { ...room, status: newStatus }
+              : room
+          )
+        );
+        setShowRoomStatusModal(false);
+        setSelectedRoom(null);
+      } else {
+        alert('Failed to update room status');
+      }
     }
   };
 
@@ -463,6 +484,11 @@ const AdminDashboard: React.FC = () => {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {dataError && (
+          <div className="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+            {dataError}
+          </div>
+        )}
 
         {/* Navigation Tabs */}
         <div className="mb-6 sm:mb-8">
@@ -503,8 +529,8 @@ const AdminDashboard: React.FC = () => {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-xs sm:text-sm text-gray-600">Total Bookings</p>
-                    <p className="text-2xl sm:text-3xl font-bold text-gray-900">247</p>
-                    <p className="text-xs sm:text-sm text-green-600">+12% from last month</p>
+                    <p className="text-2xl sm:text-3xl font-bold text-gray-900">{stats.totalBookings}</p>
+                    <p className="text-xs sm:text-sm text-green-600">Live backend count</p>
                   </div>
                   <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 rounded-lg flex items-center justify-center">
                     <Calendar className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
@@ -516,8 +542,8 @@ const AdminDashboard: React.FC = () => {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-xs sm:text-sm text-gray-600">Revenue</p>
-                    <p className="text-2xl sm:text-3xl font-bold text-gray-900">$89,247</p>
-                    <p className="text-xs sm:text-sm text-green-600">+8% from last month</p>
+                    <p className="text-2xl sm:text-3xl font-bold text-gray-900">${stats.totalRevenue.toLocaleString()}</p>
+                    <p className="text-xs sm:text-sm text-green-600">From completed payments</p>
                   </div>
                   <div className="w-10 h-10 sm:w-12 sm:h-12 bg-green-100 rounded-lg flex items-center justify-center">
                     <DollarSign className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" />
@@ -529,8 +555,8 @@ const AdminDashboard: React.FC = () => {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-xs sm:text-sm text-gray-600">Occupancy Rate</p>
-                    <p className="text-2xl sm:text-3xl font-bold text-gray-900">78%</p>
-                    <p className="text-xs sm:text-sm text-red-600">-3% from last month</p>
+                    <p className="text-2xl sm:text-3xl font-bold text-gray-900">{stats.occupancyRate}%</p>
+                    <p className="text-xs sm:text-sm text-red-600">Based on room status</p>
                   </div>
                   <div className="w-10 h-10 sm:w-12 sm:h-12 bg-purple-100 rounded-lg flex items-center justify-center">
                     <Hotel className="w-5 h-5 sm:w-6 sm:h-6 text-purple-600" />
@@ -541,9 +567,9 @@ const AdminDashboard: React.FC = () => {
               <div className="bg-white rounded-xl shadow-sm border p-4 sm:p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-xs sm:text-sm text-gray-600">Active Guests</p>
-                    <p className="text-2xl sm:text-3xl font-bold text-gray-900">156</p>
-                    <p className="text-xs sm:text-sm text-green-600">+5% from last month</p>
+                    <p className="text-xs sm:text-sm text-gray-600">Occupied Rooms</p>
+                    <p className="text-2xl sm:text-3xl font-bold text-gray-900">{stats.occupiedRooms}</p>
+                    <p className="text-xs sm:text-sm text-green-600">Live room state</p>
                   </div>
                   <div className="w-10 h-10 sm:w-12 sm:h-12 bg-orange-100 rounded-lg flex items-center justify-center">
                     <Users className="w-5 h-5 sm:w-6 sm:h-6 text-orange-600" />

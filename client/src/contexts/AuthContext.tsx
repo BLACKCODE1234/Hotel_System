@@ -13,6 +13,19 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+function getApiErrorMessage(data: any, fallback: string): string {
+  if (data?.message) {
+    return data.message;
+  }
+  if (data?.detail?.message) {
+    return data.detail.message;
+  }
+  if (Array.isArray(data?.detail) && data.detail[0]?.msg) {
+    return data.detail[0].msg;
+  }
+  return fallback;
+}
+
 interface AuthProviderProps {
   children: ReactNode;
 }
@@ -62,7 +75,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       }
 
       const errorData = await response.json().catch(() => ({}));
-      setError(errorData.message || 'Login failed');
+      setError(getApiErrorMessage(errorData, 'Login failed'));
       return { success: false };
     } catch (loginError) {
       setError('Network error. Please try again.');
@@ -80,16 +93,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const response = await api.signup(userData);
 
       if (response.ok) {
-        const data = await response.json();
-        const signedUpUser = normalizeUser(data.user);
-        if (signedUpUser) {
-          setUser(signedUpUser);
-        }
+        setUser(null);
         return true;
       }
 
       const errorData = await response.json().catch(() => ({}));
-      setError(errorData.message || 'Signup failed');
+      setError(getApiErrorMessage(errorData, 'Signup failed'));
       return false;
     } catch (signupError) {
       setError('Network error. Please try again.');

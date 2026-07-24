@@ -205,9 +205,22 @@ const PaymentPage: React.FC = () => {
         special_request: bookingData.specialRequests,
       };
 
+      const cardNumber = paymentData.cardNumber.replace(/\s/g, '');
+      const safePaymentPayload = {
+        cardName: paymentData.cardName,
+        cardLast4: cardNumber.slice(-4),
+        paypalEmail: paymentData.paypalEmail,
+        phoneNumber: paymentData.phoneNumber,
+        mobileCarrier: paymentData.mobileCarrier,
+        billingAddress: paymentData.billingAddress,
+        billingCity: paymentData.billingCity,
+        billingCountry: paymentData.billingCountry,
+        billingZip: paymentData.billingZip,
+      };
+
       const response = await api.processPayment({
         booking_data: backendBookingData,
-        payment_data: paymentData,
+        payment_data: safePaymentPayload,
         payment_method: paymentMethod,
         total_amount: totalAmount,
       });
@@ -221,33 +234,18 @@ const PaymentPage: React.FC = () => {
       const result = await response.json();
       const bookingIdFromServer = result && result.booking && result.booking.booking_id;
       const bookingStatusFromServer = result && result.booking && result.booking.status;
-      
-      // Store confirmation data for dashboard display
-      const safePaymentData: Partial<typeof paymentData> = { ...paymentData };
-      delete safePaymentData.cvv;
-      delete safePaymentData.cardNumber;
-      const confirmationData = {
-        bookingId: bookingIdFromServer || 'LGH-' + Math.random().toString(36).substr(2, 9).toUpperCase(),
-        bookingData,
-        paymentData: safePaymentData,
-        paymentMethod,
-        timestamp: new Date().toISOString(),
-        status: bookingStatusFromServer || 'confirmed'
-      };
-      
-      // Store booking in user's booking history
-      const existingBookings = JSON.parse(localStorage.getItem('userBookings') || '[]');
-      existingBookings.unshift(confirmationData); // Add to beginning of array
-      localStorage.setItem('userBookings', JSON.stringify(existingBookings));
-      
-      // Clear temporary booking data
+
       localStorage.removeItem('bookingData');
-      
-      // Show success message
-      alert('🎉 Booking confirmed successfully! Redirecting to your dashboard...');
-      
-      // Navigate to dashboard
-      navigate('/dashboard');
+      localStorage.removeItem('selectedBooking');
+      localStorage.removeItem('userBookings');
+
+      alert('Booking confirmed successfully! Redirecting to your dashboard...');
+      navigate('/dashboard', {
+        state: {
+          bookingId: bookingIdFromServer,
+          status: bookingStatusFromServer || 'confirmed',
+        },
+      });
     } catch (error) {
       alert('Payment failed. Please try again.');
     } finally {

@@ -16,6 +16,8 @@ from repository.user_repository import (
 from utility.cookies import clear_auth_cookies, set_access_cookie, set_auth_cookies
 from utility.security import hash_password, verify_password
 
+PASSWORD_MIN_LENGTH = 8
+
 
 def _login_response(user: dict, request: Request, response: Response, default_role: str):
     role = user.get("role", default_role)
@@ -35,10 +37,10 @@ def _login_response(user: dict, request: Request, response: Response, default_ro
 
 
 def signup(data: UserSignup, request: Request, response: Response):
-    if len(data.password) < 4:
+    if len(data.password) < PASSWORD_MIN_LENGTH:
         raise HTTPException(
             status_code=400,
-            detail={"message": "Password should be more than 4 characters", "status": "error"},
+            detail={"message": "Password must be at least 8 characters", "status": "error"},
         )
 
     confirm = data.confirm_password
@@ -62,24 +64,44 @@ def signup(data: UserSignup, request: Request, response: Response):
 
     try:
         hashed = hash_password(data.password)
-        create_user(data.first_name, data.last_name, data.email, hashed, role="user")
+        create_user(
+            data.first_name,
+            data.last_name,
+            data.email,
+            hashed,
+            role="user",
+            phone=data.mobile_number,
+            verified=False,
+        )
     except Exception:
         raise HTTPException(
             status_code=500,
             detail={"message": "Internal server error, please try again", "status": "error"},
         )
 
-    access_token = generate_access_token(data.email, role="user")
-    refresh_token = generate_refresh_token(data.email, role="user")
-    set_auth_cookies(response, request, access_token, refresh_token)
+    otp_sent = False
+    try:
+        from models.schemas import OTPRequest
+        from service.otp_service import send_otp
+
+        send_otp(OTPRequest(email=data.email))
+        otp_sent = True
+    except Exception:
+        otp_sent = False
 
     return {
-        "message": "Signup successful",
+        "message": (
+            "Signup successful. Please verify your email before logging in."
+            if otp_sent
+            else "Signup successful. Unable to send verification email right now."
+        ),
         "status": "success",
+        "otp_sent": otp_sent,
         "user": {
             "first_name": data.first_name,
             "last_name": data.last_name,
             "email": data.email,
+            "role": "user",
         },
     }
 
@@ -109,6 +131,12 @@ def login(data: UserLogin, request: Request, response: Response):
         raise HTTPException(
             status_code=401,
             detail={"message": "Password incorrect", "status": "error"},
+        )
+
+    if user.get("role", "user") == "user" and not user.get("verified"):
+        raise HTTPException(
+            status_code=403,
+            detail={"message": "Please verify your email before logging in", "status": "error"},
         )
 
     update_last_login(data.email)
@@ -142,6 +170,12 @@ def staff_login(data: StaffLogin, request: Request, response: Response):
             detail={"message": "Password incorrect", "status": "error"},
         )
 
+    if not user.get("verified"):
+        raise HTTPException(
+            status_code=403,
+            detail={"message": "Staff account is not verified", "status": "error"},
+        )
+
     update_last_login(data.email)
     return _login_response(user, request, response, default_role="staff")
 
@@ -171,6 +205,12 @@ def admin_login(data: AdminLogin, request: Request, response: Response):
         raise HTTPException(
             status_code=401,
             detail={"message": "Password incorrect", "status": "error"},
+        )
+
+    if not user.get("verified"):
+        raise HTTPException(
+            status_code=403,
+            detail={"message": "Admin account is not verified", "status": "error"},
         )
 
     update_last_login(data.email)
@@ -215,8 +255,8 @@ def refresh_token(request: Request, response: Response):
         new_access_token = generate_access_token(decoded["email"], decoded["role"])
         set_access_cookie(response, request, new_access_token)
         return {"message": "Token refreshed successfully"}
-    except Exception as e:
+    except Exception:
         raise HTTPException(
             status_code=500,
-            detail={"message": "Failed to generate new token", "error": str(e)},
+            detail={"message": "Failed to generate new token"},
         )

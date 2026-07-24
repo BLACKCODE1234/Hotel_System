@@ -4,14 +4,15 @@ from pydantic import field_validator, model_validator
 
 
 class UserValidators:
+    PASSWORD_MIN_LENGTH = 8
 
     @field_validator("password")
     @classmethod
     def validate_password(cls, value: str):
         value = value.strip()
 
-        if len(value) < 4:
-            raise ValueError("Pin must be at least 4 characters")
+        if len(value) < cls.PASSWORD_MIN_LENGTH:
+            raise ValueError("Password must be at least 8 characters")
 
         return value
 
@@ -38,20 +39,21 @@ class UserValidators:
     @model_validator(mode="after")
     def passwords_match(self):
         if self.password != self.confirm_password:
-            raise ValueError("Pins do not match")
+            raise ValueError("Passwords do not match")
 
         return self
 
 
 class CreateAdminValidators:
+    PASSWORD_MIN_LENGTH = 8
 
     @field_validator("password")
     @classmethod
     def validate_password(cls, value: str):
         value = value.strip()
 
-        if len(value) < 4:
-            raise ValueError("Pin must be at least 4 characters")
+        if len(value) < cls.PASSWORD_MIN_LENGTH:
+            raise ValueError("Password must be at least 8 characters")
 
         return value
 
@@ -72,10 +74,10 @@ class ProfileValidators:
     def passwords_match(self):
         if self.new_password:
             if not self.confirm_password:
-                raise ValueError("Confirm pin is required")
+                raise ValueError("Confirm password is required")
 
             if self.new_password != self.confirm_password:
-                raise ValueError("Pins do not match")
+                raise ValueError("Passwords do not match")
 
         return self
 

@@ -51,10 +51,13 @@ def get_user_booking_history(user_email: str):
     try:
         cursor.execute(
             """
-            SELECT booking_id, user_email, room_type, in_date, out_date, status, created_at
-            FROM bookings
-            WHERE user_email = %s
-            ORDER BY created_at DESC
+            SELECT b.booking_id, b.user_email, b.guest_name, b.phone, b.guests,
+                   b.room_type, b.in_date, b.out_date, b.status, b.created_at,
+                   p.amount AS total_amount, p.payment_method
+            FROM bookings b
+            LEFT JOIN payments p ON b.booking_id::text = p.booking_id::text
+            WHERE b.user_email = %s
+            ORDER BY b.created_at DESC
             """,
             (user_email,),
         )
@@ -64,7 +67,16 @@ def get_user_booking_history(user_email: str):
         db.close()
 
 
-def create_booking(user_email: str, room_type: str, in_date: str, out_date: str, status: str):
+def create_booking(
+    user_email: str,
+    room_type: str,
+    in_date: str,
+    out_date: str,
+    status: str,
+    guest_name: str = "",
+    phone: str = "",
+    guests: int = 1,
+):
     db = database_connection()
     cursor = get_cursor(db)
     try:
@@ -73,11 +85,11 @@ def create_booking(user_email: str, room_type: str, in_date: str, out_date: str,
             raise ValueError("Check-out date must be after check-in date")
         cursor.execute(
             """
-            INSERT INTO bookings (user_email, room_type, in_date, out_date, status, created_at)
-            VALUES (%s, %s, %s, %s, %s, NOW())
-            RETURNING booking_id, user_email, room_type, in_date, out_date, status, created_at
+            INSERT INTO bookings (user_email, guest_name, phone, guests, room_type, in_date, out_date, status, created_at)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, NOW())
+            RETURNING booking_id, user_email, guest_name, phone, guests, room_type, in_date, out_date, status, created_at
             """,
-            (user_email, room_type, in_date, out_date, status),
+            (user_email, guest_name, phone, guests, room_type, in_date, out_date, status),
         )
         booking = cursor.fetchone()
         db.commit()
@@ -95,7 +107,8 @@ def get_all_bookings():
     cursor = get_cursor(db)
     try:
         cursor.execute("""
-            SELECT b.booking_id, b.user_email AS email, b.room_type, b.in_date AS check_in,
+            SELECT b.booking_id, b.user_email AS email, b.guest_name, b.phone, b.guests,
+                   b.room_type, b.in_date AS check_in,
                    b.out_date AS check_out, b.status, b.created_at AS booking_date,
                    p.amount AS total_amount, p.payment_method
             FROM bookings b

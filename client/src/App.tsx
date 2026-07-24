@@ -1,6 +1,6 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
-import { AuthProvider } from './contexts/AuthContext';
+import { BrowserRouter as Router, Navigate, Routes, Route, useLocation } from 'react-router-dom';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
 import Header from './components/Header';
 import HomePage from './pages/HomePage';
 import RoomsPage from './pages/RoomsPage';
@@ -23,6 +23,41 @@ import SuperAdminManagementPage from './pages/SuperAdminManagementPage';
 import SuperAdminDashboard from './pages/SuperAdminDashboard';
 import StaffDashboard from './pages/StaffDashboard';
 
+const roleHome: Record<string, string> = {
+  admin: '/admin',
+  staff: '/staff',
+  superadmin: '/superadmin',
+  user: '/dashboard',
+};
+
+interface ProtectedRouteProps {
+  children: React.ReactElement;
+  roles?: string[];
+}
+
+function ProtectedRoute({ children, roles }: ProtectedRouteProps) {
+  const { user, loading } = useAuth();
+  const location = useLocation();
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return <Navigate to="/login" replace state={{ from: location }} />;
+  }
+
+  if (roles && !roles.includes(user.role || '')) {
+    return <Navigate to={roleHome[user.role || 'user'] || '/dashboard'} replace />;
+  }
+
+  return children;
+}
+
 function AppContent() {
   const location = useLocation();
   const isAdminRoute = location.pathname === '/admin' || 
@@ -37,24 +72,24 @@ function AppContent() {
       <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/rooms" element={<RoomsPage />} />
-          <Route path="/booking" element={<BookingPage />} />
+          <Route path="/booking" element={<ProtectedRoute roles={['user', 'admin', 'superadmin']}><BookingPage /></ProtectedRoute>} />
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/email-verification" element={<EmailVerificationPage />} />
-          <Route path="/dashboard" element={<UserDashboard />} />
-          <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/history" element={<HistoryPage />} />
-          <Route path="/support" element={<SupportPage />} />
-          <Route path="/rewards" element={<RewardsPage />} />
-          <Route path="/settings" element={<SettingsPage />} />
-          <Route path="/payment" element={<PaymentPage />} />
+          <Route path="/dashboard" element={<ProtectedRoute roles={['user', 'admin', 'superadmin']}><UserDashboard /></ProtectedRoute>} />
+          <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+          <Route path="/history" element={<ProtectedRoute roles={['user', 'admin', 'superadmin']}><HistoryPage /></ProtectedRoute>} />
+          <Route path="/support" element={<ProtectedRoute><SupportPage /></ProtectedRoute>} />
+          <Route path="/rewards" element={<ProtectedRoute roles={['user']}><RewardsPage /></ProtectedRoute>} />
+          <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
+          <Route path="/payment" element={<ProtectedRoute roles={['user', 'admin', 'superadmin']}><PaymentPage /></ProtectedRoute>} />
           <Route path="/hotel/:hotelId" element={<HotelDetailsPage />} />
-          <Route path="/booking-confirmation" element={<BookingConfirmationPage />} />
-          <Route path="/admin" element={<AdminDashboard />} />
-          <Route path="/admin/profile" element={<AdminProfilePage />} />
-          <Route path="/superadmin-management" element={<SuperAdminManagementPage />} />
-          <Route path="/superadmin" element={<SuperAdminDashboard />} />
-          <Route path="/staff" element={<StaffDashboard />} />
+          <Route path="/booking-confirmation" element={<ProtectedRoute roles={['user', 'admin', 'superadmin']}><BookingConfirmationPage /></ProtectedRoute>} />
+          <Route path="/admin" element={<ProtectedRoute roles={['admin', 'superadmin']}><AdminDashboard /></ProtectedRoute>} />
+          <Route path="/admin/profile" element={<ProtectedRoute roles={['admin', 'superadmin']}><AdminProfilePage /></ProtectedRoute>} />
+          <Route path="/superadmin-management" element={<ProtectedRoute roles={['superadmin']}><SuperAdminManagementPage /></ProtectedRoute>} />
+          <Route path="/superadmin" element={<ProtectedRoute roles={['superadmin']}><SuperAdminDashboard /></ProtectedRoute>} />
+          <Route path="/staff" element={<ProtectedRoute roles={['staff', 'admin']}><StaffDashboard /></ProtectedRoute>} />
         </Routes>
     </div>
   );

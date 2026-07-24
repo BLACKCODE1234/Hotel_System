@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { api } from '../services/api';
 import { 
   Star, 
   MapPin, 
@@ -57,6 +58,14 @@ interface Hotel {
   rooms: Room[];
 }
 
+const fallbackImages = [
+  '/hotel-exterior.jpg',
+  '/hotel-lobby.jpg',
+  '/hotel-pool.jpg',
+  '/hotel-restaurant.jpg',
+  '/hotel-spa.jpg',
+];
+
 const HotelDetailsPage: React.FC = () => {
   const { hotelId } = useParams();
   const navigate = useNavigate();
@@ -65,107 +74,73 @@ const HotelDetailsPage: React.FC = () => {
   const [checkIn, setCheckIn] = useState('');
   const [checkOut, setCheckOut] = useState('');
   const [guests, setGuests] = useState('2');
+  const [hotel, setHotel] = useState<Hotel | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
-  // Mock hotel data - in real app, this would come from API
-  const hotel: Hotel = {
-    id: 'luxury-grand-hotel',
-    name: 'Luxury Grand Hotel',
-    location: 'Accra, Ghana',
-    address: '123 Independence Avenue, Accra Central, Ghana',
-    rating: 4.8,
-    reviews: 2847,
-    images: [
-      '/hotel-exterior.jpg',
-      '/hotel-lobby.jpg',
-      '/hotel-pool.jpg',
-      '/hotel-restaurant.jpg',
-      '/hotel-spa.jpg'
-    ],
-    description: 'Experience unparalleled luxury at the Luxury Grand Hotel, where contemporary elegance meets traditional Ghanaian hospitality. Located in the heart of Accra, our 5-star hotel offers breathtaking views of the Atlantic Ocean and easy access to the city\'s business and cultural districts.',
-    amenities: [
-      'Free Wi-Fi',
-      'Swimming Pool',
-      'Fitness Center',
-      'Spa & Wellness',
-      'Restaurant & Bar',
-      'Room Service',
-      'Concierge',
-      'Valet Parking',
-      'Business Center',
-      'Airport Shuttle',
-      'Laundry Service',
-      'Pet Friendly'
-    ],
-    contact: {
-      phone: '+233 30 123 4567',
-      email: 'reservations@luxurygrand.com',
-      website: 'www.luxurygrandhotel.com'
-    },
-    rooms: [
-      {
-        id: 'standard',
-        name: 'Standard Room',
-        type: 'Standard',
-        price: { base: 149, weekend: 189 },
-        size: '32 m²',
-        beds: '1 King or 2 Twin beds',
-        maxGuests: 2,
-        images: ['/room-standard-1.jpg', '/room-standard-2.jpg'],
-        amenities: ['Free Wi-Fi', 'Air Conditioning', 'Mini Bar', 'Safe', 'TV', 'Coffee Maker'],
-        description: 'Comfortable and elegantly appointed standard rooms with modern amenities and city views.',
-        available: true
-      },
-      {
-        id: 'deluxe',
-        name: 'Deluxe Ocean View',
-        type: 'Deluxe',
-        price: { base: 229, weekend: 279 },
-        size: '45 m²',
-        beds: '1 King bed',
-        maxGuests: 3,
-        images: ['/room-deluxe-1.jpg', '/room-deluxe-2.jpg', '/room-deluxe-3.jpg'],
-        amenities: ['Ocean View', 'Free Wi-Fi', 'Air Conditioning', 'Mini Bar', 'Safe', 'TV', 'Coffee Maker', 'Balcony'],
-        description: 'Spacious deluxe rooms featuring stunning ocean views and a private balcony.',
-        available: true
-      },
-      {
-        id: 'executive',
-        name: 'Executive Suite',
-        type: 'Suite',
-        price: { base: 389, weekend: 459 },
-        size: '65 m²',
-        beds: '1 King bed + Sofa bed',
-        maxGuests: 4,
-        images: ['/room-executive-1.jpg', '/room-executive-2.jpg', '/room-executive-3.jpg'],
-        amenities: ['Ocean View', 'Separate Living Area', 'Free Wi-Fi', 'Air Conditioning', 'Mini Bar', 'Safe', 'TV', 'Coffee Maker', 'Balcony', 'Executive Lounge Access'],
-        description: 'Luxurious executive suites with separate living areas and exclusive lounge access.',
-        available: true
-      },
-      {
-        id: 'presidential',
-        name: 'Presidential Suite',
-        type: 'Presidential',
-        price: { base: 749, weekend: 899 },
-        size: '120 m²',
-        beds: '1 King bed + 2 Sofa beds',
-        maxGuests: 6,
-        images: ['/room-presidential-1.jpg', '/room-presidential-2.jpg', '/room-presidential-3.jpg'],
-        amenities: ['Panoramic Ocean View', 'Separate Living & Dining Areas', 'Kitchen', 'Free Wi-Fi', 'Air Conditioning', 'Mini Bar', 'Safe', 'Multiple TVs', 'Coffee Maker', 'Large Balcony', 'Butler Service', 'Executive Lounge Access'],
-        description: 'The ultimate in luxury accommodation with panoramic ocean views and personalized butler service.',
-        available: false
+  useEffect(() => {
+    const loadHotel = async () => {
+      setLoading(true);
+      setError('');
+      try {
+        const response = await api.getHotelById(Number(hotelId) || 1);
+        if (!response.ok) {
+          throw new Error('Failed to load hotel');
+        }
+        const data = await response.json();
+        setHotel({
+          id: String(data.id),
+          name: data.name,
+          location: data.location || '',
+          address: data.address || '',
+          rating: Number(data.rating || 0),
+          reviews: Number(data.reviews || 0),
+          images: data.images?.length ? data.images : fallbackImages,
+          description: data.description || '',
+          amenities: data.amenities || [],
+          contact: {
+            phone: data.contact?.phone || '',
+            email: data.contact?.email || '',
+            website: data.contact?.website || '',
+          },
+          rooms: Array.isArray(data.rooms)
+            ? data.rooms.map((room: any) => ({
+                id: String(room.id),
+                name: room.name,
+                type: room.type,
+                price: {
+                  base: Number(room.price?.base || 0),
+                  weekend: Number(room.price?.weekend || 0),
+                },
+                size: room.size || '',
+                beds: room.beds || '',
+                maxGuests: Number(room.maxGuests || 2),
+                images: room.images?.length ? room.images : fallbackImages.slice(0, 2),
+                amenities: room.amenities || [],
+                description: room.description || '',
+                available: Boolean(room.available),
+              }))
+            : [],
+        });
+      } catch {
+        setError('Unable to load hotel details from the server.');
+      } finally {
+        setLoading(false);
       }
-    ]
-  };
+    };
+
+    loadHotel();
+  }, [hotelId]);
 
   const today = new Date().toISOString().split('T')[0];
 
   const handleBookRoom = (room: Room) => {
+    if (!hotel) return;
     if (!checkIn || !checkOut) {
       alert('Please select check-in and check-out dates');
       return;
     }
-    
-    // Store booking data and navigate to booking page
+
     const bookingData = {
       hotel: {
         id: hotel.id,
@@ -183,18 +158,38 @@ const HotelDetailsPage: React.FC = () => {
       checkOut,
       guests
     };
-    
+
     localStorage.setItem('selectedBooking', JSON.stringify(bookingData));
     navigate('/booking');
   };
 
   const nextImage = () => {
+    if (!hotel) return;
     setSelectedImageIndex((prev) => (prev + 1) % hotel.images.length);
   };
 
   const prevImage = () => {
+    if (!hotel) return;
     setSelectedImageIndex((prev) => (prev - 1 + hotel.images.length) % hotel.images.length);
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
+
+  if (error || !hotel) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+        <div className="rounded-lg border border-red-200 bg-red-50 px-6 py-4 text-red-700">
+          {error || 'Hotel not found'}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">

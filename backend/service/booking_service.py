@@ -48,6 +48,9 @@ def create_booking(_email: str, data: BookingCreate):
             in_date=data.in_date.isoformat() if isinstance(data.in_date, date) else str(data.in_date),
             out_date=data.out_date.isoformat() if isinstance(data.out_date, date) else str(data.out_date),
             status="confirmed",
+            guest_name=f"{data.first_name} {data.last_name}".strip(),
+            phone=data.phone,
+            guests=data.adult + data.children,
         )
         return {"message": "Booking created", "booking": booking}
     except Exception as e:

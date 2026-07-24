@@ -1,6 +1,59 @@
+import os
+
 from configuration.settings import database_connection, get_cursor
+from utility.security import hash_password
 
 REQUIRED_TABLES = {
+    "users": """
+        CREATE TABLE IF NOT EXISTS users (
+            id SERIAL PRIMARY KEY,
+            first_name VARCHAR(100) NOT NULL,
+            last_name VARCHAR(100) NOT NULL,
+            email VARCHAR(200) NOT NULL UNIQUE,
+            password TEXT NOT NULL,
+            phone VARCHAR(50) DEFAULT '',
+            role VARCHAR(50) NOT NULL DEFAULT 'user',
+            verified BOOLEAN DEFAULT FALSE,
+            status VARCHAR(20) DEFAULT 'active',
+            last_login TIMESTAMP,
+            created_at TIMESTAMP DEFAULT NOW()
+        )
+    """,
+    "email_otps": """
+        CREATE TABLE IF NOT EXISTS email_otps (
+            id SERIAL PRIMARY KEY,
+            email VARCHAR(200) NOT NULL,
+            otp_hash TEXT NOT NULL,
+            expires_at TIMESTAMP NOT NULL,
+            used BOOLEAN DEFAULT FALSE,
+            created_at TIMESTAMP DEFAULT NOW()
+        )
+    """,
+    "bookings": """
+        CREATE TABLE IF NOT EXISTS bookings (
+            booking_id SERIAL PRIMARY KEY,
+            user_email VARCHAR(200) NOT NULL,
+            guest_name VARCHAR(200) DEFAULT '',
+            phone VARCHAR(50) DEFAULT '',
+            guests INT DEFAULT 1,
+            room_type VARCHAR(100) NOT NULL,
+            in_date DATE NOT NULL,
+            out_date DATE NOT NULL,
+            status VARCHAR(30) DEFAULT 'pending',
+            created_at TIMESTAMP DEFAULT NOW()
+        )
+    """,
+    "payments": """
+        CREATE TABLE IF NOT EXISTS payments (
+            payment_id SERIAL PRIMARY KEY,
+            booking_id INT REFERENCES bookings(booking_id) ON DELETE CASCADE,
+            user_email VARCHAR(200) NOT NULL,
+            amount NUMERIC(10,2) NOT NULL DEFAULT 0,
+            payment_method VARCHAR(100) DEFAULT '',
+            status VARCHAR(30) DEFAULT 'pending',
+            created_at TIMESTAMP DEFAULT NOW()
+        )
+    """,
     "rooms": """
         CREATE TABLE IF NOT EXISTS rooms (
             id SERIAL PRIMARY KEY,
@@ -110,6 +163,12 @@ def ensure_tables():
 
 
 SEED_DATA = {
+    "users": [
+        ("Admin", "Manager", "admin@luxurygrandhotel.com", "SEED_ADMIN_PASSWORD", "+233301234560", "admin", True),
+        ("Super", "Admin", "superadmin@luxurygrandhotel.com", "SEED_SUPERADMIN_PASSWORD", "+233301234561", "superadmin", True),
+        ("Staff", "Member", "staff@luxurygrandhotel.com", "SEED_STAFF_PASSWORD", "+233301234562", "staff", True),
+        ("Demo", "User", "user@example.com", "SEED_USER_PASSWORD", "+233301234563", "user", True),
+    ],
     "rooms": [
         ("101", "Standard Room", "standard", 149, 189, 2, 25, "Queen Bed",
          ["Free Wi-Fi", "Air Conditioning", "TV", "Coffee Maker"], 1),
@@ -144,6 +203,21 @@ SEED_DATA = {
         "Cleaning equipment prepared",
         "Attended team briefing",
     ],
+    "staff_tasks": [
+        ("Clean Room 205", "Guest checkout - full cleaning required", "high", "pending",
+         "staff@luxurygrandhotel.com", "205", "Housekeeping", "10:30 AM"),
+        ("Fix AC Unit", "Room 301 - AC not cooling properly", "medium", "in-progress",
+         "staff@luxurygrandhotel.com", "301", "Maintenance", "2:00 PM"),
+        ("Restock Minibar", "Presidential Suite - guest request", "low", "completed",
+         "staff@luxurygrandhotel.com", "401", "Housekeeping", "9:00 AM"),
+    ],
+    "staff_schedule": [
+        ("staff@luxurygrandhotel.com", "Monday", None, "08:00", "16:00", "upcoming"),
+        ("staff@luxurygrandhotel.com", "Tuesday", None, "08:00", "16:00", "upcoming"),
+        ("staff@luxurygrandhotel.com", "Wednesday", None, "08:00", "16:00", "upcoming"),
+        ("staff@luxurygrandhotel.com", "Thursday", None, "08:00", "16:00", "upcoming"),
+        ("staff@luxurygrandhotel.com", "Friday", None, "08:00", "16:00", "upcoming"),
+    ],
 }
 
 
@@ -151,6 +225,17 @@ def seed_data():
     db = database_connection()
     cursor = get_cursor(db)
     try:
+        cursor.execute("SELECT COUNT(*) AS cnt FROM users")
+        if cursor.fetchone()["cnt"] == 0:
+            for first_name, last_name, email, password_env, phone, role, verified in SEED_DATA["users"]:
+                password = os.getenv(password_env, f"{role.title()}Demo123!")
+                cursor.execute(
+                    """INSERT INTO users (first_name, last_name, email, password, phone, role, verified)
+                       VALUES (%s, %s, %s, %s, %s, %s, %s)""",
+                    (first_name, last_name, email, hash_password(password), phone, role, verified),
+                )
+            print("Seeded users")
+
         cursor.execute("SELECT COUNT(*) AS cnt FROM rooms")
         if cursor.fetchone()["cnt"] == 0:
             for r in SEED_DATA["rooms"]:
@@ -178,9 +263,29 @@ def seed_data():
             for label in SEED_DATA["staff_checklist_items"]:
                 cursor.execute(
                     "INSERT INTO staff_checklist (staff_email, label) VALUES (%s, %s)",
-                    ("staff@hotel.com", label),
+                    ("staff@luxurygrandhotel.com", label),
                 )
             print("Seeded staff checklist")
+
+        cursor.execute("SELECT COUNT(*) AS cnt FROM tasks")
+        if cursor.fetchone()["cnt"] == 0:
+            for task in SEED_DATA["staff_tasks"]:
+                cursor.execute(
+                    """INSERT INTO tasks (title, description, priority, status, assigned_to, room_number, department, due_time)
+                       VALUES (%s, %s, %s, %s, %s, %s, %s, %s)""",
+                    task,
+                )
+            print("Seeded staff tasks")
+
+        cursor.execute("SELECT COUNT(*) AS cnt FROM staff_schedule")
+        if cursor.fetchone()["cnt"] == 0:
+            for schedule in SEED_DATA["staff_schedule"]:
+                cursor.execute(
+                    """INSERT INTO staff_schedule (staff_email, day_of_week, date, shift_start, shift_end, status)
+                       VALUES (%s, %s, %s, %s, %s, %s)""",
+                    schedule,
+                )
+            print("Seeded staff schedule")
         db.commit()
     except Exception as e:
         db.rollback()

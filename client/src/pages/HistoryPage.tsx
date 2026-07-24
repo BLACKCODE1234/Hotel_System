@@ -43,43 +43,47 @@ const HistoryPage: React.FC = () => {
 
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     const loadHistory = async () => {
+      setError('');
       try {
         const response = await api.getBookingHistory();
         if (!response.ok) {
+          setError('Unable to load booking history.');
           return;
         }
 
         const data = await response.json();
         if (!Array.isArray(data)) {
+          setBookings([]);
           return;
         }
 
-        const mapped = data.map((item: Record<string, string>, index: number) => ({
+        const mapped = data.map((item: Record<string, any>, index: number) => ({
           id: String(item.booking_id || index),
           reservationId: String(item.booking_id || `BK-${index + 1}`),
-          hotelName: 'LuxuryStay Hotel',
-          hotelBranch: 'Main Branch',
+          hotelName: 'Luxury Grand Hotel',
+          hotelBranch: 'Accra Central',
           roomType: item.room_type || 'Standard Room',
           checkIn: item.in_date || '',
           checkOut: item.out_date || '',
-          guests: 2,
-          totalAmount: 0,
+          guests: Number(item.guests || 1),
+          totalAmount: Number(item.total_amount || 0),
           status: (item.status === 'cancelled'
             ? 'cancelled'
-            : item.status === 'confirmed'
+            : item.status === 'confirmed' || item.status === 'pending'
             ? 'upcoming'
             : 'completed') as Booking['status'],
           bookingDate: item.created_at || '',
-          paymentMethod: 'N/A',
+          paymentMethod: item.payment_method || 'N/A',
           paymentDate: item.created_at || '',
         }));
 
         setBookings(mapped);
       } catch {
-        // Keep empty list on failure
+        setError('Unable to load booking history.');
       } finally {
         setLoading(false);
       }
@@ -88,77 +92,7 @@ const HistoryPage: React.FC = () => {
     loadHistory();
   }, []);
 
-  const mockBookings: Booking[] = [
-    {
-      id: '1',
-      reservationId: 'HTL-2024-001',
-      hotelName: 'Grand Palace Hotel',
-      hotelBranch: 'Downtown Manhattan',
-      roomType: 'Deluxe Suite',
-      checkIn: '2024-01-15',
-      checkOut: '2024-01-18',
-      guests: 2,
-      totalAmount: 1250.00,
-      status: 'completed',
-      bookingDate: '2024-01-10',
-      paymentMethod: 'Visa **** 4532',
-      paymentDate: '2024-01-10',
-      receiptUrl: '/receipts/HTL-2024-001.pdf',
-      invoiceUrl: '/invoices/HTL-2024-001.pdf'
-    },
-    {
-      id: '2',
-      reservationId: 'HTL-2024-002',
-      hotelName: 'Ocean View Resort',
-      hotelBranch: 'Miami Beach',
-      roomType: 'Premium Ocean Suite',
-      checkIn: '2024-03-22',
-      checkOut: '2024-03-25',
-      guests: 4,
-      totalAmount: 2100.00,
-      status: 'completed',
-      bookingDate: '2024-03-15',
-      paymentMethod: 'Mastercard **** 8765',
-      paymentDate: '2024-03-15',
-      receiptUrl: '/receipts/HTL-2024-002.pdf',
-      invoiceUrl: '/invoices/HTL-2024-002.pdf'
-    },
-    {
-      id: '3',
-      reservationId: 'HTL-2024-003',
-      hotelName: 'Mountain Lodge',
-      hotelBranch: 'Aspen Colorado',
-      roomType: 'Standard Room',
-      checkIn: '2024-06-10',
-      checkOut: '2024-06-12',
-      guests: 2,
-      totalAmount: 850.00,
-      status: 'cancelled',
-      bookingDate: '2024-06-05',
-      paymentMethod: 'PayPal',
-      paymentDate: '2024-06-05',
-      receiptUrl: '/receipts/HTL-2024-003.pdf'
-    },
-    {
-      id: '4',
-      reservationId: 'HTL-2024-004',
-      hotelName: 'City Center Hotel',
-      hotelBranch: 'Los Angeles',
-      roomType: 'Executive Suite',
-      checkIn: '2024-12-20',
-      checkOut: '2024-12-23',
-      guests: 3,
-      totalAmount: 1680.00,
-      status: 'upcoming',
-      bookingDate: '2024-11-01',
-      paymentMethod: 'Visa **** 4532',
-      paymentDate: '2024-11-01',
-      receiptUrl: '/receipts/HTL-2024-004.pdf',
-      invoiceUrl: '/invoices/HTL-2024-004.pdf'
-    }
-  ];
-
-  const displayBookings = bookings.length > 0 ? bookings : mockBookings;
+  const displayBookings = bookings;
 
   const filteredBookings = displayBookings.filter(booking => {
     const matchesFilter = activeFilter === 'all' || booking.status === activeFilter;
@@ -279,6 +213,18 @@ const HistoryPage: React.FC = () => {
               </div>
             </div>
           </div>
+
+          {error && (
+            <div className="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-red-700">
+              {error}
+            </div>
+          )}
+
+          {loading && (
+            <div className="mb-6 rounded-lg border border-blue-200 bg-blue-50 px-4 py-3 text-blue-700">
+              Loading booking history...
+            </div>
+          )}
 
           {/* Bookings List */}
           <div className="space-y-6">

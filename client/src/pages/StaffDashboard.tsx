@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { api } from '../services/api';
 import { 
@@ -48,52 +48,24 @@ interface StaffContact {
   status: 'online' | 'away' | 'offline';
 }
 
+interface ScheduleItem {
+  id: string;
+  day: string;
+  date: string;
+  shift: string;
+  status: string;
+}
+
 const StaffDashboard: React.FC = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('overview');
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
-  const [tasks, setTasks] = useState<Task[]>([
-    {
-      id: '1',
-      title: 'Clean Room 205',
-      description: 'Guest checkout - full cleaning required',
-      priority: 'high',
-      status: 'pending',
-      assignedTo: 'Maria Garcia',
-      dueTime: '10:30 AM',
-      room: '205',
-      department: 'Housekeeping'
-    },
-    {
-      id: '2',
-      title: 'Fix AC Unit',
-      description: 'Room 301 - AC not cooling properly',
-      priority: 'medium',
-      status: 'in-progress',
-      assignedTo: 'John Smith',
-      dueTime: '2:00 PM',
-      room: '301',
-      department: 'Maintenance'
-    },
-    {
-      id: '3',
-      title: 'Restock Minibar',
-      description: 'Presidential Suite - guest request',
-      priority: 'low',
-      status: 'completed',
-      assignedTo: 'Sarah Johnson',
-      dueTime: '9:00 AM',
-      room: 'PS-1',
-      department: 'Housekeeping'
-    }
-  ]);
+  const [tasks, setTasks] = useState<Task[]>([]);
 
   const [isClockedIn, setIsClockedIn] = useState(false);
-  const [dailyChecklist, setDailyChecklist] = useState<ChecklistItem[]>([
-    { id: 'uniform', label: 'Uniform & appearance check', completed: false },
-    { id: 'equipment', label: 'Cleaning equipment prepared', completed: false },
-    { id: 'briefing', label: 'Attended team briefing', completed: false }
-  ]);
+  const [dailyChecklist, setDailyChecklist] = useState<ChecklistItem[]>([]);
+  const [scheduleItems, setScheduleItems] = useState<ScheduleItem[]>([]);
+  const [dataError, setDataError] = useState('');
 
   const [staffSearchTerm, setStaffSearchTerm] = useState('');
   const staffDirectory: StaffContact[] = [
@@ -104,20 +76,81 @@ const StaffDashboard: React.FC = () => {
     { id: 's5', name: 'Emily Chen', role: 'Supervisor', department: 'Housekeeping', status: 'online' }
   ];
 
-  const updateTaskStatus = (taskId: string, newStatus: Task['status']) => {
-    setTasks(prevTasks =>
-      prevTasks.map(task =>
-        task.id === taskId ? { ...task, status: newStatus } : task
-      )
-    );
+  useEffect(() => {
+    loadStaffData();
+  }, []);
+
+  const loadStaffData = async () => {
+    setDataError('');
+    try {
+      const [tasksResponse, checklistResponse, clockResponse, scheduleResponse] = await Promise.all([
+        api.getStaffTasks(),
+        api.getStaffChecklist(),
+        api.getStaffClockStatus(),
+        api.getStaffSchedule(),
+      ]);
+
+      if (!tasksResponse.ok || !checklistResponse.ok || !clockResponse.ok || !scheduleResponse.ok) {
+        throw new Error('Failed to load staff data');
+      }
+
+      const [tasksData, checklistData, clockData, scheduleData] = await Promise.all([
+        tasksResponse.json(),
+        checklistResponse.json(),
+        clockResponse.json(),
+        scheduleResponse.json(),
+      ]);
+
+      setTasks(Array.isArray(tasksData) ? tasksData.map((task: any) => ({ ...task, id: String(task.id) })) : []);
+      setDailyChecklist(
+        Array.isArray(checklistData) ? checklistData.map((item: any) => ({ ...item, id: String(item.id) })) : [],
+      );
+      setIsClockedIn(Boolean(clockData.isClockedIn));
+      setScheduleItems(
+        Array.isArray(scheduleData) ? scheduleData.map((item: any) => ({ ...item, id: String(item.id) })) : [],
+      );
+    } catch (error) {
+      setDataError('Unable to load live staff data. Please check the backend connection.');
+    }
   };
 
-  const toggleChecklistItem = (id: string) => {
-    setDailyChecklist(prevItems =>
-      prevItems.map(item =>
-        item.id === id ? { ...item, completed: !item.completed } : item
-      )
-    );
+  const updateTaskStatus = async (taskId: string, newStatus: Task['status']) => {
+    const response = await api.updateTaskStatus(Number(taskId), newStatus);
+    if (response.ok) {
+      setTasks(prevTasks =>
+        prevTasks.map(task =>
+          task.id === taskId ? { ...task, status: newStatus } : task
+        )
+      );
+    } else {
+      alert('Failed to update task status');
+    }
+  };
+
+  const toggleChecklistItem = async (id: string) => {
+    const item = dailyChecklist.find((checklistItem) => checklistItem.id === id);
+    if (!item) return;
+
+    const nextCompleted = !item.completed;
+    const response = await api.toggleChecklistItem(Number(id), nextCompleted);
+    if (response.ok) {
+      setDailyChecklist(prevItems =>
+        prevItems.map(checklistItem =>
+          checklistItem.id === id ? { ...checklistItem, completed: nextCompleted } : checklistItem
+        )
+      );
+    } else {
+      alert('Failed to update checklist item');
+    }
+  };
+
+  const toggleClockStatus = async () => {
+    const response = isClockedIn ? await api.staffClockOut() : await api.staffClockIn();
+    if (response.ok) {
+      setIsClockedIn(!isClockedIn);
+    } else {
+      alert('Failed to update clock status');
+    }
   };
 
   const getPriorityColor = (priority: string) => {
@@ -253,6 +286,12 @@ const StaffDashboard: React.FC = () => {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {dataError && (
+          <div className="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+            {dataError}
+          </div>
+        )}
+
         {/* Navigation Tabs */}
         <div className="mb-8">
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-2">
@@ -290,8 +329,8 @@ const StaffDashboard: React.FC = () => {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-gray-600">Pending Tasks</p>
-                    <p className="text-2xl font-bold text-gray-900">8</p>
-                    <p className="text-sm text-orange-600">Due today</p>
+                    <p className="text-2xl font-bold text-gray-900">{tasks.filter(task => task.status !== 'completed').length}</p>
+                    <p className="text-sm text-orange-600">Open tasks</p>
                   </div>
                   <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
                     <ClipboardList className="w-6 h-6 text-orange-600" />
@@ -303,8 +342,8 @@ const StaffDashboard: React.FC = () => {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-gray-600">Completed Today</p>
-                    <p className="text-2xl font-bold text-gray-900">12</p>
-                    <p className="text-sm text-green-600">Great progress!</p>
+                    <p className="text-2xl font-bold text-gray-900">{tasks.filter(task => task.status === 'completed').length}</p>
+                    <p className="text-sm text-green-600">From backend tasks</p>
                   </div>
                   <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
                     <CheckCircle className="w-6 h-6 text-green-600" />
@@ -316,8 +355,8 @@ const StaffDashboard: React.FC = () => {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-gray-600">Shift Hours</p>
-                    <p className="text-2xl font-bold text-gray-900">6.5</p>
-                    <p className="text-sm text-blue-600">of 8 hours</p>
+                    <p className="text-2xl font-bold text-gray-900">{isClockedIn ? 'Active' : 'Off'}</p>
+                    <p className="text-sm text-blue-600">Clock status</p>
                   </div>
                   <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
                     <Clock className="w-6 h-6 text-blue-600" />
@@ -572,14 +611,12 @@ const StaffDashboard: React.FC = () => {
                 </p>
                 <button
                   type="button"
-                  onClick={() => setIsClockedIn(!isClockedIn)}
+                  onClick={toggleClockStatus}
                   className="px-4 py-2.5 rounded-lg text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 transition-colors"
                 >
                   {isClockedIn ? 'Clock Out' : 'Clock In'}
                 </button>
-                <p className="mt-3 text-xs text-gray-500">
-                  This is a demo control. Integration with a real time-tracking system can be added later.
-                </p>
+                <p className="mt-3 text-xs text-gray-500">Clock state is synced with the backend attendance record.</p>
               </div>
             </div>
 
@@ -587,14 +624,8 @@ const StaffDashboard: React.FC = () => {
               <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">My Schedule</h3>
                 <div className="space-y-4">
-                  {[
-                    { day: 'Monday', date: 'Nov 11', shift: '8:00 AM - 4:00 PM', status: 'completed' },
-                    { day: 'Tuesday', date: 'Nov 12', shift: '8:00 AM - 4:00 PM', status: 'completed' },
-                    { day: 'Wednesday', date: 'Nov 13', shift: '8:00 AM - 4:00 PM', status: 'current' },
-                    { day: 'Thursday', date: 'Nov 14', shift: '8:00 AM - 4:00 PM', status: 'upcoming' },
-                    { day: 'Friday', date: 'Nov 15', shift: '8:00 AM - 4:00 PM', status: 'upcoming' }
-                  ].map((schedule, index) => (
-                    <div key={index} className={`flex items-center justify-between p-4 rounded-lg border ${
+                  {scheduleItems.map((schedule) => (
+                    <div key={schedule.id} className={`flex items-center justify-between p-4 rounded-lg border ${
                       schedule.status === 'current' ? 'border-blue-200 bg-blue-50' :
                       schedule.status === 'completed' ? 'border-green-200 bg-green-50' :
                       'border-gray-200 bg-gray-50'
@@ -615,6 +646,9 @@ const StaffDashboard: React.FC = () => {
                       </div>
                     </div>
                   ))}
+                  {scheduleItems.length === 0 && (
+                    <p className="text-sm text-gray-500">No schedule entries found.</p>
+                  )}
                 </div>
               </div>
 
