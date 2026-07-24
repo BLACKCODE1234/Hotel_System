@@ -12,6 +12,7 @@ const Header: React.FC = () => {
 
   const isHome = location.pathname === '/';
   const isAuthPage = location.pathname === '/login' || location.pathname === '/signup';
+  const lightNav = isHome && !scrolled;
 
   React.useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -26,8 +27,9 @@ const Header: React.FC = () => {
     navigate('/');
   };
 
-  const linkClass =
-    'px-3 py-2 text-sm font-medium tracking-wide text-ink-muted hover:text-ink transition-colors';
+  const linkClass = lightNav
+    ? 'px-3 py-2 text-sm font-medium tracking-wide text-white/80 hover:text-white transition-colors'
+    : 'px-3 py-2 text-sm font-medium tracking-wide text-ink-muted hover:text-ink transition-colors';
 
   return (
     <header
@@ -40,10 +42,18 @@ const Header: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           <Link to="/" className="flex flex-col leading-none">
-            <span className="font-display text-3xl font-semibold tracking-wide text-ink">
+            <span
+              className={`font-display text-3xl font-semibold tracking-wide ${
+                lightNav ? 'text-white' : 'text-ink'
+              }`}
+            >
               LuxuryStay
             </span>
-            <span className="text-[10px] uppercase tracking-[0.22em] text-brass mt-1">
+            <span
+              className={`text-[10px] uppercase tracking-[0.22em] mt-1 ${
+                lightNav ? 'text-brass-soft' : 'text-brass'
+              }`}
+            >
               Accra
             </span>
           </Link>
@@ -133,7 +143,7 @@ const Header: React.FC = () => {
           )}
 
           <button
-            className="md:hidden p-2 text-ink"
+            className={`md:hidden p-2 ${lightNav ? 'text-white' : 'text-ink'}`}
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             aria-label="Toggle menu"
           >

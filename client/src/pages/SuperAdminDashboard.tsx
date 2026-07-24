@@ -113,9 +113,9 @@ const SuperAdminDashboard: React.FC = () => {
 
     const levels = [
       { strength: 0, label: '', color: '' },
-      { strength: 1, label: 'Very Weak', color: 'bg-red-700' },
+      { strength: 1, label: 'Very Weak', color: 'bg-[#8B3A32]' },
       { strength: 2, label: 'Weak', color: 'bg-brass' },
-      { strength: 3, label: 'Fair', color: 'bg-brass' },
+      { strength: 3, label: 'Fair', color: 'bg-brass-soft' },
       { strength: 4, label: 'Good', color: 'bg-ink' },
       { strength: 5, label: 'Strong', color: 'bg-forest' }
     ];
@@ -158,8 +158,8 @@ const SuperAdminDashboard: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Navigation Tabs */}
         <div className="mb-8">
-          <div className="bg-white rounded-xl  border border-sand-deep p-2">
-            <nav className="flex flex-wrap gap-2">
+          <div className="border-b border-sand-deep">
+            <nav className="-mb-px flex flex-wrap gap-2 sm:gap-6">
               {[
                 { id: 'create-admin', label: 'Create Administrator', icon: Shield },
                 { id: 'manage-users', label: 'Manage Users', icon: Users },
@@ -169,10 +169,10 @@ const SuperAdminDashboard: React.FC = () => {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-2 px-4 py-3 rounded-sm font-medium text-sm transition-all duration-200 ${
+                  className={`flex items-center gap-2 py-3 px-1 border-b-2 font-medium text-sm transition-colors ${
                     activeTab === tab.id
-                      ? 'bg-ink text-white '
-                      : 'text-ink-muted hover:text-ink hover:bg-sand-warm'
+                      ? 'border-brass text-brass'
+                      : 'border-transparent text-ink-muted hover:text-ink hover:border-sand-deep'
                   }`}
                 >
                   <tab.icon className="w-4 h-4" />
@@ -190,7 +190,7 @@ const SuperAdminDashboard: React.FC = () => {
             {successMessage && (
               <div className="mb-6 p-4 bg-accent-50 border border-accent-100 rounded-sm flex items-center gap-3">
                 <CheckCircle className="w-5 h-5 text-forest" />
-                <span className="text-green-800 font-medium">{successMessage}</span>
+                <span className="text-forest font-medium">{successMessage}</span>
               </div>
             )}
 
@@ -199,7 +199,7 @@ const SuperAdminDashboard: React.FC = () => {
               {/* Card Header */}
               <div className="bg-ink px-6 py-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
+                  <div className="w-12 h-12 bg-brass rounded-sm flex items-center justify-center">
                     <Shield className="w-6 h-6 text-white" />
                   </div>
                   <div>
@@ -353,9 +353,9 @@ const SuperAdminDashboard: React.FC = () => {
                           {formData.password && (
                             <div className="mt-2">
                               <div className="flex items-center gap-2 mb-1">
-                                <div className="flex-1 bg-gray-200 rounded-full h-2">
-                                  <div 
-                                    className={`h-2 rounded-full transition-all duration-300 ${passwordStrength.color}`}
+                                <div className="flex-1 bg-sand-deep h-2">
+                                  <div
+                                    className={`h-2 transition-all duration-300 ${passwordStrength.color}`}
                                     style={{ width: `${(passwordStrength.strength / 5) * 100}%` }}
                                   />
                                 </div>
@@ -571,7 +571,7 @@ const SuperAdminDashboard: React.FC = () => {
             </div>
 
             {/* Quick Actions */}
-            <div className="bg-white rounded-xl  border border-sand-deep p-6">
+            <div className="panel">
               <h3 className="text-lg font-semibold text-ink mb-4">Quick Actions</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <button className="flex items-center gap-3 p-4 border border-sand-deep rounded-sm hover:bg-sand-warm transition-colors">
@@ -617,7 +617,7 @@ const SuperAdminDashboard: React.FC = () => {
             </div>
 
             {/* Recent Activity */}
-            <div className="bg-white rounded-xl  border border-sand-deep p-6">
+            <div className="panel">
               <h3 className="text-lg font-semibold text-ink mb-4">Recent User Activity</h3>
               <div className="space-y-4">
                 {[
@@ -651,7 +651,7 @@ const SuperAdminDashboard: React.FC = () => {
             {/* Settings Categories */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* General Settings */}
-              <div className="bg-white rounded-xl  border border-sand-deep p-6">
+              <div className="panel">
                 <h3 className="text-lg font-semibold text-ink mb-4 flex items-center gap-2">
                   <Settings className="w-5 h-5 text-brass" />
                   General Settings
@@ -685,7 +685,7 @@ const SuperAdminDashboard: React.FC = () => {
               </div>
 
               {/* Security Settings */}
-              <div className="bg-white rounded-xl  border border-sand-deep p-6">
+              <div className="panel">
                 <h3 className="text-lg font-semibold text-ink mb-4 flex items-center gap-2">
                   <Shield className="w-5 h-5 text-brass" />
                   Security Settings
@@ -698,7 +698,7 @@ const SuperAdminDashboard: React.FC = () => {
                     </div>
                     <label className="relative inline-flex items-center cursor-pointer">
                       <input type="checkbox" className="sr-only peer" defaultChecked />
-                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-brass/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-sand-deep after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brass"></div>
+                      <div className="w-11 h-6 bg-sand-deep peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-brass/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-sand-deep after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brass"></div>
                     </label>
                   </div>
                   <div className="flex items-center justify-between">
@@ -708,7 +708,7 @@ const SuperAdminDashboard: React.FC = () => {
                     </div>
                     <label className="relative inline-flex items-center cursor-pointer">
                       <input type="checkbox" className="sr-only peer" defaultChecked />
-                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-brass/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-sand-deep after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brass"></div>
+                      <div className="w-11 h-6 bg-sand-deep peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-brass/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-sand-deep after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brass"></div>
                     </label>
                   </div>
                   <div className="flex items-center justify-between">
@@ -727,7 +727,7 @@ const SuperAdminDashboard: React.FC = () => {
               </div>
 
               {/* Email Settings */}
-              <div className="bg-white rounded-xl  border border-sand-deep p-6">
+              <div className="panel">
                 <h3 className="text-lg font-semibold text-ink mb-4 flex items-center gap-2">
                   <Mail className="w-5 h-5 text-brass" />
                   Email Settings
@@ -756,14 +756,14 @@ const SuperAdminDashboard: React.FC = () => {
                     </div>
                     <label className="relative inline-flex items-center cursor-pointer">
                       <input type="checkbox" className="sr-only peer" defaultChecked />
-                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-brass/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-sand-deep after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brass"></div>
+                      <div className="w-11 h-6 bg-sand-deep peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-brass/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-sand-deep after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brass"></div>
                     </label>
                   </div>
                 </div>
               </div>
 
               {/* Backup Settings */}
-              <div className="bg-white rounded-xl  border border-sand-deep p-6">
+              <div className="panel">
                 <h3 className="text-lg font-semibold text-ink mb-4 flex items-center gap-2">
                   <Save className="w-5 h-5 text-brass" />
                   Backup & Maintenance
@@ -776,7 +776,7 @@ const SuperAdminDashboard: React.FC = () => {
                     </div>
                     <label className="relative inline-flex items-center cursor-pointer">
                       <input type="checkbox" className="sr-only peer" defaultChecked />
-                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-brass/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-sand-deep after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brass"></div>
+                      <div className="w-11 h-6 bg-sand-deep peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-brass/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-sand-deep after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brass"></div>
                     </label>
                   </div>
                   <div>
@@ -854,7 +854,7 @@ const SuperAdminDashboard: React.FC = () => {
                     <p className="text-2xl font-bold text-ink">4.8</p>
                     <p className="text-sm text-forest">+0.2 this month</p>
                   </div>
-                  <div className="w-12 h-12 bg-yellow-100 rounded-sm flex items-center justify-center">
+                  <div className="w-12 h-12 bg-[#F7F1E4] border border-[#EDE0C8] rounded-sm flex items-center justify-center">
                     <Crown className="w-6 h-6 text-yellow-600" />
                   </div>
                 </div>
@@ -862,7 +862,7 @@ const SuperAdminDashboard: React.FC = () => {
             </div>
 
             {/* Charts and Reports */}
-            <div className="bg-white rounded-xl  border border-sand-deep p-6">
+            <div className="panel">
               <h3 className="text-lg font-semibold text-ink mb-4">System Performance</h3>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div className="p-4 border border-sand-deep rounded-sm">
@@ -872,8 +872,8 @@ const SuperAdminDashboard: React.FC = () => {
                       <span className="text-sm text-ink-muted">CPU Usage</span>
                       <span className="text-sm font-medium text-forest">23%</span>
                     </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div className="bg-green-600 h-2 rounded-full" style={{width: '23%'}}></div>
+                    <div className="w-full bg-sand-deep h-2">
+                      <div className="bg-forest h-2" style={{width: '23%'}}></div>
                     </div>
                   </div>
                   <div className="space-y-2 mt-4">
@@ -881,8 +881,8 @@ const SuperAdminDashboard: React.FC = () => {
                       <span className="text-sm text-ink-muted">Memory Usage</span>
                       <span className="text-sm font-medium text-brass">67%</span>
                     </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div className="bg-blue-600 h-2 rounded-full" style={{width: '67%'}}></div>
+                    <div className="w-full bg-sand-deep h-2">
+                      <div className="bg-brass h-2" style={{width: '67%'}}></div>
                     </div>
                   </div>
                 </div>
@@ -892,11 +892,11 @@ const SuperAdminDashboard: React.FC = () => {
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-ink-muted">Connection Pool</span>
-                      <span className="px-2 py-1 status-chip status-chip--ok text-xs rounded-full">Healthy</span>
+                      <span className="status-chip status-chip--ok text-xs">Healthy</span>
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-ink-muted">Query Performance</span>
-                      <span className="px-2 py-1 status-chip status-chip--ok text-xs rounded-full">Optimal</span>
+                      <span className="status-chip status-chip--ok text-xs">Optimal</span>
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-ink-muted">Storage Used</span>
@@ -912,7 +912,7 @@ const SuperAdminDashboard: React.FC = () => {
         {/* Placeholder for other tabs */}
         {!['create-admin', 'manage-users', 'system-settings', 'analytics'].includes(activeTab) && (
           <div className="bg-white rounded-sm  border border-sand-deep p-8 text-center">
-            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="w-16 h-16 bg-sand border border-sand-deep rounded-sm flex items-center justify-center mx-auto mb-4">
               <Settings className="w-8 h-8 text-ink-muted" />
             </div>
             <h3 className="text-lg font-semibold text-ink mb-2">Coming Soon</h3>

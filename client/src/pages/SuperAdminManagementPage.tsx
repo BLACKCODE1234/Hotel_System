@@ -106,10 +106,10 @@ const SuperAdminManagementPage: React.FC = () => {
 
   const getRoleColor = (role: string) => {
     switch (role) {
-      case 'superadmin': return 'status-chip status-chip--warn border-purple-200';
-      case 'admin': return 'status-chip status-chip--neutral border-blue-200';
+      case 'superadmin': return 'status-chip status-chip--warn';
+      case 'admin': return 'status-chip status-chip--neutral';
       case 'user': return 'status-chip status-chip--ok';
-      default: return 'status-chip status-chip--neutral border-sand-deep';
+      default: return 'status-chip status-chip--neutral';
     }
   };
 
@@ -179,7 +179,7 @@ const SuperAdminManagementPage: React.FC = () => {
               Back to Dashboard
             </Link>
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
+              <div className="w-10 h-10 bg-brass rounded-sm flex items-center justify-center">
                 <Users className="w-5 h-5" />
               </div>
               <div>
@@ -191,7 +191,7 @@ const SuperAdminManagementPage: React.FC = () => {
           <div className="flex items-center gap-4 self-end sm:self-auto">
             <Link
               to="/superadmin"
-              className="inline-flex items-center px-4 py-2 bg-brass hover:bg-yellow-600 text-white font-medium rounded-sm transition-colors duration-200"
+              className="btn-primary text-sm py-2"
             >
               <Plus className="w-4 h-4 mr-2" />
               Super Admin Dashboard
@@ -326,7 +326,7 @@ const SuperAdminManagementPage: React.FC = () => {
 
           {isLoading ? (
             <div className="p-8 text-center">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brass mx-auto"></div>
+              <div className="h-8 w-8 border-2 border-sand-deep border-t-brass rounded-full animate-spin mx-auto"></div>
               <p className="mt-2 text-ink-muted">Loading users...</p>
             </div>
           ) : filteredUsers.length === 0 ? (
@@ -361,7 +361,7 @@ const SuperAdminManagementPage: React.FC = () => {
                     <tr key={user.id} className="hover:bg-sand-warm">
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
-                          <div className="w-10 h-10 bg-brass rounded-full flex items-center justify-center text-white font-bold">
+                          <div className="w-10 h-10 bg-brass rounded-sm flex items-center justify-center text-white font-bold">
                             {user.firstName[0]}{user.lastName[0]}
                           </div>
                           <div className="ml-4">
@@ -384,7 +384,7 @@ const SuperAdminManagementPage: React.FC = () => {
                         <select
                           value={user.role}
                           onChange={(e) => handleRoleChange(user.id, e.target.value)}
-                          className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${getRoleColor(user.role)}`}
+                          className={`${getRoleColor(user.role)}`}
                         >
                           <option value="user">User</option>
                           <option value="admin">Administrator</option>
@@ -394,10 +394,10 @@ const SuperAdminManagementPage: React.FC = () => {
                       <td className="px-6 py-4 whitespace-nowrap">
                         <button
                           onClick={() => handleStatusToggle(user.id)}
-                          className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
+                          className={`${
                             user.isActive
-                              ? 'status-chip status-chip--ok border border-green-200'
-                              : 'status-chip status-chip--danger border border-red-200'
+                              ? 'status-chip status-chip--ok'
+                              : 'status-chip status-chip--danger'
                           }`}
                         >
                           {user.isActive ? (
@@ -473,7 +473,7 @@ const SuperAdminManagementPage: React.FC = () => {
             </div>
             <div className="p-6">
               <div className="flex items-center gap-4 mb-6">
-                <div className="w-16 h-16 bg-brass rounded-full flex items-center justify-center text-white font-bold text-xl">
+                <div className="w-16 h-16 bg-brass rounded-sm flex items-center justify-center text-white font-bold text-xl">
                   {selectedUser.firstName[0]}{selectedUser.lastName[0]}
                 </div>
                 <div>
@@ -481,7 +481,7 @@ const SuperAdminManagementPage: React.FC = () => {
                     {selectedUser.firstName} {selectedUser.lastName}
                   </h4>
                   <p className="text-ink-muted">{selectedUser.position || 'User'}</p>
-                  <div className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium mt-2 ${getRoleColor(selectedUser.role)}`}>
+                  <div className={`${getRoleColor(selectedUser.role)} mt-2`}>
                     {getRoleIcon(selectedUser.role)}
                     <span className="ml-1 capitalize">{selectedUser.role}</span>
                   </div>
@@ -552,7 +552,7 @@ const SuperAdminManagementPage: React.FC = () => {
           <div className="bg-white panel shadow-none max-w-md w-full">
             <div className="p-6">
               <div className="flex items-center gap-4 mb-4">
-                <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
+                <div className="w-12 h-12 bg-[#F8EDEA] border border-[#E8C9C3] rounded-sm flex items-center justify-center">
                   <AlertTriangle className="w-6 h-6 text-red-600" />
                 </div>
                 <div>
