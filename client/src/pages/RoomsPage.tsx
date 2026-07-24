@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Star } from 'lucide-react';
 import { api } from '../services/api';
 
 interface Room {
@@ -12,9 +11,14 @@ interface Room {
   amenities: string[];
   rating: number;
   reviews: number;
+  description?: string;
 }
 
-const fallbackImage = 'https://images.unsplash.com/photo-1566665797739-1674de7a421a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80';
+const fallbackImage =
+  'https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&w=1200&q=80';
+
+const selectClass =
+  'w-full border border-sand-deep bg-white px-3 py-2.5 text-ink focus:outline-none focus:border-brass';
 
 const RoomsPage: React.FC = () => {
   const [rooms, setRooms] = useState<Room[]>([]);
@@ -43,12 +47,10 @@ const RoomsPage: React.FC = () => {
 
     try {
       const response = await api.getRooms(params);
-      if (!response.ok) {
-        throw new Error('Failed to load rooms');
-      }
+      if (!response.ok) throw new Error('Failed to load rooms');
       const data = await response.json();
       setRooms(Array.isArray(data) ? data : []);
-    } catch (roomsError) {
+    } catch {
       setError('Unable to load rooms from the server. Please try again.');
     } finally {
       setLoading(false);
@@ -60,40 +62,31 @@ const RoomsPage: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 py-12">
+    <div className="min-h-screen bg-sand py-14">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="text-center mb-16 animate-slide-up">
-          <h1 className="text-5xl md:text-6xl font-display font-bold gradient-text mb-6">Our Rooms & Suites</h1>
-          <p className="text-xl text-gray-700 max-w-3xl mx-auto">
-            Choose from our selection of luxurious accommodations designed for the ultimate comfort and elegance
+        <div className="max-w-2xl mb-12 animate-rise">
+          <p className="section-label mb-3">Accommodations</p>
+          <h1 className="page-title mb-4">Rooms & suites</h1>
+          <p className="text-ink-muted text-lg leading-relaxed">
+            Clear rates, honest amenities, and rooms sized for how you actually travel.
           </p>
         </div>
 
-        {/* Filters */}
-        <div className="card-gradient mb-12 animate-slide-up" style={{animationDelay: '0.2s'}}>
+        <div className="border border-sand-deep bg-sand-warm p-4 md:p-5 mb-10">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Price Range</label>
-              <select
-                value={priceRange}
-                onChange={(e) => setPriceRange(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-              >
-                <option value="">All Prices</option>
-                <option value="100-300">$100 - $300</option>
-                <option value="300-500">$300 - $500</option>
+              <label className="block text-xs uppercase tracking-wider text-ink-muted mb-2">Price</label>
+              <select value={priceRange} onChange={(e) => setPriceRange(e.target.value)} className={selectClass}>
+                <option value="">All prices</option>
+                <option value="100-300">$100 – $300</option>
+                <option value="300-500">$300 – $500</option>
                 <option value="500+">$500+</option>
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Room Type</label>
-              <select
-                value={roomType}
-                onChange={(e) => setRoomType(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-              >
-                <option value="">All Types</option>
+              <label className="block text-xs uppercase tracking-wider text-ink-muted mb-2">Type</label>
+              <select value={roomType} onChange={(e) => setRoomType(e.target.value)} className={selectClass}>
+                <option value="">All types</option>
                 <option value="standard">Standard</option>
                 <option value="deluxe">Deluxe</option>
                 <option value="executive">Executive</option>
@@ -101,101 +94,103 @@ const RoomsPage: React.FC = () => {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Amenities</label>
-              <select
-                value={amenity}
-                onChange={(e) => setAmenity(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-              >
-                <option value="">All Amenities</option>
+              <label className="block text-xs uppercase tracking-wider text-ink-muted mb-2">Amenity</label>
+              <select value={amenity} onChange={(e) => setAmenity(e.target.value)} className={selectClass}>
+                <option value="">Any</option>
                 <option value="Ocean View">Ocean View</option>
                 <option value="Balcony">Balcony</option>
                 <option value="Jacuzzi">Jacuzzi</option>
               </select>
             </div>
             <div className="flex items-end">
-              <button onClick={loadRooms} className="w-full btn-primary">Apply Filters</button>
+              <button onClick={loadRooms} className="w-full btn-primary">
+                Apply
+              </button>
             </div>
           </div>
         </div>
 
         {error && (
-          <div className="mb-8 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-red-700">
-            {error}
-          </div>
+          <div className="mb-8 border border-[#E8C9C3] bg-[#F8EDEA] px-4 py-3 text-[#8B3A32]">{error}</div>
         )}
 
-        {/* Rooms Grid */}
         {loading ? (
-          <div className="text-center text-gray-700">Loading rooms...</div>
+          <p className="text-ink-muted">Loading rooms…</p>
+        ) : rooms.length === 0 ? (
+          <div className="panel text-center py-16">
+            <p className="font-display text-3xl text-ink mb-2">No rooms match</p>
+            <p className="text-ink-muted mb-6">Try widening your filters.</p>
+            <button
+              onClick={() => {
+                setPriceRange('');
+                setRoomType('');
+                setAmenity('');
+                setTimeout(loadRooms, 0);
+              }}
+              className="btn-secondary"
+            >
+              Reset filters
+            </button>
+          </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {rooms.map((room, index) => (
-            <div key={room.id} className="card-gradient overflow-hidden hover-lift animate-slide-up" style={{animationDelay: `${0.4 + index * 0.1}s`}}>
-              <div className="aspect-w-16 aspect-h-9">
-                <img 
-                  src={room.image || fallbackImage} 
-                  alt={room.name}
-                  className="w-full h-64 object-cover"
-                />
-              </div>
-              <div className="p-6">
-                <div className="flex justify-between items-start mb-4">
-                  <div>
-                    <h3 className="text-xl font-semibold text-gray-900 mb-2">{room.name}</h3>
-                    <div className="flex items-center space-x-2">
-                      <div className="flex items-center">
-                        {[...Array(5)].map((_, i) => (
-                          <Star 
-                            key={i} 
-                            className={`h-4 w-4 ${i < Math.floor(room.rating) ? 'text-yellow-400 fill-current' : 'text-gray-300'}`} 
-                          />
-                        ))}
-                      </div>
-                      <span className="text-sm text-gray-600">
-                        {room.rating} ({room.reviews} reviews)
-                      </span>
+          <div className="space-y-8">
+            {rooms.map((room) => (
+              <article
+                key={room.id}
+                className="group grid lg:grid-cols-[1.15fr_1fr] border border-sand-deep bg-white overflow-hidden"
+              >
+                <div className="overflow-hidden min-h-[260px]">
+                  <img
+                    src={room.image || fallbackImage}
+                    alt={room.name}
+                    className="w-full h-full object-cover img-zoom"
+                  />
+                </div>
+                <div className="p-6 md:p-8 flex flex-col">
+                  <div className="flex items-start justify-between gap-4 mb-4">
+                    <div>
+                      <p className="text-xs uppercase tracking-[0.16em] text-brass mb-2">{room.type}</p>
+                      <h2 className="font-display text-3xl text-ink">{room.name}</h2>
+                    </div>
+                    <div className="text-right shrink-0">
+                      <p className="font-display text-3xl text-ink">${room.price}</p>
+                      <p className="text-sm text-ink-muted">per night</p>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <div className="text-3xl font-bold gradient-text">${room.price}</div>
-                    <div className="text-sm text-gray-500 font-medium">per night</div>
-                  </div>
-                </div>
-
-                <div className="mb-6">
-                  <h4 className="text-sm font-medium text-gray-700 mb-2">Amenities</h4>
-                  <div className="flex flex-wrap gap-2">
-                    {room.amenities.map((amenity, index) => (
-                      <span 
-                        key={index}
-                        className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-gradient-to-r from-primary-100 to-secondary-100 text-primary-700 hover:from-primary-200 hover:to-secondary-200 transition-all duration-300 transform hover:scale-105"
-                      >
-                        {amenity}
-                      </span>
+                  <p className="text-sm text-ink-muted mb-5">
+                    {room.rating > 0
+                      ? `${room.rating.toFixed(1)} guest rating · ${room.reviews} reviews`
+                      : 'Recently listed'}
+                  </p>
+                  <div className="flex flex-wrap gap-x-4 gap-y-2 text-sm text-ink-muted mb-8">
+                    {(room.amenities || []).slice(0, 6).map((item) => (
+                      <span key={item}>{item}</span>
                     ))}
                   </div>
+                  <div className="mt-auto flex flex-col sm:flex-row gap-3">
+                    <Link to={`/hotel/1`} className="btn-secondary flex-1">
+                      Property details
+                    </Link>
+                    <Link
+                      to="/booking"
+                      className="btn-primary flex-1"
+                      onClick={() => {
+                        localStorage.setItem(
+                          'selectedBooking',
+                          JSON.stringify({
+                            room: { id: room.id, name: room.name, type: room.type, price: { base: room.price } },
+                          }),
+                        );
+                      }}
+                    >
+                      Book this room
+                    </Link>
+                  </div>
                 </div>
-
-                <div className="flex space-x-4">
-                  <button className="flex-1 btn-secondary">View Details</button>
-                  <Link 
-                    to="/booking" 
-                    className="flex-1 btn-primary text-center"
-                  >
-                    Book Now
-                  </Link>
-                </div>
-              </div>
-            </div>
-          ))}
+              </article>
+            ))}
           </div>
         )}
-
-        {/* Load More */}
-        <div className="text-center mt-16 animate-fade-in">
-          <button className="btn-secondary">Load More Rooms</button>
-        </div>
       </div>
     </div>
   );

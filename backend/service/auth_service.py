@@ -189,6 +189,8 @@ def admin_login(data: AdminLogin, request: Request, response: Response):
 
     try:
         user = get_user_by_email_and_role(data.email, "admin")
+        if not user:
+            user = get_user_by_email_and_role(data.email, "superadmin")
     except Exception:
         raise HTTPException(
             status_code=500,
@@ -214,7 +216,7 @@ def admin_login(data: AdminLogin, request: Request, response: Response):
         )
 
     update_last_login(data.email)
-    return _login_response(user, request, response, default_role="admin")
+    return _login_response(user, request, response, default_role=user.get("role", "admin"))
 
 
 def logout(request: Request, response: Response):

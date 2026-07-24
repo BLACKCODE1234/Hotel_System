@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { 
-  CheckCircle, 
-  Download, 
-  Calendar, 
-  MapPin, 
-  Users, 
-  Bed, 
-  Mail, 
+import {
+  CheckCircle,
+  Download,
+  Calendar,
+  MapPin,
+  Users,
+  Mail,
   Phone,
   CreditCard,
-  ArrowRight,
   Home,
   Plus,
   Star,
@@ -164,10 +162,7 @@ const BookingConfirmationPage: React.FC = () => {
 
   const handleDownloadReceipt = async () => {
     setIsDownloading(true);
-    // Simulate download process
     await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    // In a real app, this would generate and download a PDF receipt
     alert('Receipt downloaded successfully!');
     setIsDownloading(false);
   };
@@ -183,221 +178,222 @@ const BookingConfirmationPage: React.FC = () => {
 
   if (!booking) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-ink-muted">Loading confirmation…</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen py-8 animate-fade-in">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Success Header */}
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-green-100 rounded-full mb-6">
-            <CheckCircle className="w-12 h-12 text-green-600" />
+        <header className="text-center mb-12">
+          <div className="inline-flex items-center justify-center w-14 h-14 border border-sand-deep bg-white mb-6">
+            <CheckCircle className="w-8 h-8 text-forest" />
           </div>
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">Booking Confirmed!</h1>
-          <p className="text-xl text-gray-600 mb-2">
-            Your reservation has been successfully confirmed
+          <p className="section-label mb-2">Reservation confirmed</p>
+          <h1 className="page-title mb-3">Booking confirmed</h1>
+          <p className="text-ink-muted mb-2">
+            Your reservation is confirmed. A copy has been sent to your email.
           </p>
-          <p className="text-lg text-gray-500">
-            Booking ID: <span className="font-mono font-semibold text-blue-600">{booking.bookingId}</span>
+          <p className="text-sm text-ink-muted">
+            Booking ID:{' '}
+            <span className="font-mono font-semibold text-ink">{booking.bookingId}</span>
           </p>
-        </div>
+        </header>
 
         <div className="grid lg:grid-cols-3 gap-8">
-          {/* Main Booking Details */}
-          <div className="lg:col-span-2 space-y-8">
-            {/* Hotel & Room Information */}
-            <div className="bg-white rounded-xl shadow-sm border p-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Reservation Details</h2>
-              
+          <div className="lg:col-span-2 space-y-6">
+            <div className="panel">
+              <h2 className="font-display text-2xl text-ink mb-6">Reservation details</h2>
+
               <div className="grid md:grid-cols-2 gap-6 mb-8">
                 <div>
-                  <img 
-                    src={booking.hotel.image} 
+                  <img
+                    src={booking.hotel.image}
                     alt={booking.hotel.name}
-                    className="w-full h-48 object-cover rounded-lg mb-4"
+                    className="w-full h-44 object-cover mb-4 border border-sand-deep"
                   />
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">{booking.hotel.name}</h3>
-                  <div className="flex items-center gap-2 text-gray-600 mb-2">
-                    <MapPin className="w-4 h-4" />
-                    <span>{booking.hotel.location}</span>
+                  <h3 className="font-display text-xl text-ink mb-1">{booking.hotel.name}</h3>
+                  <div className="flex items-center gap-2 text-ink-muted text-sm mb-2">
+                    <MapPin className="w-4 h-4 text-brass" />
+                    {booking.hotel.location}
                   </div>
-                  <div className="flex items-center gap-1">
-                    <Star className="w-4 h-4 text-yellow-400 fill-current" />
-                    <span className="text-gray-600">{booking.hotel.rating} rating</span>
+                  <div className="flex items-center gap-1 text-sm text-ink-muted">
+                    <Star className="w-4 h-4 text-brass fill-brass" />
+                    {booking.hotel.rating} guest rating
                   </div>
                 </div>
-                
+
                 <div>
-                  <img 
-                    src={booking.room.image} 
+                  <img
+                    src={booking.room.image}
                     alt={booking.room.name}
-                    className="w-full h-48 object-cover rounded-lg mb-4"
+                    className="w-full h-44 object-cover mb-4 border border-sand-deep"
                   />
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">{booking.room.name}</h3>
-                  <p className="text-gray-600 mb-3">{booking.room.type} Room</p>
-                  <div className="space-y-1">
+                  <h3 className="font-display text-xl text-ink mb-1">{booking.room.name}</h3>
+                  <p className="text-ink-muted text-sm mb-3">{booking.room.type} room</p>
+                  <ul className="space-y-1">
                     {booking.room.amenities.slice(0, 3).map((amenity, index) => (
-                      <div key={index} className="flex items-center gap-2 text-sm text-gray-600">
-                        <CheckCircle className="w-3 h-3 text-green-500" />
-                        <span>{amenity}</span>
-                      </div>
+                      <li key={index} className="flex items-center gap-2 text-sm text-ink-muted">
+                        <CheckCircle className="w-3 h-3 text-forest" />
+                        {amenity}
+                      </li>
                     ))}
                     {booking.room.amenities.length > 3 && (
-                      <p className="text-xs text-blue-600">+{booking.room.amenities.length - 3} more amenities</p>
+                      <li className="text-xs text-brass">
+                        +{booking.room.amenities.length - 3} more amenities
+                      </li>
                     )}
-                  </div>
+                  </ul>
                 </div>
               </div>
 
-              {/* Stay Details */}
-              <div className="grid md:grid-cols-3 gap-6 p-6 bg-gray-50 rounded-lg">
+              <div className="grid md:grid-cols-3 gap-6 p-5 bg-sand-warm border border-sand-deep">
                 <div className="text-center">
-                  <Calendar className="w-8 h-8 text-blue-600 mx-auto mb-2" />
-                  <h4 className="font-semibold text-gray-900 mb-1">Check-in</h4>
-                  <p className="text-sm text-gray-600">{formatDate(booking.dates.checkIn)}</p>
-                  <p className="text-xs text-gray-500">After 3:00 PM</p>
+                  <Calendar className="w-5 h-5 text-brass mx-auto mb-2" />
+                  <h4 className="font-semibold text-ink text-sm mb-1">Check-in</h4>
+                  <p className="text-sm text-ink-muted">{formatDate(booking.dates.checkIn)}</p>
+                  <p className="text-xs text-ink-muted mt-1">After 3:00 PM</p>
                 </div>
                 <div className="text-center">
-                  <Calendar className="w-8 h-8 text-blue-600 mx-auto mb-2" />
-                  <h4 className="font-semibold text-gray-900 mb-1">Check-out</h4>
-                  <p className="text-sm text-gray-600">{formatDate(booking.dates.checkOut)}</p>
-                  <p className="text-xs text-gray-500">Before 12:00 PM</p>
+                  <Calendar className="w-5 h-5 text-brass mx-auto mb-2" />
+                  <h4 className="font-semibold text-ink text-sm mb-1">Check-out</h4>
+                  <p className="text-sm text-ink-muted">{formatDate(booking.dates.checkOut)}</p>
+                  <p className="text-xs text-ink-muted mt-1">Before 12:00 PM</p>
                 </div>
                 <div className="text-center">
-                  <Users className="w-8 h-8 text-blue-600 mx-auto mb-2" />
-                  <h4 className="font-semibold text-gray-900 mb-1">Guests</h4>
-                  <p className="text-sm text-gray-600">
-                    {booking.guests.adults} Adult{booking.guests.adults !== 1 ? 's' : ''}
-                    {booking.guests.children > 0 && `, ${booking.guests.children} Child${booking.guests.children !== 1 ? 'ren' : ''}`}
+                  <Users className="w-5 h-5 text-brass mx-auto mb-2" />
+                  <h4 className="font-semibold text-ink text-sm mb-1">Guests</h4>
+                  <p className="text-sm text-ink-muted">
+                    {booking.guests.adults} adult{booking.guests.adults !== 1 ? 's' : ''}
+                    {booking.guests.children > 0 &&
+                      `, ${booking.guests.children} child${booking.guests.children !== 1 ? 'ren' : ''}`}
                   </p>
-                  <p className="text-xs text-gray-500">{booking.dates.nights} night{booking.dates.nights !== 1 ? 's' : ''}</p>
+                  <p className="text-xs text-ink-muted mt-1">
+                    {booking.dates.nights} night{booking.dates.nights !== 1 ? 's' : ''}
+                  </p>
                 </div>
               </div>
             </div>
 
-            {/* Guest Information */}
-            <div className="bg-white rounded-xl shadow-sm border p-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Guest Information</h2>
-              <div className="grid md:grid-cols-2 gap-6">
+            <div className="panel">
+              <h2 className="font-display text-2xl text-ink mb-6">Guest information</h2>
+              <div className="grid md:grid-cols-2 gap-8">
                 <div>
-                  <h3 className="font-semibold text-gray-900 mb-2">Primary Guest</h3>
-                  <p className="text-gray-700 mb-1">{booking.guest.firstName} {booking.guest.lastName}</p>
-                  <div className="flex items-center gap-2 text-gray-600 mb-1">
+                  <h3 className="section-label mb-3">Primary guest</h3>
+                  <p className="text-ink mb-2">
+                    {booking.guest.firstName} {booking.guest.lastName}
+                  </p>
+                  <div className="flex items-center gap-2 text-ink-muted text-sm mb-1">
                     <Mail className="w-4 h-4" />
-                    <span className="text-sm">{booking.guest.email}</span>
+                    {booking.guest.email}
                   </div>
-                  <div className="flex items-center gap-2 text-gray-600">
-                    <Phone className="w-4 h-4" />
-                    <span className="text-sm">{booking.guest.phone}</span>
-                  </div>
+                  {booking.guest.phone && (
+                    <div className="flex items-center gap-2 text-ink-muted text-sm">
+                      <Phone className="w-4 h-4" />
+                      {booking.guest.phone}
+                    </div>
+                  )}
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900 mb-2">Payment Information</h3>
-                  <div className="flex items-center gap-2 text-gray-600 mb-1">
+                  <h3 className="section-label mb-3">Payment</h3>
+                  <div className="flex items-center gap-2 text-ink-muted text-sm mb-1">
                     <CreditCard className="w-4 h-4" />
-                    <span className="text-sm">{booking.payment.method} ending in {booking.payment.last4}</span>
+                    {booking.payment.method} ending in {booking.payment.last4}
                   </div>
-                  <p className="text-sm text-gray-600">Amount charged: ${booking.payment.amount}</p>
+                  <p className="text-sm text-ink-muted">
+                    Amount charged: ${booking.payment.amount}
+                  </p>
                 </div>
               </div>
             </div>
 
-            {/* Important Information */}
-            <div className="bg-blue-50 border border-blue-200 rounded-xl p-6">
-              <h3 className="font-semibold text-blue-900 mb-3 flex items-center gap-2">
-                <Shield className="w-5 h-5" />
-                Important Information
+            <div className="panel border-l-4 border-l-brass bg-sand-warm">
+              <h3 className="font-semibold text-ink mb-3 flex items-center gap-2">
+                <Shield className="w-5 h-5 text-brass" />
+                Before you arrive
               </h3>
-              <ul className="space-y-2 text-sm text-blue-800">
-                <li>• Please bring a valid photo ID for check-in</li>
-                <li>• A security deposit may be required upon arrival</li>
-                <li>• Free cancellation up to 24 hours before check-in</li>
-                <li>• Contact the hotel directly for any special arrangements</li>
+              <ul className="space-y-2 text-sm text-ink-muted">
+                <li>Bring a valid photo ID for check-in</li>
+                <li>A security deposit may be required upon arrival</li>
+                <li>Free cancellation up to 24 hours before check-in</li>
+                <li>Contact the front desk for special arrangements</li>
               </ul>
             </div>
           </div>
 
-          {/* Sidebar - Price Summary & Actions */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-xl shadow-lg border p-6 sticky top-8">
-              <h3 className="text-xl font-bold text-gray-900 mb-6">Booking Summary</h3>
-              
-              {/* Price Breakdown */}
-              <div className="space-y-4 mb-6">
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-600">Room ({booking.pricing.nights} nights)</span>
-                  <span className="font-semibold">${booking.pricing.roomTotal}</span>
+            <div className="panel sticky top-8">
+              <h3 className="font-display text-xl text-ink mb-6">Booking summary</h3>
+
+              <div className="space-y-3 mb-6 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-ink-muted">Room ({booking.pricing.nights} nights)</span>
+                  <span className="font-medium text-ink">${booking.pricing.roomTotal}</span>
                 </div>
-                
+
                 {booking.pricing.services.map((service, index) => (
-                  <div key={index} className="flex justify-between items-center">
-                    <span className="text-gray-600">{service.name}</span>
-                    <span className="font-semibold">${service.price}</span>
+                  <div key={index} className="flex justify-between">
+                    <span className="text-ink-muted">{service.name}</span>
+                    <span className="font-medium text-ink">${service.price}</span>
                   </div>
                 ))}
-                
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-600">Taxes & Fees</span>
-                  <span className="font-semibold">${booking.pricing.taxes + booking.pricing.serviceFee}</span>
+
+                <div className="flex justify-between">
+                  <span className="text-ink-muted">Taxes & fees</span>
+                  <span className="font-medium text-ink">
+                    ${booking.pricing.taxes + booking.pricing.serviceFee}
+                  </span>
                 </div>
-                
+
                 {booking.pricing.discount > 0 && (
-                  <div className="flex justify-between items-center text-green-600">
-                    <span>Discount Applied</span>
-                    <span className="font-semibold">-${booking.pricing.discount}</span>
+                  <div className="flex justify-between text-forest">
+                    <span>Discount</span>
+                    <span className="font-medium">−${booking.pricing.discount}</span>
                   </div>
                 )}
-                
-                <div className="border-t pt-4">
-                  <div className="flex justify-between items-center">
-                    <span className="text-xl font-bold text-gray-900">Total Paid</span>
-                    <span className="text-2xl font-bold text-blue-600">${booking.pricing.total}</span>
-                  </div>
+
+                <div className="border-t border-sand-deep pt-4 flex justify-between items-baseline">
+                  <span className="font-display text-lg text-ink">Total paid</span>
+                  <span className="font-display text-2xl text-ink">${booking.pricing.total}</span>
                 </div>
               </div>
 
-              {/* Action Buttons */}
-              <div className="space-y-3">
+              <div className="space-y-3 mb-6">
                 <button
+                  type="button"
                   onClick={handleDownloadReceipt}
                   disabled={isDownloading}
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+                  className="btn-primary w-full text-sm disabled:opacity-50"
                 >
                   <Download className="w-4 h-4" />
-                  {isDownloading ? 'Downloading...' : 'Download Receipt'}
+                  {isDownloading ? 'Downloading…' : 'Download receipt'}
                 </button>
-                
+
                 <button
+                  type="button"
                   onClick={() => navigate('/rooms')}
-                  className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2"
+                  className="btn-accent w-full text-sm"
                 >
                   <Plus className="w-4 h-4" />
-                  Book Another Room
+                  Book another room
                 </button>
-                
-                <Link
-                  to="/dashboard"
-                  className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2"
-                >
+
+                <Link to="/dashboard" className="btn-secondary w-full text-sm">
                   <Home className="w-4 h-4" />
-                  Return to Dashboard
+                  Return to dashboard
                 </Link>
               </div>
 
-              {/* Confirmation Status */}
-              <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+              <div className="p-4 bg-sand-warm border border-sand-deep">
                 <div className="flex items-center gap-2 mb-2">
-                  <CheckCircle className="w-5 h-5 text-green-600" />
-                  <span className="font-semibold text-green-800">Confirmed</span>
+                  <span className="status-chip status-chip--ok">Confirmed</span>
                 </div>
-                <p className="text-sm text-green-700">
+                <p className="text-sm text-ink-muted">
                   Confirmation sent to {booking.guest.email}
                 </p>
-                <p className="text-xs text-green-600 mt-1">
+                <p className="text-xs text-ink-muted mt-1">
                   Confirmed on {new Date(booking.confirmationDate).toLocaleDateString()}
                 </p>
               </div>
@@ -405,25 +401,32 @@ const BookingConfirmationPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Next Steps */}
-        <div className="mt-12 bg-white rounded-xl shadow-sm border p-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">What's Next?</h2>
+        <div className="mt-12 panel">
+          <h2 className="font-display text-2xl text-ink mb-6">What&apos;s next</h2>
           <div className="grid md:grid-cols-3 gap-6">
-            <div className="text-center p-6 bg-gray-50 rounded-lg">
-              <Clock className="w-12 h-12 text-blue-600 mx-auto mb-4" />
-              <h3 className="font-semibold text-gray-900 mb-2">Pre-Check-in</h3>
-              <p className="text-sm text-gray-600">Complete online check-in 24 hours before arrival to save time</p>
-            </div>
-            <div className="text-center p-6 bg-gray-50 rounded-lg">
-              <MapPin className="w-12 h-12 text-blue-600 mx-auto mb-4" />
-              <h3 className="font-semibold text-gray-900 mb-2">Directions</h3>
-              <p className="text-sm text-gray-600">Get directions and transportation options to the hotel</p>
-            </div>
-            <div className="text-center p-6 bg-gray-50 rounded-lg">
-              <Phone className="w-12 h-12 text-blue-600 mx-auto mb-4" />
-              <h3 className="font-semibold text-gray-900 mb-2">Contact Hotel</h3>
-              <p className="text-sm text-gray-600">Call the hotel directly for special requests or questions</p>
-            </div>
+            {[
+              {
+                icon: Clock,
+                title: 'Pre-check-in',
+                copy: 'Complete online check-in 24 hours before arrival.',
+              },
+              {
+                icon: MapPin,
+                title: 'Directions',
+                copy: 'Get directions and transport options to the hotel.',
+              },
+              {
+                icon: Phone,
+                title: 'Contact hotel',
+                copy: 'Call the front desk for special requests.',
+              },
+            ].map(({ icon: Icon, title, copy }) => (
+              <div key={title} className="border-t border-sand-deep pt-5">
+                <Icon className="w-5 h-5 text-brass mb-3" />
+                <h3 className="font-semibold text-ink mb-2">{title}</h3>
+                <p className="text-sm text-ink-muted">{copy}</p>
+              </div>
+            ))}
           </div>
         </div>
       </div>

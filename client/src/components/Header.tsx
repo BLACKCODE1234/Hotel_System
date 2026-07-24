@@ -1,10 +1,11 @@
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Hotel, Menu, X, User, LogOut, Settings, Star, MessageCircle, ChevronDown, Calendar } from 'lucide-react';
+import { Menu, X, User, LogOut, Settings, Star, MessageCircle, ChevronDown, Calendar } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+  const [scrolled, setScrolled] = React.useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const { user, logout } = useAuth();
@@ -12,148 +13,118 @@ const Header: React.FC = () => {
   const isHome = location.pathname === '/';
   const isAuthPage = location.pathname === '/login' || location.pathname === '/signup';
 
+  React.useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 12);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
   const handleLogout = async () => {
     await logout();
     setIsMenuOpen(false);
     navigate('/');
   };
 
+  const linkClass =
+    'px-3 py-2 text-sm font-medium tracking-wide text-ink-muted hover:text-ink transition-colors';
+
   return (
-    <header 
-      className="sticky top-0 z-50 animate-slide-up"
-      style={{
-        background: 'rgba(255, 255, 255, 0.95)',
-        backdropFilter: 'blur(8px)',
-        borderBottom: '1px solid #e5e7eb',
-        boxShadow: '0 4px 16px rgba(0, 0, 0, 0.08)'
-      }}
+    <header
+      className={`sticky top-0 z-50 transition-colors duration-300 ${
+        scrolled || !isHome
+          ? 'bg-sand-warm/95 border-b border-sand-deep backdrop-blur-sm'
+          : 'bg-transparent border-b border-transparent'
+      }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
-          {/* Logo */}
-          <Link to="/" className="flex items-center space-x-3 group">
-            <div className="relative">
-              <Hotel 
-                className="h-10 w-10 transition-colors duration-300" 
-                style={{color: '#1e40af'}}
-              />
-            </div>
-            <span className="text-2xl font-display font-bold gradient-text">LuxuryStay</span>
+          <Link to="/" className="flex flex-col leading-none">
+            <span className="font-display text-3xl font-semibold tracking-wide text-ink">
+              LuxuryStay
+            </span>
+            <span className="text-[10px] uppercase tracking-[0.22em] text-brass mt-1">
+              Accra
+            </span>
           </Link>
 
-          {/* Desktop Navigation */}
           {isHome ? (
-            <nav className="hidden md:flex items-center space-x-3">
+            <nav className="hidden md:flex items-center gap-2">
+              <Link to="/rooms" className={linkClass}>
+                Rooms
+              </Link>
               {user ? (
                 <>
-                  <span className="text-sm text-gray-600">
-                    Hi, {user.first_name || user.email}
-                  </span>
-                  <Link
-                    to="/dashboard"
-                    className="px-5 py-2 text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200 rounded-full hover:bg-gray-50"
-                  >
-                    Dashboard
+                  <Link to="/dashboard" className={linkClass}>
+                    My Stay
                   </Link>
-                  <button
-                    onClick={handleLogout}
-                    className="px-5 py-2 bg-red-600 text-white font-medium rounded-full shadow-md hover:bg-red-700 transition-colors duration-200"
-                  >
-                    Logout
+                  <button onClick={handleLogout} className="btn-ghost text-sm">
+                    Sign out
                   </button>
                 </>
               ) : (
                 <>
-                  <Link
-                    to="/login"
-                    className="px-5 py-2 text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200 rounded-full hover:bg-gray-50"
-                  >
-                    Login
+                  <Link to="/login" className={linkClass}>
+                    Sign in
                   </Link>
-                  <Link
-                    to="/signup"
-                    className="px-5 py-2 bg-blue-600 text-white font-medium rounded-full shadow-md hover:bg-blue-700 transition-colors duration-200"
-                  >
-                    Sign Up
+                  <Link to="/signup" className="btn-primary ml-2">
+                    Join
                   </Link>
                 </>
               )}
+              <Link to="/booking" className="btn-primary ml-2">
+                Book a stay
+              </Link>
             </nav>
           ) : isAuthPage ? (
-            <nav className="hidden md:flex items-center space-x-1">
-              <Link 
-                to="/" 
-                className="px-4 py-2 text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200 rounded-md hover:bg-gray-50"
-              >
+            <nav className="hidden md:flex items-center gap-2">
+              <Link to="/" className={linkClass}>
                 Home
+              </Link>
+              <Link to="/rooms" className={linkClass}>
+                Rooms
               </Link>
             </nav>
           ) : (
-            <nav className="hidden md:flex items-center space-x-1">
-              <Link 
-                to="/" 
-                className="px-4 py-2 text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200 rounded-md hover:bg-gray-50"
-              >
+            <nav className="hidden md:flex items-center gap-1">
+              <Link to="/" className={linkClass}>
                 Home
               </Link>
-              <Link 
-                to="/rooms" 
-                className="px-4 py-2 text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200 rounded-md hover:bg-gray-50"
-              >
+              <Link to="/rooms" className={linkClass}>
                 Rooms
               </Link>
-              
-              {/* Account Dropdown */}
-              <div className="relative group ml-4">
-                <button className="flex items-center space-x-2 px-4 py-2 text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200 rounded-md hover:bg-gray-50">
-                  <User className="h-5 w-5" />
-                  <span>Account</span>
+              <Link to="/booking" className="btn-primary ml-3 mr-2">
+                Book
+              </Link>
+              <div className="relative group">
+                <button className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-ink-muted hover:text-ink">
+                  <User className="h-4 w-4" />
+                  Account
                   <ChevronDown className="h-4 w-4" />
                 </button>
-                <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                <div className="absolute right-0 mt-2 w-52 bg-white border border-sand-deep opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity duration-200 z-50">
                   <div className="py-2">
-                    <Link 
-                      to="/profile"
-                      className="flex items-center w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
-                    >
-                      <User className="h-4 w-4 mr-3" />
-                      Profile
+                    <Link to="/profile" className="flex items-center px-4 py-2.5 text-sm text-ink-muted hover:bg-sand hover:text-ink">
+                      <User className="h-4 w-4 mr-3" /> Profile
                     </Link>
-                    <Link 
-                      to="/history"
-                      className="flex items-center w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
-                    >
-                      <Calendar className="h-4 w-4 mr-3" />
-                      History
+                    <Link to="/history" className="flex items-center px-4 py-2.5 text-sm text-ink-muted hover:bg-sand hover:text-ink">
+                      <Calendar className="h-4 w-4 mr-3" /> History
                     </Link>
-                    <Link 
-                      to="/rewards"
-                      className="flex items-center w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
-                    >
-                      <Star className="h-4 w-4 mr-3" />
-                      Rewards
+                    <Link to="/rewards" className="flex items-center px-4 py-2.5 text-sm text-ink-muted hover:bg-sand hover:text-ink">
+                      <Star className="h-4 w-4 mr-3" /> Rewards
                     </Link>
-                    <Link 
-                      to="/settings"
-                      className="flex items-center w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
-                    >
-                      <Settings className="h-4 w-4 mr-3" />
-                      Settings
+                    <Link to="/settings" className="flex items-center px-4 py-2.5 text-sm text-ink-muted hover:bg-sand hover:text-ink">
+                      <Settings className="h-4 w-4 mr-3" /> Settings
                     </Link>
-                    <Link 
-                      to="/support"
-                      className="flex items-center w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
-                    >
-                      <MessageCircle className="h-4 w-4 mr-3" />
-                      Support
+                    <Link to="/support" className="flex items-center px-4 py-2.5 text-sm text-ink-muted hover:bg-sand hover:text-ink">
+                      <MessageCircle className="h-4 w-4 mr-3" /> Support
                     </Link>
-                    <div className="border-t border-gray-100 my-1"></div>
+                    <div className="border-t border-sand-deep my-1" />
                     <button
                       onClick={handleLogout}
-                      className="flex items-center w-full text-left px-4 py-3 text-sm text-red-600 hover:bg-red-50 transition-colors duration-200"
+                      className="flex items-center w-full px-4 py-2.5 text-sm text-[#8B3A32] hover:bg-sand"
                     >
-                      <LogOut className="h-4 w-4 mr-3" />
-                      Logout
+                      <LogOut className="h-4 w-4 mr-3" /> Sign out
                     </button>
                   </div>
                 </div>
@@ -161,115 +132,55 @@ const Header: React.FC = () => {
             </nav>
           )}
 
-          {/* Mobile menu button */}
           <button
-            className="md:hidden p-3 rounded-xl text-gray-600 hover:text-primary-600 hover:bg-primary-50/50 transition-all duration-300 transform hover:scale-110"
+            className="md:hidden p-2 text-ink"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
+            aria-label="Toggle menu"
           >
             {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </button>
         </div>
 
-        {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="md:hidden py-4 border-t border-gray-100">
-            {isHome ? (
-              <nav className="flex flex-col space-y-2">
-                <Link 
-                  to="/login" 
-                  className="px-4 py-2 text-gray-600 hover:text-blue-600 font-medium transition-colors rounded-md hover:bg-gray-50"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Login
-                </Link>
-                <Link 
-                  to="/signup" 
-                  className="px-4 py-2 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 transition-colors"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Sign Up
-                </Link>
-              </nav>
-            ) : isAuthPage ? (
-              <nav className="flex flex-col space-y-2">
-                <Link 
-                  to="/" 
-                  className="px-4 py-2 text-gray-600 hover:text-blue-600 font-medium transition-colors rounded-md hover:bg-gray-50"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Home
-                </Link>
-              </nav>
-            ) : (
-              <nav className="flex flex-col space-y-2">
-                <Link 
-                  to="/" 
-                  className="px-4 py-2 text-gray-600 hover:text-blue-600 font-medium transition-colors rounded-md hover:bg-gray-50"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Home
-                </Link>
-                <Link 
-                  to="/rooms" 
-                  className="px-4 py-2 text-gray-600 hover:text-blue-600 font-medium transition-colors rounded-md hover:bg-gray-50"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Rooms
-                </Link>
-                
-                {/* Mobile Account Section */}
-                <div className="border-t border-gray-100 mt-2 pt-2">
-                  <div className="px-4 py-2 text-sm font-medium text-gray-500 uppercase tracking-wide">Account</div>
-                  <Link 
-                    to="/profile"
-                    className="flex items-center w-full px-4 py-2 text-gray-600 hover:text-blue-600 font-medium transition-colors rounded-md hover:bg-gray-50"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    <User className="h-4 w-4 mr-3" />
+          <div className="md:hidden py-4 border-t border-sand-deep bg-sand-warm">
+            <nav className="flex flex-col gap-1">
+              <Link to="/" className="px-4 py-3 text-ink" onClick={() => setIsMenuOpen(false)}>
+                Home
+              </Link>
+              <Link to="/rooms" className="px-4 py-3 text-ink" onClick={() => setIsMenuOpen(false)}>
+                Rooms
+              </Link>
+              <Link to="/booking" className="px-4 py-3 text-ink" onClick={() => setIsMenuOpen(false)}>
+                Book a stay
+              </Link>
+              {!isAuthPage && (
+                <>
+                  <Link to="/profile" className="px-4 py-3 text-ink-muted" onClick={() => setIsMenuOpen(false)}>
                     Profile
                   </Link>
-                  <Link 
-                    to="/history"
-                    className="flex items-center w-full px-4 py-2 text-gray-600 hover:text-blue-600 font-medium transition-colors rounded-md hover:bg-gray-50"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    <Calendar className="h-4 w-4 mr-3" />
+                  <Link to="/history" className="px-4 py-3 text-ink-muted" onClick={() => setIsMenuOpen(false)}>
                     History
                   </Link>
-                  <Link 
-                    to="/rewards"
-                    className="flex items-center w-full px-4 py-2 text-gray-600 hover:text-blue-600 font-medium transition-colors rounded-md hover:bg-gray-50"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    <Star className="h-4 w-4 mr-3" />
-                    Rewards
-                  </Link>
-                  <Link 
-                    to="/settings"
-                    className="flex items-center w-full px-4 py-2 text-gray-600 hover:text-blue-600 font-medium transition-colors rounded-md hover:bg-gray-50"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    <Settings className="h-4 w-4 mr-3" />
-                    Settings
-                  </Link>
-                  <Link 
-                    to="/support"
-                    className="flex items-center w-full px-4 py-2 text-gray-600 hover:text-blue-600 font-medium transition-colors rounded-md hover:bg-gray-50"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    <MessageCircle className="h-4 w-4 mr-3" />
+                  <Link to="/support" className="px-4 py-3 text-ink-muted" onClick={() => setIsMenuOpen(false)}>
                     Support
                   </Link>
-                  <button
-                    onClick={handleLogout}
-                    className="flex items-center w-full px-4 py-2 text-red-600 hover:text-red-700 font-medium transition-colors rounded-md hover:bg-red-50"
-                  >
-                    <LogOut className="h-4 w-4 mr-3" />
-                    Logout
-                  </button>
-                </div>
-              </nav>
-            )}
+                </>
+              )}
+              {user ? (
+                <button onClick={handleLogout} className="px-4 py-3 text-left text-[#8B3A32]">
+                  Sign out
+                </button>
+              ) : (
+                <>
+                  <Link to="/login" className="px-4 py-3 text-ink" onClick={() => setIsMenuOpen(false)}>
+                    Sign in
+                  </Link>
+                  <Link to="/signup" className="mx-4 mt-2 btn-primary" onClick={() => setIsMenuOpen(false)}>
+                    Join
+                  </Link>
+                </>
+              )}
+            </nav>
           </div>
         )}
       </div>

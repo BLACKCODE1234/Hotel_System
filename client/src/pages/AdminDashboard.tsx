@@ -144,16 +144,16 @@ const AdminDashboard: React.FC = () => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'confirmed': return 'bg-green-100 text-green-800';
-      case 'pending': return 'bg-yellow-100 text-yellow-800';
-      case 'cancelled': return 'bg-red-100 text-red-800';
-      case 'checked-in': return 'bg-blue-100 text-blue-800';
-      case 'checked-out': return 'bg-gray-100 text-gray-800';
-      case 'available': return 'bg-green-100 text-green-800';
-      case 'occupied': return 'bg-red-100 text-red-800';
-      case 'maintenance': return 'bg-orange-100 text-orange-800';
-      case 'cleaning': return 'bg-blue-100 text-blue-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'confirmed': return 'status-chip status-chip--ok';
+      case 'pending': return 'status-chip status-chip--warn';
+      case 'cancelled': return 'status-chip status-chip--danger';
+      case 'checked-in': return 'status-chip status-chip--neutral';
+      case 'checked-out': return 'status-chip status-chip--neutral';
+      case 'available': return 'status-chip status-chip--ok';
+      case 'occupied': return 'status-chip status-chip--danger';
+      case 'maintenance': return 'status-chip status-chip--warn';
+      case 'cleaning': return 'status-chip status-chip--neutral';
+      default: return 'status-chip status-chip--neutral';
     }
   };
 
@@ -305,19 +305,19 @@ const AdminDashboard: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="ops-shell">
       {/* Trade Bar */}
-      <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-2 sm:px-4 py-2">
+      <div className="bg-ink text-white px-2 sm:px-4 py-2">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-start sm:items-center text-xs sm:text-sm gap-2 sm:gap-0">
           <div className="flex flex-wrap items-center gap-2 sm:gap-4 lg:gap-6">
             <div className="flex items-center gap-1 sm:gap-2">
-              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+              <div className="w-2 h-2 bg-forest rounded-full "></div>
               <span className="whitespace-nowrap">System Online</span>
             </div>
             <div className="flex items-center gap-1 sm:gap-2">
               <TrendingUp className="w-3 h-3 sm:w-4 sm:h-4" />
               <span className="whitespace-nowrap">Revenue: $89,247</span>
-              <span className="text-green-300 hidden sm:inline">+12%</span>
+              <span className="text-accent-100 hidden sm:inline">+12%</span>
             </div>
             <div className="flex items-center gap-1 sm:gap-2">
               <Hotel className="w-3 h-3 sm:w-4 sm:h-4" />
@@ -347,7 +347,7 @@ const AdminDashboard: React.FC = () => {
             <div className="relative profile-dropdown-container">
               <button
                 onClick={() => setShowProfileDropdown(!showProfileDropdown)}
-                className="flex items-center gap-2 hover:bg-white/10 rounded-lg p-1 transition-colors"
+                className="flex items-center gap-2 hover:bg-white/10 rounded-sm p-1 transition-colors"
               >
                 <div className="relative">
                   <div className="w-8 h-8 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center text-white font-bold border border-white/30">
@@ -362,43 +362,43 @@ const AdminDashboard: React.FC = () => {
 
               {/* Profile Dropdown */}
               {showProfileDropdown && (
-                <div className="absolute right-0 top-full mt-2 w-80 bg-white rounded-xl shadow-2xl border border-gray-200 z-50">
+                <div className="absolute right-0 top-full mt-2 w-80 bg-white panel shadow-none border border-sand-deep z-50">
                   {/* Admin Profile Header */}
-                  <div className="p-4 border-b border-gray-100">
+                  <div className="p-4 border-b border-sand-deep">
                     <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                      <div className="w-12 h-12 bg-ink rounded-full flex items-center justify-center text-white font-bold text-lg">
                         A
                       </div>
                       <div>
-                        <h3 className="font-semibold text-gray-900">Admin User</h3>
-                        <p className="text-sm text-gray-600">Hotel Administrator</p>
+                        <h3 className="font-semibold text-ink">Admin User</h3>
+                        <p className="text-sm text-ink-muted">Hotel Administrator</p>
                         <div className="flex items-center gap-1 mt-1">
-                          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                          <span className="text-xs text-green-600">Online</span>
+                          <div className="w-2 h-2 bg-forest rounded-full"></div>
+                          <span className="text-xs text-forest">Online</span>
                         </div>
                       </div>
                     </div>
                   </div>
 
                   {/* Notification Center */}
-                  <div className="p-4 border-b border-gray-100">
+                  <div className="p-4 border-b border-sand-deep">
                     <div className="flex items-center justify-between mb-3">
-                      <h4 className="font-medium text-gray-900 flex items-center gap-2">
+                      <h4 className="font-medium text-ink flex items-center gap-2">
                         <Bell className="w-4 h-4" />
                         Notifications
                       </h4>
                       <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full">3</span>
                     </div>
                     <div className="space-y-2">
-                      <div className="p-2 bg-blue-50 rounded-lg text-sm">
+                      <div className="p-2 bg-sand-warm rounded-sm text-sm">
                         <p className="font-medium text-blue-900">New booking received</p>
                         <p className="text-blue-700">Room 205 - John Smith</p>
                       </div>
-                      <div className="p-2 bg-yellow-50 rounded-lg text-sm">
+                      <div className="p-2 bg-sand-warm rounded-sm text-sm">
                         <p className="font-medium text-yellow-900">Maintenance required</p>
                         <p className="text-yellow-700">Room 301 - AC unit</p>
                       </div>
-                      <div className="p-2 bg-green-50 rounded-lg text-sm">
+                      <div className="p-2 bg-accent-50 rounded-sm text-sm">
                         <p className="font-medium text-green-900">Payment confirmed</p>
                         <p className="text-green-700">Booking #LGH-002</p>
                       </div>
@@ -407,28 +407,28 @@ const AdminDashboard: React.FC = () => {
 
                   {/* Menu Options */}
                   <div className="p-2">
-                    <Link to="/admin/profile" className="w-full flex items-center gap-3 px-3 py-2 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                    <Link to="/admin/profile" className="w-full flex items-center gap-3 px-3 py-2 text-ink-soft hover:bg-sand-warm rounded-sm transition-colors">
                       <User className="w-4 h-4" />
                       <span>Profile Settings</span>
                     </Link>
-                    <button className="w-full flex items-center gap-3 px-3 py-2 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                    <button className="w-full flex items-center gap-3 px-3 py-2 text-ink-soft hover:bg-sand-warm rounded-sm transition-colors">
                       <Settings className="w-4 h-4" />
                       <span>Admin Preferences</span>
                     </button>
-                    <button className="w-full flex items-center gap-3 px-3 py-2 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                    <button className="w-full flex items-center gap-3 px-3 py-2 text-ink-soft hover:bg-sand-warm rounded-sm transition-colors">
                       <Shield className="w-4 h-4" />
                       <span>Security Settings</span>
                     </button>
-                    <button className="w-full flex items-center gap-3 px-3 py-2 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                    <button className="w-full flex items-center gap-3 px-3 py-2 text-ink-soft hover:bg-sand-warm rounded-sm transition-colors">
                       <Bell className="w-4 h-4" />
                       <span>Notification Center</span>
                     </button>
                   </div>
 
                   {/* Contact Info */}
-                  <div className="p-4 border-t border-gray-100">
-                    <h5 className="font-medium text-gray-900 mb-2">Contact Information</h5>
-                    <div className="space-y-1 text-sm text-gray-600">
+                  <div className="p-4 border-t border-sand-deep">
+                    <h5 className="font-medium text-ink mb-2">Contact Information</h5>
+                    <div className="space-y-1 text-sm text-ink-muted">
                       <div className="flex items-center gap-2">
                         <Mail className="w-3 h-3" />
                         <span>admin@luxurygrandhotel.com</span>
@@ -441,13 +441,13 @@ const AdminDashboard: React.FC = () => {
                   </div>
 
                   {/* Logout */}
-                  <div className="p-2 border-t border-gray-100">
+                  <div className="p-2 border-t border-sand-deep">
                     <button
                       onClick={async () => {
                         await api.logout();
                         navigate('/login');
                       }}
-                      className="w-full flex items-center gap-3 px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                      className="w-full flex items-center gap-3 px-3 py-2 text-red-600 hover:bg-red-50 rounded-sm transition-colors"
                     >
                       <LogOut className="w-4 h-4" />
                       <span>Logout</span>
@@ -461,19 +461,19 @@ const AdminDashboard: React.FC = () => {
       </div>
 
       {/* Header */}
-      <div className="bg-white shadow-sm border-b">
+      <div className="bg-white  border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center py-4 sm:py-6 gap-4 sm:gap-0">
             <div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Admin Dashboard</h1>
-              <p className="text-sm sm:text-base text-gray-600">Luxury Grand Hotel Management</p>
+              <h1 className="text-2xl sm:text-3xl font-bold text-ink">Admin Dashboard</h1>
+              <p className="text-sm sm:text-base text-ink-muted">Luxury Grand Hotel Management</p>
             </div>
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 w-full sm:w-auto">
               <div className="flex items-center gap-2 bg-green-50 text-green-700 px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm">
-                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                <div className="w-2 h-2 bg-forest rounded-full"></div>
                 <span className="whitespace-nowrap">All Systems Operational</span>
               </div>
-              <button className="bg-blue-600 text-white px-3 py-2 sm:px-4 rounded-lg hover:bg-blue-700 flex items-center gap-2 text-sm sm:text-base w-full sm:w-auto justify-center">
+              <button className="btn-primary text-sm py-2 px-3 sm:px-4 flex items-center gap-2 text-sm sm:text-base w-full sm:w-auto justify-center">
                 <Download className="w-3 h-3 sm:w-4 sm:h-4" />
                 <span className="hidden xs:inline">Export Data</span>
                 <span className="xs:hidden">Export</span>
@@ -485,14 +485,14 @@ const AdminDashboard: React.FC = () => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {dataError && (
-          <div className="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          <div className="mb-6 rounded-sm border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
             {dataError}
           </div>
         )}
 
         {/* Navigation Tabs */}
         <div className="mb-6 sm:mb-8">
-          <div className="border-b border-gray-200">
+          <div className="border-b border-sand-deep">
             <nav className="-mb-px flex flex-wrap gap-2 sm:gap-0 sm:space-x-4 lg:space-x-8">
               {[
                 { id: 'overview', label: 'Overview', icon: BarChart3 },
@@ -507,8 +507,8 @@ const AdminDashboard: React.FC = () => {
                   onClick={() => setActiveTab(tab.id)}
                   className={`flex items-center gap-1 sm:gap-2 py-2 px-2 sm:px-1 border-b-2 font-medium text-xs sm:text-sm whitespace-nowrap ${
                     activeTab === tab.id
-                      ? 'border-blue-500 text-blue-600'
-                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                      ? 'border-blue-500 text-brass'
+                      : 'border-transparent text-ink-muted hover:text-ink-soft hover:border-sand-deep'
                   }`}
                 >
                   <tab.icon className="w-3 h-3 sm:w-4 sm:h-4" />
@@ -525,53 +525,53 @@ const AdminDashboard: React.FC = () => {
           <div className="space-y-6 sm:space-y-8">
             {/* Stats Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-              <div className="bg-white rounded-xl shadow-sm border p-4 sm:p-6">
+              <div className="panel p-4 sm:p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-xs sm:text-sm text-gray-600">Total Bookings</p>
-                    <p className="text-2xl sm:text-3xl font-bold text-gray-900">{stats.totalBookings}</p>
-                    <p className="text-xs sm:text-sm text-green-600">Live backend count</p>
+                    <p className="text-xs sm:text-sm text-ink-muted">Total Bookings</p>
+                    <p className="text-2xl sm:text-3xl font-bold text-ink">{stats.totalBookings}</p>
+                    <p className="text-xs sm:text-sm text-forest">Live backend count</p>
                   </div>
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                    <Calendar className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-sand border border-sand-deep rounded-sm flex items-center justify-center">
+                    <Calendar className="w-5 h-5 sm:w-6 sm:h-6 text-brass" />
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white rounded-xl shadow-sm border p-4 sm:p-6">
+              <div className="panel p-4 sm:p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-xs sm:text-sm text-gray-600">Revenue</p>
-                    <p className="text-2xl sm:text-3xl font-bold text-gray-900">${stats.totalRevenue.toLocaleString()}</p>
-                    <p className="text-xs sm:text-sm text-green-600">From completed payments</p>
+                    <p className="text-xs sm:text-sm text-ink-muted">Revenue</p>
+                    <p className="text-2xl sm:text-3xl font-bold text-ink">${stats.totalRevenue.toLocaleString()}</p>
+                    <p className="text-xs sm:text-sm text-forest">From completed payments</p>
                   </div>
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                    <DollarSign className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" />
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-accent-50 border border-accent-100 rounded-sm flex items-center justify-center">
+                    <DollarSign className="w-5 h-5 sm:w-6 sm:h-6 text-forest" />
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white rounded-xl shadow-sm border p-4 sm:p-6">
+              <div className="panel p-4 sm:p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-xs sm:text-sm text-gray-600">Occupancy Rate</p>
-                    <p className="text-2xl sm:text-3xl font-bold text-gray-900">{stats.occupancyRate}%</p>
+                    <p className="text-xs sm:text-sm text-ink-muted">Occupancy Rate</p>
+                    <p className="text-2xl sm:text-3xl font-bold text-ink">{stats.occupancyRate}%</p>
                     <p className="text-xs sm:text-sm text-red-600">Based on room status</p>
                   </div>
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                    <Hotel className="w-5 h-5 sm:w-6 sm:h-6 text-purple-600" />
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-sand border border-sand-deep rounded-sm flex items-center justify-center">
+                    <Hotel className="w-5 h-5 sm:w-6 sm:h-6 text-brass" />
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white rounded-xl shadow-sm border p-4 sm:p-6">
+              <div className="panel p-4 sm:p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-xs sm:text-sm text-gray-600">Occupied Rooms</p>
-                    <p className="text-2xl sm:text-3xl font-bold text-gray-900">{stats.occupiedRooms}</p>
-                    <p className="text-xs sm:text-sm text-green-600">Live room state</p>
+                    <p className="text-xs sm:text-sm text-ink-muted">Occupied Rooms</p>
+                    <p className="text-2xl sm:text-3xl font-bold text-ink">{stats.occupiedRooms}</p>
+                    <p className="text-xs sm:text-sm text-forest">Live room state</p>
                   </div>
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-orange-100 rounded-lg flex items-center justify-center">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-orange-100 rounded-sm flex items-center justify-center">
                     <Users className="w-5 h-5 sm:w-6 sm:h-6 text-orange-600" />
                   </div>
                 </div>
@@ -579,8 +579,8 @@ const AdminDashboard: React.FC = () => {
             </div>
 
             {/* Recent Activity */}
-            <div className="bg-white rounded-xl shadow-sm border p-4 sm:p-6">
-              <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4">Recent Activity</h3>
+            <div className="panel p-4 sm:p-6">
+              <h3 className="text-base sm:text-lg font-semibold text-ink mb-3 sm:mb-4">Recent Activity</h3>
               <div className="space-y-3 sm:space-y-4">
                 {[
                   { action: 'New booking received', guest: 'John Smith', time: '2 minutes ago', type: 'booking' },
@@ -588,13 +588,13 @@ const AdminDashboard: React.FC = () => {
                   { action: 'Guest checked in', guest: 'Mike Wilson', time: '1 hour ago', type: 'checkin' },
                   { action: 'Room maintenance completed', guest: 'Room 301', time: '2 hours ago', type: 'maintenance' }
                 ].map((activity, index) => (
-                  <div key={index} className="flex items-center gap-3 sm:gap-4 p-2 sm:p-3 bg-gray-50 rounded-lg">
+                  <div key={index} className="flex items-center gap-3 sm:gap-4 p-2 sm:p-3 bg-sand-warm rounded-sm">
                     <div className="w-6 h-6 sm:w-8 sm:h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
-                      <Activity className="w-3 h-3 sm:w-4 sm:h-4 text-blue-600" />
+                      <Activity className="w-3 h-3 sm:w-4 sm:h-4 text-brass" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-xs sm:text-sm font-medium text-gray-900 truncate">{activity.action}</p>
-                      <p className="text-xs text-gray-600 truncate">{activity.guest} • {activity.time}</p>
+                      <p className="text-xs sm:text-sm font-medium text-ink truncate">{activity.action}</p>
+                      <p className="text-xs text-ink-muted truncate">{activity.guest} • {activity.time}</p>
                     </div>
                   </div>
                 ))}
@@ -607,17 +607,17 @@ const AdminDashboard: React.FC = () => {
         {activeTab === 'bookings' && (
           <div className="space-y-4 sm:space-y-6">
             {/* Search and Filter */}
-            <div className="bg-white rounded-xl shadow-sm border p-4 sm:p-6">
+            <div className="panel p-4 sm:p-6">
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                 <div className="flex-1">
                   <div className="relative">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-3 h-3 sm:w-4 sm:h-4" />
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-ink-muted w-3 h-3 sm:w-4 sm:h-4" />
                     <input
                       type="text"
                       placeholder="Search bookings..."
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
-                      className="w-full pl-8 sm:pl-10 pr-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full pl-8 sm:pl-10 pr-4 py-2 text-sm sm:text-base border border-sand-deep rounded-sm focus:outline-none focus:border-brass"
                     />
                   </div>
                 </div>
@@ -625,7 +625,7 @@ const AdminDashboard: React.FC = () => {
                   <select
                     value={filterStatus}
                     onChange={(e) => setFilterStatus(e.target.value)}
-                    className="px-3 py-2 sm:px-4 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="px-3 py-2 sm:px-4 text-sm sm:text-base border border-sand-deep rounded-sm focus:outline-none focus:border-brass"
                   >
                     <option value="all">All Status</option>
                     <option value="confirmed">Confirmed</option>
@@ -634,7 +634,7 @@ const AdminDashboard: React.FC = () => {
                     <option value="checked-in">Checked In</option>
                     <option value="checked-out">Checked Out</option>
                   </select>
-                  <button className="bg-blue-600 text-white px-3 py-2 sm:px-4 rounded-lg hover:bg-blue-700 flex items-center gap-2 text-sm sm:text-base justify-center">
+                  <button className="btn-primary text-sm py-2 px-3 sm:px-4 flex items-center gap-2 text-sm sm:text-base justify-center">
                     <Plus className="w-3 h-3 sm:w-4 sm:h-4" />
                     <span className="hidden xs:inline">New Booking</span>
                     <span className="xs:hidden">New</span>
@@ -644,52 +644,52 @@ const AdminDashboard: React.FC = () => {
             </div>
 
             {/* Bookings Table */}
-            <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
+            <div className="panel overflow-hidden p-0">
               <div className="overflow-x-auto">
                 <table className="w-full min-w-[800px]">
-                  <thead className="bg-gray-50">
+                  <thead className="bg-sand-warm">
                     <tr>
-                      <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Booking ID</th>
-                      <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Guest</th>
-                      <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden sm:table-cell">Room</th>
-                      <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">Dates</th>
-                      <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
-                      <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                      <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                      <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-ink-muted uppercase tracking-wider">Booking ID</th>
+                      <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-ink-muted uppercase tracking-wider">Guest</th>
+                      <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-ink-muted uppercase tracking-wider hidden sm:table-cell">Room</th>
+                      <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-ink-muted uppercase tracking-wider hidden md:table-cell">Dates</th>
+                      <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-ink-muted uppercase tracking-wider">Amount</th>
+                      <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-ink-muted uppercase tracking-wider">Status</th>
+                      <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-ink-muted uppercase tracking-wider">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
+                  <tbody className="bg-white divide-y divide-sand-deep">
                     {filteredBookings.map((booking) => (
-                      <tr key={booking.id} className="hover:bg-gray-50">
-                        <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm font-medium text-gray-900">{booking.id}</td>
+                      <tr key={booking.id} className="hover:bg-sand-warm">
+                        <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm font-medium text-ink">{booking.id}</td>
                         <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
                           <div>
-                            <div className="text-xs sm:text-sm font-medium text-gray-900">{booking.guestName}</div>
-                            <div className="text-xs sm:text-sm text-gray-500 hidden sm:block">{booking.email}</div>
+                            <div className="text-xs sm:text-sm font-medium text-ink">{booking.guestName}</div>
+                            <div className="text-xs sm:text-sm text-ink-muted hidden sm:block">{booking.email}</div>
                           </div>
                         </td>
-                        <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-gray-900 hidden sm:table-cell">{booking.roomType}</td>
-                        <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-gray-900 hidden md:table-cell">
+                        <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-ink hidden sm:table-cell">{booking.roomType}</td>
+                        <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-ink hidden md:table-cell">
                           <div className="text-xs">
                             <div>{new Date(booking.checkIn).toLocaleDateString()}</div>
                             <div>{new Date(booking.checkOut).toLocaleDateString()}</div>
                           </div>
                         </td>
-                        <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm font-medium text-gray-900">${booking.total_amount}</td>
+                        <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm font-medium text-ink">${booking.total_amount}</td>
                         <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
                           <button
                             onClick={() => handleStatusChange(booking)}
-                            className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full hover:opacity-80 transition-opacity ${getStatusColor(booking.status)}`}
+                            className={`status-chip cursor-pointer hover:opacity-80 transition-opacity ${getStatusColor(booking.status)}`}
                           >
                             {booking.status}
                           </button>
                         </td>
-                        <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-sm text-gray-500">
+                        <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-sm text-ink-muted">
                           <div className="flex gap-1 sm:gap-2">
-                            <button className="text-blue-600 hover:text-blue-800">
+                            <button className="text-brass hover:text-brass-deep">
                               <Eye className="w-3 h-3 sm:w-4 sm:h-4" />
                             </button>
-                            <button className="text-green-600 hover:text-green-800">
+                            <button className="text-forest hover:text-green-800">
                               <Edit className="w-3 h-3 sm:w-4 sm:h-4" />
                             </button>
                             <button className="text-red-600 hover:text-red-800">
@@ -709,10 +709,10 @@ const AdminDashboard: React.FC = () => {
         {/* Rooms Tab */}
         {activeTab === 'rooms' && (
           <div className="space-y-6">
-            <div className="bg-white rounded-xl shadow-sm border p-6">
+            <div className="panel p-6">
               <div className="flex justify-between items-center mb-6">
-                <h3 className="text-lg font-semibold text-gray-900">Room Management</h3>
-                <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center gap-2">
+                <h3 className="text-lg font-semibold text-ink">Room Management</h3>
+                <button className="btn-primary py-2 px-4 flex items-center gap-2">
                   <Plus className="w-4 h-4" />
                   Add Room
                 </button>
@@ -720,27 +720,27 @@ const AdminDashboard: React.FC = () => {
               
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 {rooms.map((room) => (
-                  <div key={room.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
+                  <div key={room.id} className="border rounded-sm p-4 hover: transition-shadow">
                     <div className="flex justify-between items-start mb-3">
                       <div>
-                        <h4 className="font-semibold text-gray-900">Room {room.number}</h4>
-                        <p className="text-sm text-gray-600">{room.type}</p>
-                        <p className="text-sm text-gray-600">Floor {room.floor}</p>
+                        <h4 className="font-semibold text-ink">Room {room.number}</h4>
+                        <p className="text-sm text-ink-muted">{room.type}</p>
+                        <p className="text-sm text-ink-muted">Floor {room.floor}</p>
                       </div>
                       <button
                         onClick={() => handleRoomStatusChange(room)}
-                        className={`inline-flex px-3 py-1 text-xs font-semibold rounded-full hover:opacity-80 transition-opacity ${getStatusColor(room.status)}`}
+                        className={`status-chip cursor-pointer hover:opacity-80 transition-opacity ${getStatusColor(room.status)}`}
                       >
                         {room.status}
                       </button>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-lg font-bold text-gray-900">${room.price}/night</span>
+                      <span className="text-lg font-bold text-ink">${room.price}/night</span>
                       <div className="flex gap-1">
-                        <button className="text-blue-600 hover:text-blue-800">
+                        <button className="text-brass hover:text-brass-deep">
                           <Eye className="w-4 h-4" />
                         </button>
-                        <button className="text-green-600 hover:text-green-800">
+                        <button className="text-forest hover:text-green-800">
                           <Edit className="w-4 h-4" />
                         </button>
                       </div>
@@ -756,18 +756,18 @@ const AdminDashboard: React.FC = () => {
         {activeTab === 'guests' && (
           <div className="space-y-6">
             {/* Guest Management Header */}
-            <div className="bg-white rounded-xl shadow-sm border p-6">
+            <div className="panel p-6">
               <div className="flex justify-between items-center">
                 <div>
-                  <h3 className="text-2xl font-bold text-gray-900">Guest Management</h3>
-                  <p className="text-gray-600">Manage guest profiles, preferences, and history</p>
+                  <h3 className="text-2xl font-bold text-ink">Guest Management</h3>
+                  <p className="text-ink-muted">Manage guest profiles, preferences, and history</p>
                 </div>
                 <div className="flex gap-3">
-                  <button className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 flex items-center gap-2">
+                  <button className="btn-accent py-2 px-4 flex items-center gap-2">
                     <Plus className="w-4 h-4" />
                     Add Guest
                   </button>
-                  <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center gap-2">
+                  <button className="btn-primary py-2 px-4 flex items-center gap-2">
                     <Download className="w-4 h-4" />
                     Export Guests
                   </button>
@@ -777,53 +777,53 @@ const AdminDashboard: React.FC = () => {
 
             {/* Guest Statistics */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-              <div className="bg-white rounded-xl shadow-sm border p-6">
+              <div className="panel p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-gray-600">Total Guests</p>
-                    <p className="text-3xl font-bold text-gray-900">1,247</p>
-                    <p className="text-sm text-green-600">+23 this month</p>
+                    <p className="text-sm text-ink-muted">Total Guests</p>
+                    <p className="text-3xl font-bold text-ink">1,247</p>
+                    <p className="text-sm text-forest">+23 this month</p>
                   </div>
-                  <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                    <Users className="w-6 h-6 text-blue-600" />
+                  <div className="w-12 h-12 bg-sand border border-sand-deep rounded-sm flex items-center justify-center">
+                    <Users className="w-6 h-6 text-brass" />
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white rounded-xl shadow-sm border p-6">
+              <div className="panel p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-gray-600">VIP Guests</p>
-                    <p className="text-3xl font-bold text-gray-900">89</p>
-                    <p className="text-sm text-purple-600">Premium members</p>
+                    <p className="text-sm text-ink-muted">VIP Guests</p>
+                    <p className="text-3xl font-bold text-ink">89</p>
+                    <p className="text-sm text-brass">Premium members</p>
                   </div>
-                  <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                    <User className="w-6 h-6 text-purple-600" />
+                  <div className="w-12 h-12 bg-sand border border-sand-deep rounded-sm flex items-center justify-center">
+                    <User className="w-6 h-6 text-brass" />
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white rounded-xl shadow-sm border p-6">
+              <div className="panel p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-gray-600">Repeat Guests</p>
-                    <p className="text-3xl font-bold text-gray-900">456</p>
-                    <p className="text-sm text-green-600">37% return rate</p>
+                    <p className="text-sm text-ink-muted">Repeat Guests</p>
+                    <p className="text-3xl font-bold text-ink">456</p>
+                    <p className="text-sm text-forest">37% return rate</p>
                   </div>
-                  <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                    <Activity className="w-6 h-6 text-green-600" />
+                  <div className="w-12 h-12 bg-accent-50 border border-accent-100 rounded-sm flex items-center justify-center">
+                    <Activity className="w-6 h-6 text-forest" />
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white rounded-xl shadow-sm border p-6">
+              <div className="panel p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-gray-600">Avg. Rating</p>
-                    <p className="text-3xl font-bold text-gray-900">4.8</p>
+                    <p className="text-sm text-ink-muted">Avg. Rating</p>
+                    <p className="text-3xl font-bold text-ink">4.8</p>
                     <p className="text-sm text-yellow-600">Guest satisfaction</p>
                   </div>
-                  <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
+                  <div className="w-12 h-12 bg-yellow-100 rounded-sm flex items-center justify-center">
                     <Users className="w-6 h-6 text-yellow-600" />
                   </div>
                 </div>
@@ -831,26 +831,26 @@ const AdminDashboard: React.FC = () => {
             </div>
 
             {/* Search and Filter */}
-            <div className="bg-white rounded-xl shadow-sm border p-6">
+            <div className="panel p-6">
               <div className="flex flex-col sm:flex-row gap-4">
                 <div className="flex-1">
                   <div className="relative">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-ink-muted w-4 h-4" />
                     <input
                       type="text"
                       placeholder="Search guests by name, email, or phone..."
-                      className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full pl-10 pr-4 py-2 border border-sand-deep rounded-sm focus:outline-none focus:border-brass"
                     />
                   </div>
                 </div>
                 <div className="flex gap-2">
-                  <select className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                  <select className="px-4 py-2 border border-sand-deep rounded-sm focus:outline-none focus:border-brass">
                     <option>All Guests</option>
                     <option>VIP Guests</option>
                     <option>Regular Guests</option>
                     <option>New Guests</option>
                   </select>
-                  <select className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                  <select className="px-4 py-2 border border-sand-deep rounded-sm focus:outline-none focus:border-brass">
                     <option>All Status</option>
                     <option>Active</option>
                     <option>Checked In</option>
@@ -861,21 +861,21 @@ const AdminDashboard: React.FC = () => {
             </div>
 
             {/* Guest List */}
-            <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
+            <div className="panel overflow-hidden p-0">
               <div className="overflow-x-auto">
                 <table className="w-full">
-                  <thead className="bg-gray-50">
+                  <thead className="bg-sand-warm">
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Guest</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Bookings</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Spent</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Visit</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-ink-muted uppercase tracking-wider">Guest</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-ink-muted uppercase tracking-wider">Contact</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-ink-muted uppercase tracking-wider">Status</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-ink-muted uppercase tracking-wider">Bookings</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-ink-muted uppercase tracking-wider">Total Spent</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-ink-muted uppercase tracking-wider">Last Visit</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-ink-muted uppercase tracking-wider">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
+                  <tbody className="bg-white divide-y divide-sand-deep">
                     {[
                       {
                         id: 'G001',
@@ -938,52 +938,52 @@ const AdminDashboard: React.FC = () => {
                         avatar: 'RW'
                       }
                     ].map((guest) => (
-                      <tr key={guest.id} className="hover:bg-gray-50">
+                      <tr key={guest.id} className="hover:bg-sand-warm">
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                            <div className="w-10 h-10 bg-brass rounded-full flex items-center justify-center text-white font-bold text-sm">
                               {guest.avatar}
                             </div>
                             <div>
                               <div className="flex items-center gap-2">
-                                <div className="text-sm font-medium text-gray-900">{guest.name}</div>
+                                <div className="text-sm font-medium text-ink">{guest.name}</div>
                                 {guest.type === 'VIP' && (
-                                  <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-purple-100 text-purple-800">
+                                  <span className="status-chip cursor-pointer status-chip status-chip--warn">
                                     VIP
                                   </span>
                                 )}
                               </div>
-                              <div className="text-sm text-gray-500">ID: {guest.id}</div>
+                              <div className="text-sm text-ink-muted">ID: {guest.id}</div>
                             </div>
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-900">{guest.email}</div>
-                          <div className="text-sm text-gray-500">{guest.phone}</div>
+                          <div className="text-sm text-ink">{guest.email}</div>
+                          <div className="text-sm text-ink-muted">{guest.phone}</div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(guest.status)}`}>
+                          <span className={`status-chip cursor-pointer ${getStatusColor(guest.status)}`}>
                             {guest.status.replace('-', ' ')}
                           </span>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-ink">
                           {guest.bookings} bookings
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-ink">
                           ${guest.totalSpent.toLocaleString()}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-ink">
                           {new Date(guest.lastVisit).toLocaleDateString()}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-ink-muted">
                           <div className="flex gap-2">
-                            <button className="text-blue-600 hover:text-blue-800">
+                            <button className="text-brass hover:text-brass-deep">
                               <Eye className="w-4 h-4" />
                             </button>
-                            <button className="text-green-600 hover:text-green-800">
+                            <button className="text-forest hover:text-green-800">
                               <Edit className="w-4 h-4" />
                             </button>
-                            <button className="text-purple-600 hover:text-purple-800">
+                            <button className="text-brass hover:text-brass-deep">
                               <Mail className="w-4 h-4" />
                             </button>
                             <button className="text-yellow-600 hover:text-yellow-800">
@@ -1001,8 +1001,8 @@ const AdminDashboard: React.FC = () => {
             {/* Guest Insights */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Guest Preferences */}
-              <div className="bg-white rounded-xl shadow-sm border p-6">
-                <h4 className="text-lg font-semibold text-gray-900 mb-4">Popular Preferences</h4>
+              <div className="panel p-6">
+                <h4 className="text-lg font-semibold text-ink mb-4">Popular Preferences</h4>
                 <div className="space-y-4">
                   {[
                     { preference: 'Sea View Rooms', percentage: 68, count: 847 },
@@ -1013,24 +1013,24 @@ const AdminDashboard: React.FC = () => {
                   ].map((item, index) => (
                     <div key={index} className="space-y-2">
                       <div className="flex justify-between items-center">
-                        <span className="text-sm font-medium text-gray-900">{item.preference}</span>
-                        <span className="text-sm text-gray-600">{item.count} guests</span>
+                        <span className="text-sm font-medium text-ink">{item.preference}</span>
+                        <span className="text-sm text-ink-muted">{item.count} guests</span>
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-2">
                         <div 
-                          className="h-2 rounded-full bg-gradient-to-r from-blue-500 to-purple-500"
+                          className="h-2 rounded-full bg-brass"
                           style={{ width: `${item.percentage}%` }}
                         ></div>
                       </div>
-                      <div className="text-right text-xs text-gray-500">{item.percentage}%</div>
+                      <div className="text-right text-xs text-ink-muted">{item.percentage}%</div>
                     </div>
                   ))}
                 </div>
               </div>
 
               {/* Recent Guest Activity */}
-              <div className="bg-white rounded-xl shadow-sm border p-6">
-                <h4 className="text-lg font-semibold text-gray-900 mb-4">Recent Activity</h4>
+              <div className="panel p-6">
+                <h4 className="text-lg font-semibold text-ink mb-4">Recent Activity</h4>
                 <div className="space-y-4">
                   {[
                     { guest: 'John Smith', action: 'Checked in', room: 'Room 205', time: '2 hours ago', type: 'checkin' },
@@ -1039,21 +1039,21 @@ const AdminDashboard: React.FC = () => {
                     { guest: 'Emily Davis', action: 'Updated profile', room: '', time: '8 hours ago', type: 'profile' },
                     { guest: 'Robert Wilson', action: 'Requested service', room: 'Room 405', time: '12 hours ago', type: 'service' }
                   ].map((activity, index) => (
-                    <div key={index} className="flex items-center gap-4 p-3 bg-gray-50 rounded-lg">
+                    <div key={index} className="flex items-center gap-4 p-3 bg-sand-warm rounded-sm">
                       <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                        activity.type === 'checkin' ? 'bg-green-100 text-green-600' :
-                        activity.type === 'checkout' ? 'bg-red-100 text-red-600' :
-                        activity.type === 'booking' ? 'bg-blue-100 text-blue-600' :
-                        activity.type === 'profile' ? 'bg-purple-100 text-purple-600' :
-                        'bg-yellow-100 text-yellow-600'
+                        activity.type === 'checkin' ? 'bg-green-100 text-forest' :
+                        activity.type === 'checkout' ? 'bg-red-50 text-red-800' :
+                        activity.type === 'booking' ? 'bg-blue-100 text-brass' :
+                        activity.type === 'profile' ? 'bg-purple-100 text-brass' :
+                        'bg-sand text-brass'
                       }`}>
                         <Activity className="w-4 h-4" />
                       </div>
                       <div className="flex-1">
-                        <p className="text-sm font-medium text-gray-900">{activity.guest}</p>
-                        <p className="text-xs text-gray-600">{activity.action} {activity.room}</p>
+                        <p className="text-sm font-medium text-ink">{activity.guest}</p>
+                        <p className="text-xs text-ink-muted">{activity.action} {activity.room}</p>
                       </div>
-                      <div className="text-xs text-gray-500">{activity.time}</div>
+                      <div className="text-xs text-ink-muted">{activity.time}</div>
                     </div>
                   ))}
                 </div>
@@ -1065,20 +1065,20 @@ const AdminDashboard: React.FC = () => {
         {activeTab === 'analytics' && (
           <div className="space-y-8">
             {/* Analytics Header */}
-            <div className="bg-white rounded-xl shadow-sm border p-6">
+            <div className="panel p-6">
               <div className="flex justify-between items-center">
                 <div>
-                  <h3 className="text-2xl font-bold text-gray-900">Analytics & Reports</h3>
-                  <p className="text-gray-600">Comprehensive insights and performance metrics</p>
+                  <h3 className="text-2xl font-bold text-ink">Analytics & Reports</h3>
+                  <p className="text-ink-muted">Comprehensive insights and performance metrics</p>
                 </div>
                 <div className="flex gap-3">
-                  <select className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                  <select className="px-4 py-2 border border-sand-deep rounded-sm focus:ring-2 focus:ring-blue-500">
                     <option>Last 7 days</option>
                     <option>Last 30 days</option>
                     <option>Last 3 months</option>
                     <option>Last year</option>
                   </select>
-                  <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center gap-2">
+                  <button className="btn-primary py-2 px-4 flex items-center gap-2">
                     <Download className="w-4 h-4" />
                     Export Report
                   </button>
@@ -1088,54 +1088,54 @@ const AdminDashboard: React.FC = () => {
 
             {/* Key Metrics Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <div className="bg-white rounded-xl shadow-sm border p-6">
+              <div className="panel p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-gray-600">Average Daily Rate</p>
-                    <p className="text-3xl font-bold text-gray-900">$287</p>
-                    <p className="text-sm text-green-600">+15% vs last month</p>
+                    <p className="text-sm text-ink-muted">Average Daily Rate</p>
+                    <p className="text-3xl font-bold text-ink">$287</p>
+                    <p className="text-sm text-forest">+15% vs last month</p>
                   </div>
-                  <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                    <TrendingUp className="w-6 h-6 text-blue-600" />
+                  <div className="w-12 h-12 bg-sand border border-sand-deep rounded-sm flex items-center justify-center">
+                    <TrendingUp className="w-6 h-6 text-brass" />
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white rounded-xl shadow-sm border p-6">
+              <div className="panel p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-gray-600">Revenue per Room</p>
-                    <p className="text-3xl font-bold text-gray-900">$224</p>
-                    <p className="text-sm text-green-600">+8% vs last month</p>
+                    <p className="text-sm text-ink-muted">Revenue per Room</p>
+                    <p className="text-3xl font-bold text-ink">$224</p>
+                    <p className="text-sm text-forest">+8% vs last month</p>
                   </div>
-                  <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                    <DollarSign className="w-6 h-6 text-green-600" />
+                  <div className="w-12 h-12 bg-accent-50 border border-accent-100 rounded-sm flex items-center justify-center">
+                    <DollarSign className="w-6 h-6 text-forest" />
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white rounded-xl shadow-sm border p-6">
+              <div className="panel p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-gray-600">Guest Satisfaction</p>
-                    <p className="text-3xl font-bold text-gray-900">4.8/5</p>
-                    <p className="text-sm text-green-600">+0.2 vs last month</p>
+                    <p className="text-sm text-ink-muted">Guest Satisfaction</p>
+                    <p className="text-3xl font-bold text-ink">4.8/5</p>
+                    <p className="text-sm text-forest">+0.2 vs last month</p>
                   </div>
-                  <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
+                  <div className="w-12 h-12 bg-yellow-100 rounded-sm flex items-center justify-center">
                     <Users className="w-6 h-6 text-yellow-600" />
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white rounded-xl shadow-sm border p-6">
+              <div className="panel p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-gray-600">Repeat Guests</p>
-                    <p className="text-3xl font-bold text-gray-900">34%</p>
+                    <p className="text-sm text-ink-muted">Repeat Guests</p>
+                    <p className="text-3xl font-bold text-ink">34%</p>
                     <p className="text-sm text-red-600">-2% vs last month</p>
                   </div>
-                  <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                    <Activity className="w-6 h-6 text-purple-600" />
+                  <div className="w-12 h-12 bg-sand border border-sand-deep rounded-sm flex items-center justify-center">
+                    <Activity className="w-6 h-6 text-brass" />
                   </div>
                 </div>
               </div>
@@ -1144,39 +1144,39 @@ const AdminDashboard: React.FC = () => {
             {/* Charts Row */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {/* Enhanced Bar Chart */}
-              <div className="bg-white rounded-xl shadow-sm border p-6">
+              <div className="panel p-6">
                 <div className="flex justify-between items-center mb-6">
                   <div>
-                    <h4 className="text-lg font-semibold text-gray-900">Revenue Analytics</h4>
-                    <p className="text-sm text-gray-600">Daily revenue breakdown with trends</p>
+                    <h4 className="text-lg font-semibold text-ink">Revenue Analytics</h4>
+                    <p className="text-sm text-ink-muted">Daily revenue breakdown with trends</p>
                   </div>
                   <div className="flex gap-2">
                     <button 
                       onClick={() => setChartPeriod('daily')}
-                      className={`text-sm px-3 py-1 rounded-lg font-medium transition-colors ${
+                      className={`text-sm px-3 py-1 rounded-sm font-medium transition-colors ${
                         chartPeriod === 'daily' 
-                          ? 'bg-blue-100 text-blue-600' 
-                          : 'text-gray-600 hover:bg-gray-100'
+                          ? 'bg-blue-100 text-brass' 
+                          : 'text-ink-muted hover:bg-gray-100'
                       }`}
                     >
                       Daily
                     </button>
                     <button 
                       onClick={() => setChartPeriod('weekly')}
-                      className={`text-sm px-3 py-1 rounded-lg font-medium transition-colors ${
+                      className={`text-sm px-3 py-1 rounded-sm font-medium transition-colors ${
                         chartPeriod === 'weekly' 
-                          ? 'bg-blue-100 text-blue-600' 
-                          : 'text-gray-600 hover:bg-gray-100'
+                          ? 'bg-blue-100 text-brass' 
+                          : 'text-ink-muted hover:bg-gray-100'
                       }`}
                     >
                       Weekly
                     </button>
                     <button 
                       onClick={() => setChartPeriod('monthly')}
-                      className={`text-sm px-3 py-1 rounded-lg font-medium transition-colors ${
+                      className={`text-sm px-3 py-1 rounded-sm font-medium transition-colors ${
                         chartPeriod === 'monthly' 
-                          ? 'bg-blue-100 text-blue-600' 
-                          : 'text-gray-600 hover:bg-gray-100'
+                          ? 'bg-blue-100 text-brass' 
+                          : 'text-ink-muted hover:bg-gray-100'
                       }`}
                     >
                       Monthly
@@ -1187,23 +1187,23 @@ const AdminDashboard: React.FC = () => {
                 {/* Chart Legend */}
                 <div className="flex items-center gap-6 mb-4 text-sm">
                   <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 bg-gradient-to-t from-blue-600 to-blue-400 rounded"></div>
-                    <span className="text-gray-600">Room Revenue</span>
+                    <div className="w-3 h-3 bg-ink rounded"></div>
+                    <span className="text-ink-muted">Room Revenue</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 bg-gradient-to-t from-green-600 to-green-400 rounded"></div>
-                    <span className="text-gray-600">Service Revenue</span>
+                    <div className="w-3 h-3 bg-forest rounded"></div>
+                    <span className="text-ink-muted">Service Revenue</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <div className="w-3 h-3 bg-gradient-to-t from-purple-600 to-purple-400 rounded"></div>
-                    <span className="text-gray-600">Total Revenue</span>
+                    <span className="text-ink-muted">Total Revenue</span>
                   </div>
                 </div>
 
                 {/* Enhanced Bar Chart */}
                 <div className="relative">
                   {/* Y-axis labels */}
-                  <div className="absolute left-0 top-0 h-64 flex flex-col justify-between text-xs text-gray-500 -ml-8">
+                  <div className="absolute left-0 top-0 h-64 flex flex-col justify-between text-xs text-ink-muted -ml-8">
                     {getYAxisLabels().map((label, index) => (
                       <span key={index}>{label}</span>
                     ))}
@@ -1214,7 +1214,7 @@ const AdminDashboard: React.FC = () => {
                     {[0, 25, 50, 75, 100].map((position) => (
                       <div 
                         key={position}
-                        className="absolute w-full border-t border-gray-100"
+                        className="absolute w-full border-t border-sand-deep"
                         style={{ top: `${100 - position}%` }}
                       ></div>
                     ))}
@@ -1230,23 +1230,23 @@ const AdminDashboard: React.FC = () => {
                         <div className="w-full flex flex-col items-end relative">
                           {/* Room Revenue Bar */}
                           <div 
-                            className="w-full bg-gradient-to-t from-blue-600 to-blue-400 rounded-t-sm transition-all duration-300 hover:from-blue-700 hover:to-blue-500 relative"
+                            className="w-full bg-ink rounded-t-sm transition-all duration-300 hover:opacity-90 relative"
                             style={{ height: `${(data.room / scale.max) * 240}px` }}
                           ></div>
                           {/* Service Revenue Bar */}
                           <div 
-                            className="w-full bg-gradient-to-t from-green-600 to-green-400 transition-all duration-300 hover:from-green-700 hover:to-green-500"
+                            className="w-full bg-forest transition-all duration-300 hover:opacity-90"
                             style={{ height: `${(data.service / scale.max) * 240}px` }}
                           ></div>
                         </div>
                         
                         {/* Tooltip */}
-                        <div className="absolute -top-20 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs px-3 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity z-20 whitespace-nowrap">
+                        <div className="absolute -top-20 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs px-3 py-2 rounded-sm opacity-0 group-hover:opacity-100 transition-opacity z-20 whitespace-nowrap">
                           <div className="text-center">
                             <div className="font-semibold">{data.day}</div>
-                            <div className="text-blue-300">Room: ${(data.room * scale.multiplier).toLocaleString()}</div>
-                            <div className="text-green-300">Service: ${(data.service * scale.multiplier).toLocaleString()}</div>
-                            <div className="text-purple-300 font-semibold">Total: ${(data.total * scale.multiplier).toLocaleString()}</div>
+                            <div className="text-white/80">Room: ${(data.room * scale.multiplier).toLocaleString()}</div>
+                            <div className="text-accent-100">Service: ${(data.service * scale.multiplier).toLocaleString()}</div>
+                            <div className="text-brass font-semibold">Total: ${(data.total * scale.multiplier).toLocaleString()}</div>
                           </div>
                           <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-900"></div>
                         </div>
@@ -1254,7 +1254,7 @@ const AdminDashboard: React.FC = () => {
                         {/* Peak Indicator */}
                         {data.total >= (scale.max * 0.9) && (
                           <div className="absolute -top-2 left-1/2 transform -translate-x-1/2">
-                            <div className="w-2 h-2 bg-yellow-400 rounded-full animate-pulse"></div>
+                            <div className="w-2 h-2 bg-brass rounded-full "></div>
                           </div>
                         )}
                       </div>
@@ -1264,55 +1264,55 @@ const AdminDashboard: React.FC = () => {
                 </div>
 
                 {/* X-axis labels */}
-                <div className="flex justify-between text-xs text-gray-500 mt-4 px-1">
+                <div className="flex justify-between text-xs text-ink-muted mt-4 px-1">
                   {getChartData().map((data, index) => (
                     <span key={index} className="text-center">{data.label}</span>
                   ))}
                 </div>
 
                 {/* Chart Summary */}
-                <div className="mt-6 grid grid-cols-3 gap-4 pt-4 border-t border-gray-100">
+                <div className="mt-6 grid grid-cols-3 gap-4 pt-4 border-t border-sand-deep">
                   <div className="text-center">
-                    <div className="text-lg font-bold text-blue-600">$89,247</div>
-                    <div className="text-xs text-gray-600">Room Revenue</div>
+                    <div className="text-lg font-bold text-brass">$89,247</div>
+                    <div className="text-xs text-ink-muted">Room Revenue</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-lg font-bold text-green-600">$23,156</div>
-                    <div className="text-xs text-gray-600">Service Revenue</div>
+                    <div className="text-lg font-bold text-forest">$23,156</div>
+                    <div className="text-xs text-ink-muted">Service Revenue</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-lg font-bold text-purple-600">$112,403</div>
-                    <div className="text-xs text-gray-600">Total Revenue</div>
+                    <div className="text-lg font-bold text-brass">$112,403</div>
+                    <div className="text-xs text-ink-muted">Total Revenue</div>
                   </div>
                 </div>
               </div>
 
               {/* Occupancy Chart */}
-              <div className="bg-white rounded-xl shadow-sm border p-6">
-                <h4 className="text-lg font-semibold text-gray-900 mb-6">Room Occupancy</h4>
+              <div className="panel p-6">
+                <h4 className="text-lg font-semibold text-ink mb-6">Room Occupancy</h4>
                 <div className="relative h-64">
                   {/* Pie Chart Simulation */}
                   <div className="w-48 h-48 mx-auto relative">
-                    <div className="w-full h-full rounded-full bg-gradient-to-r from-green-400 via-blue-400 via-yellow-400 to-red-400 relative">
+                    <div className="w-full h-full rounded-full border-8 border-sand-deep bg-sand-warm relative">
                       <div className="absolute inset-6 bg-white rounded-full flex items-center justify-center">
                         <div className="text-center">
-                          <div className="text-2xl font-bold text-gray-900">78%</div>
-                          <div className="text-sm text-gray-600">Occupied</div>
+                          <div className="text-2xl font-bold text-ink">78%</div>
+                          <div className="text-sm text-ink-muted">Occupied</div>
                         </div>
                       </div>
                     </div>
                   </div>
                   <div className="mt-4 grid grid-cols-2 gap-4 text-sm">
                     <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 bg-green-400 rounded-full"></div>
+                      <div className="w-3 h-3 bg-forest rounded-full"></div>
                       <span>Available (22%)</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 bg-blue-400 rounded-full"></div>
+                      <div className="w-3 h-3 bg-ink-soft rounded-full"></div>
                       <span>Occupied (78%)</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 bg-yellow-400 rounded-full"></div>
+                      <div className="w-3 h-3 bg-brass rounded-full"></div>
                       <span>Cleaning (8%)</span>
                     </div>
                     <div className="flex items-center gap-2">
@@ -1327,8 +1327,8 @@ const AdminDashboard: React.FC = () => {
             {/* Performance Tables */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {/* Top Performing Rooms */}
-              <div className="bg-white rounded-xl shadow-sm border p-6">
-                <h4 className="text-lg font-semibold text-gray-900 mb-6">Top Performing Rooms</h4>
+              <div className="panel p-6">
+                <h4 className="text-lg font-semibold text-ink mb-6">Top Performing Rooms</h4>
                 <div className="space-y-4">
                   {[
                     { room: '301', type: 'Presidential', revenue: '$12,450', occupancy: '95%' },
@@ -1337,19 +1337,19 @@ const AdminDashboard: React.FC = () => {
                     { room: '205', type: 'Executive', revenue: '$6,340', occupancy: '82%' },
                     { room: '101', type: 'Standard', revenue: '$4,560', occupancy: '78%' }
                   ].map((room, index) => (
-                    <div key={index} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                    <div key={index} className="flex justify-between items-center p-3 bg-sand-warm rounded-sm">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center text-sm font-bold text-blue-600">
+                        <div className="w-8 h-8 bg-sand border border-sand-deep rounded-sm flex items-center justify-center text-sm font-bold text-brass">
                           {index + 1}
                         </div>
                         <div>
-                          <p className="font-medium text-gray-900">Room {room.room}</p>
-                          <p className="text-sm text-gray-600">{room.type}</p>
+                          <p className="font-medium text-ink">Room {room.room}</p>
+                          <p className="text-sm text-ink-muted">{room.type}</p>
                         </div>
                       </div>
                       <div className="text-right">
-                        <p className="font-medium text-gray-900">{room.revenue}</p>
-                        <p className="text-sm text-green-600">{room.occupancy}</p>
+                        <p className="font-medium text-ink">{room.revenue}</p>
+                        <p className="text-sm text-forest">{room.occupancy}</p>
                       </div>
                     </div>
                   ))}
@@ -1357,19 +1357,19 @@ const AdminDashboard: React.FC = () => {
               </div>
 
               {/* Recent Bookings Analytics */}
-              <div className="bg-white rounded-xl shadow-sm border p-6">
-                <h4 className="text-lg font-semibold text-gray-900 mb-6">Booking Sources</h4>
+              <div className="panel p-6">
+                <h4 className="text-lg font-semibold text-ink mb-6">Booking Sources</h4>
                 <div className="space-y-4">
                   {[
-                    { source: 'Direct Website', bookings: 145, percentage: 45, color: 'bg-blue-500' },
-                    { source: 'Booking.com', bookings: 89, percentage: 28, color: 'bg-green-500' },
-                    { source: 'Expedia', bookings: 52, percentage: 16, color: 'bg-yellow-500' },
+                    { source: 'Direct Website', bookings: 145, percentage: 45, color: 'bg-ink' },
+                    { source: 'Booking.com', bookings: 89, percentage: 28, color: 'bg-forest' },
+                    { source: 'Expedia', bookings: 52, percentage: 16, color: 'bg-brass' },
                     { source: 'Walk-in', bookings: 35, percentage: 11, color: 'bg-purple-500' }
                   ].map((source, index) => (
                     <div key={index} className="space-y-2">
                       <div className="flex justify-between items-center">
-                        <span className="text-sm font-medium text-gray-900">{source.source}</span>
-                        <span className="text-sm text-gray-600">{source.bookings} bookings</span>
+                        <span className="text-sm font-medium text-ink">{source.source}</span>
+                        <span className="text-sm text-ink-muted">{source.bookings} bookings</span>
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-2">
                         <div 
@@ -1377,7 +1377,7 @@ const AdminDashboard: React.FC = () => {
                           style={{ width: `${source.percentage}%` }}
                         ></div>
                       </div>
-                      <div className="text-right text-xs text-gray-500">{source.percentage}%</div>
+                      <div className="text-right text-xs text-ink-muted">{source.percentage}%</div>
                     </div>
                   ))}
                 </div>
@@ -1385,23 +1385,23 @@ const AdminDashboard: React.FC = () => {
             </div>
 
             {/* Financial Summary */}
-            <div className="bg-white rounded-xl shadow-sm border p-6">
-              <h4 className="text-lg font-semibold text-gray-900 mb-6">Financial Summary</h4>
+            <div className="panel p-6">
+              <h4 className="text-lg font-semibold text-ink mb-6">Financial Summary</h4>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="text-center p-4 bg-green-50 rounded-lg">
-                  <div className="text-2xl font-bold text-green-600">$89,247</div>
-                  <div className="text-sm text-gray-600">Total Revenue</div>
-                  <div className="text-xs text-green-600 mt-1">+12% from last month</div>
+                <div className="text-center p-4 bg-accent-50 rounded-sm">
+                  <div className="text-2xl font-bold text-forest">$89,247</div>
+                  <div className="text-sm text-ink-muted">Total Revenue</div>
+                  <div className="text-xs text-forest mt-1">+12% from last month</div>
                 </div>
-                <div className="text-center p-4 bg-blue-50 rounded-lg">
-                  <div className="text-2xl font-bold text-blue-600">$23,456</div>
-                  <div className="text-sm text-gray-600">Operating Costs</div>
-                  <div className="text-xs text-blue-600 mt-1">-3% from last month</div>
+                <div className="text-center p-4 bg-sand-warm rounded-sm">
+                  <div className="text-2xl font-bold text-brass">$23,456</div>
+                  <div className="text-sm text-ink-muted">Operating Costs</div>
+                  <div className="text-xs text-brass mt-1">-3% from last month</div>
                 </div>
-                <div className="text-center p-4 bg-purple-50 rounded-lg">
-                  <div className="text-2xl font-bold text-purple-600">$65,791</div>
-                  <div className="text-sm text-gray-600">Net Profit</div>
-                  <div className="text-xs text-purple-600 mt-1">+18% from last month</div>
+                <div className="text-center p-4 bg-purple-50 rounded-sm">
+                  <div className="text-2xl font-bold text-brass">$65,791</div>
+                  <div className="text-sm text-ink-muted">Net Profit</div>
+                  <div className="text-xs text-brass mt-1">+18% from last month</div>
                 </div>
               </div>
             </div>
@@ -1411,18 +1411,18 @@ const AdminDashboard: React.FC = () => {
         {activeTab === 'settings' && (
           <div className="space-y-6">
             {/* Settings Header */}
-            <div className="bg-white rounded-xl shadow-sm border p-6">
+            <div className="panel p-6">
               <div className="flex justify-between items-center">
                 <div>
-                  <h3 className="text-2xl font-bold text-gray-900">System Settings</h3>
-                  <p className="text-gray-600">Configure hotel management system preferences</p>
+                  <h3 className="text-2xl font-bold text-ink">System Settings</h3>
+                  <p className="text-ink-muted">Configure hotel management system preferences</p>
                 </div>
                 <div className="flex gap-3">
-                  <button className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 flex items-center gap-2">
+                  <button className="btn-accent py-2 px-4 flex items-center gap-2">
                     <Download className="w-4 h-4" />
                     Export Config
                   </button>
-                  <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center gap-2">
+                  <button className="btn-primary py-2 px-4 flex items-center gap-2">
                     <Settings className="w-4 h-4" />
                     Save Changes
                   </button>
@@ -1433,43 +1433,43 @@ const AdminDashboard: React.FC = () => {
             {/* Settings Grid */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Hotel Information */}
-              <div className="bg-white rounded-xl shadow-sm border p-6">
-                <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+              <div className="panel p-6">
+                <h4 className="text-lg font-semibold text-ink mb-4 flex items-center gap-2">
                   <Hotel className="w-5 h-5" />
                   Hotel Information
                 </h4>
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Hotel Name</label>
+                    <label className="block text-sm font-medium text-ink-soft mb-2">Hotel Name</label>
                     <input
                       type="text"
                       defaultValue="Luxury Grand Hotel"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-sand-deep rounded-sm focus:outline-none focus:border-brass"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Address</label>
+                    <label className="block text-sm font-medium text-ink-soft mb-2">Address</label>
                     <textarea
                       defaultValue="123 Ocean Drive, Miami Beach, FL 33139"
                       rows={3}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-sand-deep rounded-sm focus:outline-none focus:border-brass"
                     />
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Phone</label>
+                      <label className="block text-sm font-medium text-ink-soft mb-2">Phone</label>
                       <input
                         type="tel"
                         defaultValue="+1 (555) 123-4567"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        className="w-full px-3 py-2 border border-sand-deep rounded-sm focus:outline-none focus:border-brass"
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                      <label className="block text-sm font-medium text-ink-soft mb-2">Email</label>
                       <input
                         type="email"
                         defaultValue="info@luxurygrandhotel.com"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        className="w-full px-3 py-2 border border-sand-deep rounded-sm focus:outline-none focus:border-brass"
                       />
                     </div>
                   </div>
@@ -1477,82 +1477,82 @@ const AdminDashboard: React.FC = () => {
               </div>
 
               {/* Booking Settings */}
-              <div className="bg-white rounded-xl shadow-sm border p-6">
-                <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+              <div className="panel p-6">
+                <h4 className="text-lg font-semibold text-ink mb-4 flex items-center gap-2">
                   <Calendar className="w-5 h-5" />
                   Booking Settings
                 </h4>
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Check-in Time</label>
-                    <select className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <label className="block text-sm font-medium text-ink-soft mb-2">Check-in Time</label>
+                    <select className="w-full px-3 py-2 border border-sand-deep rounded-sm focus:outline-none focus:border-brass">
                       <option>2:00 PM</option>
                       <option>3:00 PM</option>
                       <option>4:00 PM</option>
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Check-out Time</label>
-                    <select className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <label className="block text-sm font-medium text-ink-soft mb-2">Check-out Time</label>
+                    <select className="w-full px-3 py-2 border border-sand-deep rounded-sm focus:outline-none focus:border-brass">
                       <option>11:00 AM</option>
                       <option>12:00 PM</option>
                       <option>1:00 PM</option>
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Advance Booking Days</label>
+                    <label className="block text-sm font-medium text-ink-soft mb-2">Advance Booking Days</label>
                     <input
                       type="number"
                       defaultValue="365"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-sand-deep rounded-sm focus:outline-none focus:border-brass"
                     />
                   </div>
                   <div className="flex items-center gap-2">
                     <input type="checkbox" defaultChecked className="rounded" />
-                    <label className="text-sm text-gray-700">Allow same-day bookings</label>
+                    <label className="text-sm text-ink-soft">Allow same-day bookings</label>
                   </div>
                 </div>
               </div>
 
               {/* Payment Settings */}
-              <div className="bg-white rounded-xl shadow-sm border p-6">
-                <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+              <div className="panel p-6">
+                <h4 className="text-lg font-semibold text-ink mb-4 flex items-center gap-2">
                   <DollarSign className="w-5 h-5" />
                   Payment Settings
                 </h4>
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Currency</label>
-                    <select className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <label className="block text-sm font-medium text-ink-soft mb-2">Currency</label>
+                    <select className="w-full px-3 py-2 border border-sand-deep rounded-sm focus:outline-none focus:border-brass">
                       <option>USD ($)</option>
                       <option>EUR (€)</option>
                       <option>GBP (£)</option>
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Tax Rate (%)</label>
+                    <label className="block text-sm font-medium text-ink-soft mb-2">Tax Rate (%)</label>
                     <input
                       type="number"
                       defaultValue="12"
                       step="0.1"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-sand-deep rounded-sm focus:outline-none focus:border-brass"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Service Fee ($)</label>
+                    <label className="block text-sm font-medium text-ink-soft mb-2">Service Fee ($)</label>
                     <input
                       type="number"
                       defaultValue="25"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-sand-deep rounded-sm focus:outline-none focus:border-brass"
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="block text-sm font-medium text-gray-700">Accepted Payment Methods</label>
+                    <label className="block text-sm font-medium text-ink-soft">Accepted Payment Methods</label>
                     <div className="space-y-2">
                       {['Credit Card', 'PayPal', 'Mobile Money', 'Cash at Front Desk'].map((method) => (
                         <div key={method} className="flex items-center gap-2">
                           <input type="checkbox" defaultChecked className="rounded" />
-                          <label className="text-sm text-gray-700">{method}</label>
+                          <label className="text-sm text-ink-soft">{method}</label>
                         </div>
                       ))}
                     </div>
@@ -1561,14 +1561,14 @@ const AdminDashboard: React.FC = () => {
               </div>
 
               {/* Notification Settings */}
-              <div className="bg-white rounded-xl shadow-sm border p-6">
-                <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+              <div className="panel p-6">
+                <h4 className="text-lg font-semibold text-ink mb-4 flex items-center gap-2">
                   <Bell className="w-5 h-5" />
                   Notification Settings
                 </h4>
                 <div className="space-y-4">
                   <div className="space-y-3">
-                    <label className="block text-sm font-medium text-gray-700">Email Notifications</label>
+                    <label className="block text-sm font-medium text-ink-soft">Email Notifications</label>
                     {[
                       'New bookings',
                       'Cancellations',
@@ -1578,31 +1578,31 @@ const AdminDashboard: React.FC = () => {
                     ].map((notification) => (
                       <div key={notification} className="flex items-center gap-2">
                         <input type="checkbox" defaultChecked className="rounded" />
-                        <label className="text-sm text-gray-700">{notification}</label>
+                        <label className="text-sm text-ink-soft">{notification}</label>
                       </div>
                     ))}
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Admin Email</label>
+                    <label className="block text-sm font-medium text-ink-soft mb-2">Admin Email</label>
                     <input
                       type="email"
                       defaultValue="admin@luxurygrandhotel.com"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-sand-deep rounded-sm focus:outline-none focus:border-brass"
                     />
                   </div>
                 </div>
               </div>
 
               {/* Security Settings */}
-              <div className="bg-white rounded-xl shadow-sm border p-6">
-                <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+              <div className="panel p-6">
+                <h4 className="text-lg font-semibold text-ink mb-4 flex items-center gap-2">
                   <Shield className="w-5 h-5" />
                   Security Settings
                 </h4>
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Session Timeout (minutes)</label>
-                    <select className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <label className="block text-sm font-medium text-ink-soft mb-2">Session Timeout (minutes)</label>
+                    <select className="w-full px-3 py-2 border border-sand-deep rounded-sm focus:outline-none focus:border-brass">
                       <option>30</option>
                       <option>60</option>
                       <option>120</option>
@@ -1610,7 +1610,7 @@ const AdminDashboard: React.FC = () => {
                     </select>
                   </div>
                   <div className="space-y-3">
-                    <label className="block text-sm font-medium text-gray-700">Security Features</label>
+                    <label className="block text-sm font-medium text-ink-soft">Security Features</label>
                     {[
                       'Two-factor authentication',
                       'Login attempt logging',
@@ -1619,12 +1619,12 @@ const AdminDashboard: React.FC = () => {
                     ].map((feature) => (
                       <div key={feature} className="flex items-center gap-2">
                         <input type="checkbox" defaultChecked className="rounded" />
-                        <label className="text-sm text-gray-700">{feature}</label>
+                        <label className="text-sm text-ink-soft">{feature}</label>
                       </div>
                     ))}
                   </div>
                   <div>
-                    <button className="w-full bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors">
+                    <button className="w-full bg-red-600 text-white px-4 py-2 rounded-sm hover:bg-red-700 transition-colors">
                       Reset Admin Password
                     </button>
                   </div>
@@ -1632,15 +1632,15 @@ const AdminDashboard: React.FC = () => {
               </div>
 
               {/* System Preferences */}
-              <div className="bg-white rounded-xl shadow-sm border p-6">
-                <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+              <div className="panel p-6">
+                <h4 className="text-lg font-semibold text-ink mb-4 flex items-center gap-2">
                   <Settings className="w-5 h-5" />
                   System Preferences
                 </h4>
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Time Zone</label>
-                    <select className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <label className="block text-sm font-medium text-ink-soft mb-2">Time Zone</label>
+                    <select className="w-full px-3 py-2 border border-sand-deep rounded-sm focus:outline-none focus:border-brass">
                       <option>UTC-5 (Eastern Time)</option>
                       <option>UTC-6 (Central Time)</option>
                       <option>UTC-7 (Mountain Time)</option>
@@ -1648,16 +1648,16 @@ const AdminDashboard: React.FC = () => {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Date Format</label>
-                    <select className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <label className="block text-sm font-medium text-ink-soft mb-2">Date Format</label>
+                    <select className="w-full px-3 py-2 border border-sand-deep rounded-sm focus:outline-none focus:border-brass">
                       <option>MM/DD/YYYY</option>
                       <option>DD/MM/YYYY</option>
                       <option>YYYY-MM-DD</option>
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Language</label>
-                    <select className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <label className="block text-sm font-medium text-ink-soft mb-2">Language</label>
+                    <select className="w-full px-3 py-2 border border-sand-deep rounded-sm focus:outline-none focus:border-brass">
                       <option>English</option>
                       <option>Spanish</option>
                       <option>French</option>
@@ -1667,15 +1667,15 @@ const AdminDashboard: React.FC = () => {
                   <div className="space-y-2">
                     <div className="flex items-center gap-2">
                       <input type="checkbox" defaultChecked className="rounded" />
-                      <label className="text-sm text-gray-700">Enable dark mode</label>
+                      <label className="text-sm text-ink-soft">Enable dark mode</label>
                     </div>
                     <div className="flex items-center gap-2">
                       <input type="checkbox" defaultChecked className="rounded" />
-                      <label className="text-sm text-gray-700">Show system notifications</label>
+                      <label className="text-sm text-ink-soft">Show system notifications</label>
                     </div>
                     <div className="flex items-center gap-2">
                       <input type="checkbox" className="rounded" />
-                      <label className="text-sm text-gray-700">Enable maintenance mode</label>
+                      <label className="text-sm text-ink-soft">Enable maintenance mode</label>
                     </div>
                   </div>
                 </div>
@@ -1683,35 +1683,35 @@ const AdminDashboard: React.FC = () => {
             </div>
 
             {/* System Status */}
-            <div className="bg-white rounded-xl shadow-sm border p-6">
-              <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+            <div className="panel p-6">
+              <h4 className="text-lg font-semibold text-ink mb-4 flex items-center gap-2">
                 <Activity className="w-5 h-5" />
                 System Status & Information
               </h4>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="text-center p-4 bg-green-50 rounded-lg">
-                  <div className="text-2xl font-bold text-green-600">99.9%</div>
-                  <div className="text-sm text-gray-600">System Uptime</div>
-                  <div className="text-xs text-green-600 mt-1">Last 30 days</div>
+                <div className="text-center p-4 bg-accent-50 rounded-sm">
+                  <div className="text-2xl font-bold text-forest">99.9%</div>
+                  <div className="text-sm text-ink-muted">System Uptime</div>
+                  <div className="text-xs text-forest mt-1">Last 30 days</div>
                 </div>
-                <div className="text-center p-4 bg-blue-50 rounded-lg">
-                  <div className="text-2xl font-bold text-blue-600">v2.1.4</div>
-                  <div className="text-sm text-gray-600">Current Version</div>
-                  <div className="text-xs text-blue-600 mt-1">Latest available</div>
+                <div className="text-center p-4 bg-sand-warm rounded-sm">
+                  <div className="text-2xl font-bold text-brass">v2.1.4</div>
+                  <div className="text-sm text-ink-muted">Current Version</div>
+                  <div className="text-xs text-brass mt-1">Latest available</div>
                 </div>
-                <div className="text-center p-4 bg-purple-50 rounded-lg">
-                  <div className="text-2xl font-bold text-purple-600">2.4GB</div>
-                  <div className="text-sm text-gray-600">Database Size</div>
-                  <div className="text-xs text-purple-600 mt-1">15% of limit</div>
+                <div className="text-center p-4 bg-purple-50 rounded-sm">
+                  <div className="text-2xl font-bold text-brass">2.4GB</div>
+                  <div className="text-sm text-ink-muted">Database Size</div>
+                  <div className="text-xs text-brass mt-1">15% of limit</div>
                 </div>
               </div>
               
               <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-                <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center justify-center gap-2">
+                <button className="btn-primary py-2 px-4 flex items-center justify-center gap-2">
                   <Download className="w-4 h-4" />
                   Backup Database
                 </button>
-                <button className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 flex items-center justify-center gap-2">
+                <button className="btn-accent py-2 px-4 flex items-center justify-center gap-2">
                   <Activity className="w-4 h-4" />
                   Check for Updates
                 </button>
@@ -1724,12 +1724,12 @@ const AdminDashboard: React.FC = () => {
       {/* Status Change Modal */}
       {showStatusModal && selectedBooking && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl shadow-2xl p-6 w-full max-w-md mx-4">
+          <div className="bg-white panel shadow-none p-6 w-full max-w-md mx-4">
             <div className="flex justify-between items-center mb-6">
-              <h3 className="text-lg font-semibold text-gray-900">Change Booking Status</h3>
+              <h3 className="text-lg font-semibold text-ink">Change Booking Status</h3>
               <button
                 onClick={() => setShowStatusModal(false)}
-                className="text-gray-400 hover:text-gray-600"
+                className="text-ink-muted hover:text-ink-muted"
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -1738,25 +1738,25 @@ const AdminDashboard: React.FC = () => {
             </div>
             
             <div className="mb-6">
-              <div className="bg-gray-50 rounded-lg p-4 mb-4">
-                <p className="text-sm text-gray-600">Booking ID</p>
-                <p className="font-semibold text-gray-900">{selectedBooking.id}</p>
-                <p className="text-sm text-gray-600 mt-2">Guest</p>
-                <p className="font-semibold text-gray-900">{selectedBooking.guestName}</p>
-                <p className="text-sm text-gray-600 mt-2">Current Status</p>
-                <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(selectedBooking.status)}`}>
+              <div className="bg-sand-warm rounded-sm p-4 mb-4">
+                <p className="text-sm text-ink-muted">Booking ID</p>
+                <p className="font-semibold text-ink">{selectedBooking.id}</p>
+                <p className="text-sm text-ink-muted mt-2">Guest</p>
+                <p className="font-semibold text-ink">{selectedBooking.guestName}</p>
+                <p className="text-sm text-ink-muted mt-2">Current Status</p>
+                <span className={`status-chip cursor-pointer ${getStatusColor(selectedBooking.status)}`}>
                   {selectedBooking.status}
                 </span>
               </div>
               
               <div>
-                <p className="text-sm font-medium text-gray-700 mb-3">Select New Status:</p>
+                <p className="text-sm font-medium text-ink-soft mb-3">Select New Status:</p>
                 <div className="space-y-2">
                   {getStatusOptions(selectedBooking.status).map((status) => (
                     <button
                       key={status}
                       onClick={() => updateBookingStatus(status as Booking['status'])}
-                      className={`w-full text-left px-4 py-3 rounded-lg border-2 hover:border-blue-500 transition-colors ${getStatusColor(status)} border-transparent`}
+                      className={`w-full text-left px-4 py-3 rounded-sm border-2 hover:border-brass transition-colors ${getStatusColor(status)} border-transparent`}
                     >
                       <span className="font-medium capitalize">{status}</span>
                       <p className="text-xs mt-1 opacity-75">
@@ -1775,7 +1775,7 @@ const AdminDashboard: React.FC = () => {
             <div className="flex gap-3">
               <button
                 onClick={() => setShowStatusModal(false)}
-                className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                className="flex-1 px-4 py-2 border border-sand-deep text-ink-soft rounded-sm hover:bg-sand-warm transition-colors"
               >
                 Cancel
               </button>
@@ -1787,12 +1787,12 @@ const AdminDashboard: React.FC = () => {
       {/* Room Status Change Modal */}
       {showRoomStatusModal && selectedRoom && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl shadow-2xl p-6 w-full max-w-md mx-4">
+          <div className="bg-white panel shadow-none p-6 w-full max-w-md mx-4">
             <div className="flex justify-between items-center mb-6">
-              <h3 className="text-lg font-semibold text-gray-900">Change Room Status</h3>
+              <h3 className="text-lg font-semibold text-ink">Change Room Status</h3>
               <button
                 onClick={() => setShowRoomStatusModal(false)}
-                className="text-gray-400 hover:text-gray-600"
+                className="text-ink-muted hover:text-ink-muted"
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -1801,29 +1801,29 @@ const AdminDashboard: React.FC = () => {
             </div>
             
             <div className="mb-6">
-              <div className="bg-gray-50 rounded-lg p-4 mb-4">
-                <p className="text-sm text-gray-600">Room Number</p>
-                <p className="font-semibold text-gray-900">Room {selectedRoom.number}</p>
-                <p className="text-sm text-gray-600 mt-2">Room Type</p>
-                <p className="font-semibold text-gray-900">{selectedRoom.type}</p>
-                <p className="text-sm text-gray-600 mt-2">Floor</p>
-                <p className="font-semibold text-gray-900">Floor {selectedRoom.floor}</p>
-                <p className="text-sm text-gray-600 mt-2">Price</p>
-                <p className="font-semibold text-gray-900">${selectedRoom.price}/night</p>
-                <p className="text-sm text-gray-600 mt-2">Current Status</p>
-                <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(selectedRoom.status)}`}>
+              <div className="bg-sand-warm rounded-sm p-4 mb-4">
+                <p className="text-sm text-ink-muted">Room Number</p>
+                <p className="font-semibold text-ink">Room {selectedRoom.number}</p>
+                <p className="text-sm text-ink-muted mt-2">Room Type</p>
+                <p className="font-semibold text-ink">{selectedRoom.type}</p>
+                <p className="text-sm text-ink-muted mt-2">Floor</p>
+                <p className="font-semibold text-ink">Floor {selectedRoom.floor}</p>
+                <p className="text-sm text-ink-muted mt-2">Price</p>
+                <p className="font-semibold text-ink">${selectedRoom.price}/night</p>
+                <p className="text-sm text-ink-muted mt-2">Current Status</p>
+                <span className={`status-chip cursor-pointer ${getStatusColor(selectedRoom.status)}`}>
                   {selectedRoom.status}
                 </span>
               </div>
               
               <div>
-                <p className="text-sm font-medium text-gray-700 mb-3">Select New Status:</p>
+                <p className="text-sm font-medium text-ink-soft mb-3">Select New Status:</p>
                 <div className="space-y-2">
                   {getRoomStatusOptions(selectedRoom.status).map((status) => (
                     <button
                       key={status}
                       onClick={() => updateRoomStatus(status as Room['status'])}
-                      className={`w-full text-left px-4 py-3 rounded-lg border-2 hover:border-blue-500 transition-colors ${getStatusColor(status)} border-transparent`}
+                      className={`w-full text-left px-4 py-3 rounded-sm border-2 hover:border-brass transition-colors ${getStatusColor(status)} border-transparent`}
                     >
                       <span className="font-medium capitalize">{status}</span>
                       <p className="text-xs mt-1 opacity-75">
@@ -1841,7 +1841,7 @@ const AdminDashboard: React.FC = () => {
             <div className="flex gap-3">
               <button
                 onClick={() => setShowRoomStatusModal(false)}
-                className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                className="flex-1 px-4 py-2 border border-sand-deep text-ink-soft rounded-sm hover:bg-sand-warm transition-colors"
               >
                 Cancel
               </button>

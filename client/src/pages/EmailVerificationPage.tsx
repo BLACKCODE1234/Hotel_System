@@ -12,6 +12,9 @@ import {
 } from 'lucide-react';
 import { api } from '../services/api';
 
+const inputClass =
+  'w-full border border-sand-deep bg-white px-3 py-3 text-ink focus:outline-none focus:border-brass tracking-widest text-center text-lg uppercase';
+
 const EmailVerificationPage: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -119,33 +122,33 @@ const EmailVerificationPage: React.FC = () => {
   const getStatusIcon = () => {
     switch (verificationStatus) {
       case 'success':
-        return <CheckCircle className="w-16 h-16 text-green-500" />;
+        return <CheckCircle className="w-12 h-12 text-forest" />;
       case 'error':
-        return <XCircle className="w-16 h-16 text-red-500" />;
+        return <XCircle className="w-12 h-12 text-[#8B3A32]" />;
       case 'expired':
-        return <Clock className="w-16 h-16 text-orange-500" />;
+        return <Clock className="w-12 h-12 text-brass" />;
       default:
-        return <Mail className="w-16 h-16 text-blue-500" />;
+        return <Mail className="w-12 h-12 text-brass" />;
     }
   };
 
   const getStatusTitle = () => {
     switch (verificationStatus) {
       case 'success':
-        return 'Email Verified Successfully!';
+        return 'Email verified';
       case 'error':
-        return 'Verification Failed';
+        return 'Verification failed';
       case 'expired':
-        return 'OTP Expired';
+        return 'OTP expired';
       default:
-        return 'Verify Your Email';
+        return 'Verify your email';
     }
   };
 
   const getStatusMessage = () => {
     switch (verificationStatus) {
       case 'success':
-        return 'Your email has been verified. Redirecting to login...';
+        return 'Your email has been verified. Redirecting to login…';
       case 'error':
         return errorMessage || 'The OTP is invalid or has already been used.';
       case 'expired':
@@ -157,162 +160,148 @@ const EmailVerificationPage: React.FC = () => {
 
   return (
     <div
-      className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative"
+      className="min-h-[calc(100vh-5rem)] flex items-center justify-center py-16 px-4 relative"
       style={{
-        backgroundImage: `url('/signup.jpg')`,
+        backgroundImage:
+          "linear-gradient(180deg, rgba(20,33,43,0.55), rgba(20,33,43,0.72)), url('/signup.jpg')",
         backgroundSize: 'cover',
         backgroundPosition: 'center',
       }}
     >
-      <div className="absolute inset-0 bg-black bg-opacity-50"></div>
+      <div className="relative w-full max-w-md bg-sand-warm border border-sand-deep p-8 md:p-10 animate-rise">
+        <div className="text-center mb-8">
+          <div className="mx-auto mb-4 flex justify-center">
+            {isLoading ? (
+              <div className="animate-spin h-12 w-12 border-2 border-sand-deep border-t-brass" />
+            ) : (
+              getStatusIcon()
+            )}
+          </div>
+          <p className="section-label mb-2">LuxuryStay</p>
+          <h1 className="font-display text-3xl text-ink mb-2">
+            {isLoading ? 'Verifying OTP…' : getStatusTitle()}
+          </h1>
+          <p className="text-ink-muted text-sm leading-relaxed">{getStatusMessage()}</p>
+        </div>
 
-      <div className="relative max-w-md w-full space-y-8">
-        <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl p-8 border border-white/20">
-          <div className="text-center mb-8">
-            <div className="mx-auto mb-4 flex justify-center">
-              {isLoading ? (
-                <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-500"></div>
+        {email && verificationStatus === 'pending' && (
+          <div className="mb-6 border border-sand-deep bg-sand px-4 py-3">
+            <div className="flex items-center gap-3">
+              <Mail className="w-5 h-5 text-brass shrink-0" />
+              <div>
+                <p className="text-xs uppercase tracking-wider text-ink-muted">OTP sent to</p>
+                <p className="text-sm text-ink break-all">{email}</p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {verificationStatus === 'pending' && (
+          <form onSubmit={verifyOtp} className="space-y-4 mb-6">
+            <div>
+              <label htmlFor="otp" className="block text-xs uppercase tracking-wider text-ink-muted mb-2">
+                One-time password
+              </label>
+              <input
+                id="otp"
+                name="otp"
+                type="text"
+                value={otp}
+                onChange={(e) => setOtp(e.target.value)}
+                maxLength={6}
+                className={inputClass}
+                placeholder="Enter OTP"
+                autoComplete="one-time-code"
+              />
+            </div>
+
+            {errorMessage && verificationStatus === 'pending' && (
+              <p className="text-sm text-[#8B3A32]">{errorMessage}</p>
+            )}
+
+            <button type="submit" disabled={isLoading} className="btn-primary w-full disabled:opacity-50">
+              {isLoading ? 'Verifying…' : 'Verify email'}
+            </button>
+          </form>
+        )}
+
+        {(verificationStatus === 'pending' ||
+          verificationStatus === 'expired' ||
+          verificationStatus === 'error') && (
+          <div className="space-y-4">
+            {resendMessage && (
+              <div
+                className={`px-4 py-3 text-sm border ${
+                  resendMessage.toLowerCase().includes('sent')
+                    ? 'status-chip--ok border-[#C5DED6]'
+                    : 'status-chip--danger border-[#E8C9C3]'
+                }`}
+              >
+                {resendMessage}
+              </div>
+            )}
+
+            <button
+              onClick={sendOtpEmail}
+              disabled={!canResend || resendLoading}
+              className="btn-secondary w-full disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {resendLoading ? (
+                <span className="flex items-center gap-2">
+                  <span className="animate-spin h-4 w-4 border-2 border-ink border-t-transparent" />
+                  Sending…
+                </span>
               ) : (
-                getStatusIcon()
+                <span className="flex items-center gap-2">
+                  <RefreshCw className="w-4 h-4" />
+                  {canResend ? 'Resend OTP' : `Resend in ${countdown}s`}
+                </span>
               )}
-            </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">
-              {isLoading ? 'Verifying OTP...' : getStatusTitle()}
-            </h2>
-            <p className="text-gray-600 text-sm leading-relaxed">{getStatusMessage()}</p>
+            </button>
           </div>
+        )}
 
-          {email && verificationStatus === 'pending' && (
-            <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-              <div className="flex items-center gap-3">
-                <Mail className="w-5 h-5 text-blue-600" />
-                <div>
-                  <p className="text-sm font-medium text-blue-900">OTP sent to:</p>
-                  <p className="text-sm text-blue-800 break-all">{email}</p>
-                </div>
+        {verificationStatus === 'success' && (
+          <div className="space-y-4">
+            <div className="border border-[#C5DED6] bg-[#E8F2EF] px-4 py-3">
+              <div className="flex items-center gap-2">
+                <CheckCircle className="w-5 h-5 text-forest" />
+                <span className="text-sm font-medium text-forest">Account activated successfully.</span>
               </div>
             </div>
-          )}
 
-          {verificationStatus === 'pending' && (
-            <form onSubmit={verifyOtp} className="space-y-4 mb-6">
-              <div>
-                <label htmlFor="otp" className="block text-sm font-medium text-gray-700 mb-2">
-                  One-Time Password
-                </label>
-                <input
-                  id="otp"
-                  name="otp"
-                  type="text"
-                  value={otp}
-                  onChange={(e) => setOtp(e.target.value)}
-                  maxLength={6}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent tracking-widest text-center text-lg uppercase"
-                  placeholder="Enter OTP"
-                  autoComplete="one-time-code"
-                />
-              </div>
-
-              {errorMessage && verificationStatus === 'pending' && (
-                <p className="text-sm text-red-600">{errorMessage}</p>
-              )}
-
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 disabled:opacity-50 transition-colors duration-200"
-              >
-                {isLoading ? 'Verifying...' : 'Verify Email'}
-              </button>
-            </form>
-          )}
-
-          {(verificationStatus === 'pending' ||
-            verificationStatus === 'expired' ||
-            verificationStatus === 'error') && (
-            <div className="space-y-4">
-              {resendMessage && (
-                <div
-                  className={`p-3 rounded-lg text-sm ${
-                    resendMessage.toLowerCase().includes('sent')
-                      ? 'bg-green-50 text-green-800 border border-green-200'
-                      : 'bg-red-50 text-red-800 border border-red-200'
-                  }`}
-                >
-                  {resendMessage}
-                </div>
-              )}
-
-              <button
-                onClick={sendOtpEmail}
-                disabled={!canResend || resendLoading}
-                className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
-              >
-                {resendLoading ? (
-                  <>
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                    Sending...
-                  </>
-                ) : (
-                  <>
-                    <RefreshCw className="w-4 h-4" />
-                    {canResend ? 'Resend OTP' : `Resend in ${countdown}s`}
-                  </>
-                )}
-              </button>
-            </div>
-          )}
-
-          {verificationStatus === 'success' && (
-            <div className="space-y-4">
-              <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
-                <div className="flex items-center gap-2">
-                  <CheckCircle className="w-5 h-5 text-green-600" />
-                  <span className="text-sm font-medium text-green-800">
-                    Account activated successfully!
-                  </span>
-                </div>
-              </div>
-
-              <Link
-                to="/login"
-                className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 transition-colors duration-200"
-              >
-                <Shield className="w-4 h-4" />
-                Continue to Login
-              </Link>
-            </div>
-          )}
-
-          <div className="mt-8 space-y-4">
-            <div className="flex flex-col sm:flex-row gap-3">
-              <Link
-                to="/signup"
-                className="flex-1 flex items-center justify-center gap-2 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200 text-sm"
-              >
-                <ArrowLeft className="w-4 h-4" />
-                Back to Signup
-              </Link>
-              <Link
-                to="/login"
-                className="flex-1 flex items-center justify-center gap-2 px-4 py-2 text-blue-600 hover:text-blue-700 transition-colors duration-200 text-sm font-medium"
-              >
-                Already verified? Login
-              </Link>
-            </div>
+            <Link to="/login" className="btn-primary w-full">
+              <Shield className="w-4 h-4" />
+              Continue to login
+            </Link>
           </div>
+        )}
 
-          <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-            <div className="flex items-start gap-3">
-              <AlertCircle className="w-5 h-5 text-gray-600 mt-0.5" />
-              <div>
-                <h4 className="font-medium text-gray-900 mb-1">Need Help?</h4>
-                <ul className="text-xs text-gray-600 space-y-1">
-                  <li>• Check your spam/junk folder</li>
-                  <li>• OTP expires after 5 minutes</li>
-                  <li>• Use resend if you did not receive the code</li>
-                </ul>
-              </div>
+        <div className="mt-8 pt-6 border-t border-sand-deep space-y-4">
+          <div className="flex flex-col sm:flex-row gap-3">
+            <Link to="/signup" className="btn-secondary flex-1 text-sm py-2">
+              <ArrowLeft className="w-4 h-4" />
+              Back to signup
+            </Link>
+            <Link
+              to="/login"
+              className="flex-1 flex items-center justify-center gap-2 px-4 py-2 text-brass hover:text-brass-deep transition-colors text-sm font-medium"
+            >
+              Already verified? Login
+            </Link>
+          </div>
+        </div>
+
+        <div className="mt-6 border border-sand-deep bg-sand px-4 py-3">
+          <div className="flex items-start gap-3">
+            <AlertCircle className="w-5 h-5 text-ink-muted mt-0.5 shrink-0" />
+            <div>
+              <h4 className="font-medium text-ink mb-1 text-sm">Need help?</h4>
+              <ul className="text-xs text-ink-muted space-y-1">
+                <li>Check your spam or junk folder</li>
+                <li>OTP expires after 5 minutes</li>
+                <li>Use resend if you did not receive the code</li>
+              </ul>
             </div>
           </div>
         </div>

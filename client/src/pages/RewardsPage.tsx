@@ -1,24 +1,17 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { 
-  Star, 
-  Gift, 
-  Crown, 
-  Award, 
+import {
+  Star,
+  Gift,
+  Crown,
+  Award,
   ArrowLeft,
-  Sparkles,
-  Trophy,
-  Zap,
   CheckCircle,
-  Clock,
   Calendar,
   Hotel,
-  Plane,
-  Coffee,
+  Utensils,
   Wifi,
   Car,
-  Utensils,
-  Shield,
   Heart,
   TrendingUp,
   Target
@@ -27,8 +20,6 @@ import {
 interface MembershipTier {
   name: string;
   icon: React.ReactNode;
-  color: string;
-  gradient: string;
   pointsRequired: number;
   benefits: string[];
   perks: string[];
@@ -52,9 +43,7 @@ const RewardsPage: React.FC = () => {
   const membershipTiers: MembershipTier[] = [
     {
       name: 'Silver',
-      icon: <Award className="w-8 h-8" />,
-      color: 'text-gray-600',
-      gradient: 'from-gray-400 to-gray-600',
+      icon: <Award className="w-6 h-6 text-ink-muted" />,
       pointsRequired: 0,
       benefits: [
         '5% discount on all bookings',
@@ -70,9 +59,7 @@ const RewardsPage: React.FC = () => {
     },
     {
       name: 'Gold',
-      icon: <Star className="w-8 h-8" />,
-      color: 'text-yellow-600',
-      gradient: 'from-yellow-400 to-yellow-600',
+      icon: <Star className="w-6 h-6 text-brass" />,
       pointsRequired: 2500,
       benefits: [
         '10% discount on all bookings',
@@ -91,9 +78,7 @@ const RewardsPage: React.FC = () => {
     },
     {
       name: 'Platinum',
-      icon: <Crown className="w-8 h-8" />,
-      color: 'text-purple-600',
-      gradient: 'from-purple-400 to-purple-600',
+      icon: <Crown className="w-6 h-6 text-forest" />,
       pointsRequired: 5000,
       benefits: [
         '15% discount on all bookings',
@@ -122,7 +107,7 @@ const RewardsPage: React.FC = () => {
       description: 'One complimentary night at any of our hotels',
       pointsCost: 2500,
       category: 'accommodation',
-      icon: <Hotel className="w-6 h-6" />,
+      icon: <Hotel className="w-5 h-5" />,
       available: true
     },
     {
@@ -131,7 +116,7 @@ const RewardsPage: React.FC = () => {
       description: 'Credit for hotel restaurants and room service',
       pointsCost: 1000,
       category: 'dining',
-      icon: <Utensils className="w-6 h-6" />,
+      icon: <Utensils className="w-5 h-5" />,
       available: true
     },
     {
@@ -140,7 +125,7 @@ const RewardsPage: React.FC = () => {
       description: 'Complimentary airport pickup and drop-off',
       pointsCost: 750,
       category: 'transport',
-      icon: <Car className="w-6 h-6" />,
+      icon: <Car className="w-5 h-5" />,
       available: true
     },
     {
@@ -149,7 +134,7 @@ const RewardsPage: React.FC = () => {
       description: '90-minute premium spa treatment',
       pointsCost: 1500,
       category: 'wellness',
-      icon: <Heart className="w-6 h-6" />,
+      icon: <Heart className="w-5 h-5" />,
       available: true
     },
     {
@@ -158,7 +143,7 @@ const RewardsPage: React.FC = () => {
       description: 'Upgrade to next room category',
       pointsCost: 500,
       category: 'accommodation',
-      icon: <TrendingUp className="w-6 h-6" />,
+      icon: <TrendingUp className="w-5 h-5" />,
       available: true
     },
     {
@@ -167,7 +152,7 @@ const RewardsPage: React.FC = () => {
       description: 'Instant discount on your next booking',
       pointsCost: 500,
       category: 'discount',
-      icon: <Target className="w-6 h-6" />,
+      icon: <Target className="w-5 h-5" />,
       available: true
     },
     {
@@ -176,7 +161,7 @@ const RewardsPage: React.FC = () => {
       description: 'High-speed internet for entire stay',
       pointsCost: 200,
       category: 'amenities',
-      icon: <Wifi className="w-6 h-6" />,
+      icon: <Wifi className="w-5 h-5" />,
       available: true
     },
     {
@@ -185,7 +170,7 @@ const RewardsPage: React.FC = () => {
       description: 'Bottle of champagne in your room',
       pointsCost: 300,
       category: 'amenities',
-      icon: <Sparkles className="w-6 h-6" />,
+      icon: <Gift className="w-5 h-5" />,
       available: true
     }
   ];
@@ -202,7 +187,7 @@ const RewardsPage: React.FC = () => {
   const getProgressToNextTier = () => {
     const nextTier = getNextTier();
     if (!nextTier) return 100;
-    
+
     const currentTierPoints = membershipTiers[getCurrentTierIndex()].pointsRequired;
     const nextTierPoints = nextTier.pointsRequired;
     const progress = ((currentPoints - currentTierPoints) / (nextTierPoints - currentTierPoints)) * 100;
@@ -221,150 +206,105 @@ const RewardsPage: React.FC = () => {
     }
   };
 
-  return (
-    <div 
-      className="min-h-screen relative"
-      style={{
-        backgroundImage: `url('/userdashboard.jpg')`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundAttachment: 'fixed'
-      }}
-    >
-      {/* Background Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-900/20 via-purple-900/30 to-emerald-900/20"></div>
-      
-      {/* Floating Background Elements */}
-      <div className="absolute top-20 left-10 w-72 h-72 bg-gradient-to-r from-yellow-400/10 to-orange-600/10 rounded-full blur-3xl animate-float"></div>
-      <div className="absolute bottom-20 right-10 w-96 h-96 bg-gradient-to-r from-purple-400/10 to-pink-600/10 rounded-full blur-3xl animate-bounce-slow"></div>
+  const nextTier = getNextTier();
 
-      <div className="relative z-10 container mx-auto px-4 py-8">
-        {/* Back Button */}
-        <Link 
-          to="/dashboard" 
-          className="inline-flex items-center gap-2 text-white/80 hover:text-white mb-8 transition-colors group"
-        >
-          <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
-          Back to Dashboard
+  return (
+    <div className="min-h-screen py-8 animate-fade-in">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <Link to="/dashboard" className="btn-ghost inline-flex items-center gap-2 mb-8 -ml-2">
+          <ArrowLeft className="h-4 w-4" />
+          Back to dashboard
         </Link>
 
-        {/* Header */}
-        <div className="text-center mb-12 animate-fade-in">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-yellow-500 to-orange-600 rounded-full mb-6 shadow-2xl">
-            <Trophy className="w-10 h-10 text-white" />
-          </div>
-          <h1 className="text-5xl font-bold bg-gradient-to-r from-white via-yellow-100 to-orange-100 bg-clip-text text-transparent mb-4">
-            Rewards Program
-          </h1>
-          <p className="text-xl text-white/80 max-w-2xl mx-auto leading-relaxed">
-            Earn points with every stay and unlock exclusive benefits and rewards
+        <header className="mb-10">
+          <p className="section-label mb-2">Loyalty program</p>
+          <h1 className="page-title mb-3">Rewards</h1>
+          <p className="text-ink-muted text-lg max-w-xl">
+            Earn points with every stay and redeem them for on-property benefits.
           </p>
-        </div>
+        </header>
 
-        {/* Current Status Card */}
-        <div className="mb-12 animate-slide-up">
-          <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-8 border border-white/20 shadow-2xl">
-            <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold text-white mb-2">Your Membership Status</h2>
-              <p className="text-white/80">Track your progress and see what's next</p>
+        <div className="panel mb-10">
+          <p className="section-label mb-6">Your membership</p>
+          <div className="grid sm:grid-cols-2 gap-8 mb-8">
+            <div>
+              <p className="text-sm text-ink-muted mb-1">Current points</p>
+              <p className="font-display text-4xl text-ink">{currentPoints.toLocaleString()}</p>
             </div>
-
-            <div className="grid md:grid-cols-2 gap-8">
-              {/* Current Points */}
-              <div className="text-center">
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full mb-4">
-                  <Zap className="w-8 h-8 text-white" />
-                </div>
-                <h3 className="text-2xl font-bold text-white mb-2">Current Points</h3>
-                <p className="text-4xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-                  {currentPoints.toLocaleString()}
-                </p>
-              </div>
-
-              {/* Current Tier */}
-              <div className="text-center">
-                <div className={`inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r ${membershipTiers[getCurrentTierIndex()].gradient} rounded-full mb-4`}>
-                  {membershipTiers[getCurrentTierIndex()].icon}
-                </div>
-                <h3 className="text-2xl font-bold text-white mb-2">Current Tier</h3>
-                <p className={`text-4xl font-bold ${membershipTiers[getCurrentTierIndex()].color}`}>
-                  {currentTier}
-                </p>
+            <div>
+              <p className="text-sm text-ink-muted mb-1">Current tier</p>
+              <div className="flex items-center gap-3">
+                {membershipTiers[getCurrentTierIndex()].icon}
+                <p className="font-display text-4xl text-ink">{currentTier}</p>
               </div>
             </div>
-
-            {/* Progress to Next Tier */}
-            {getNextTier() && (
-              <div className="mt-8 p-6 bg-white/5 rounded-2xl border border-white/10">
-                <div className="flex items-center justify-between mb-4">
-                  <span className="text-white font-medium">Progress to {getNextTier()?.name}</span>
-                  <span className="text-white/80">
-                    {currentPoints} / {getNextTier()?.pointsRequired} points
-                  </span>
-                </div>
-                <div className="w-full bg-white/20 rounded-full h-3">
-                  <div 
-                    className={`h-3 bg-gradient-to-r ${getNextTier()?.gradient} rounded-full transition-all duration-500`}
-                    style={{ width: `${getProgressToNextTier()}%` }}
-                  ></div>
-                </div>
-                <p className="text-white/60 text-sm mt-2">
-                  {getNextTier()?.pointsRequired! - currentPoints} points needed for {getNextTier()?.name}
-                </p>
-              </div>
-            )}
           </div>
+
+          {nextTier && (
+            <div className="border-t border-sand-deep pt-6">
+              <div className="flex items-center justify-between mb-3 text-sm">
+                <span className="text-ink-muted">Progress to {nextTier.name}</span>
+                <span className="font-medium text-ink">
+                  {currentPoints.toLocaleString()} / {nextTier.pointsRequired.toLocaleString()} pts
+                </span>
+              </div>
+              <div className="w-full bg-sand-deep h-2">
+                <div
+                  className="h-2 bg-brass transition-all duration-500"
+                  style={{ width: `${getProgressToNextTier()}%` }}
+                />
+              </div>
+              <p className="text-xs text-ink-muted mt-2">
+                {nextTier.pointsRequired - currentPoints} points needed for {nextTier.name}
+              </p>
+            </div>
+          )}
         </div>
 
-        {/* Membership Tiers */}
-        <div className="mb-12 animate-slide-in-left">
-          <h2 className="text-3xl font-bold text-white mb-8 text-center">Membership Tiers & Benefits</h2>
-          <div className="grid lg:grid-cols-3 gap-8">
-            {membershipTiers.map((tier, index) => (
-              <div 
+        <section className="mb-12">
+          <h2 className="font-display text-2xl text-ink mb-6">Membership tiers</h2>
+          <div className="grid lg:grid-cols-3 gap-6">
+            {membershipTiers.map((tier) => (
+              <div
                 key={tier.name}
-                className={`bg-white/10 backdrop-blur-xl rounded-3xl p-8 border transition-all duration-300 hover:scale-105 hover:shadow-2xl ${
-                  tier.name === currentTier 
-                    ? 'border-yellow-400/50 bg-yellow-400/5 shadow-yellow-400/20 shadow-2xl' 
-                    : 'border-white/20 hover:border-white/30'
+                className={`panel ${
+                  tier.name === currentTier ? 'border-brass ring-1 ring-brass/20' : ''
                 }`}
               >
-                <div className="text-center mb-6">
-                  <div className={`inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r ${tier.gradient} rounded-full mb-4`}>
+                <div className="mb-5 pb-5 border-b border-sand-deep">
+                  <div className="flex items-center gap-3 mb-2">
                     {tier.icon}
+                    <h3 className="font-display text-xl text-ink">{tier.name}</h3>
                   </div>
-                  <h3 className="text-2xl font-bold text-white mb-2">{tier.name}</h3>
-                  <p className="text-white/80">
-                    {tier.pointsRequired === 0 ? 'Starting tier' : `${tier.pointsRequired.toLocaleString()} points required`}
+                  <p className="text-sm text-ink-muted">
+                    {tier.pointsRequired === 0
+                      ? 'Starting tier'
+                      : `${tier.pointsRequired.toLocaleString()} points required`}
                   </p>
                   {tier.name === currentTier && (
-                    <div className="inline-flex items-center gap-2 mt-2 px-3 py-1 bg-yellow-400/20 text-yellow-300 rounded-full text-sm">
-                      <CheckCircle className="w-4 h-4" />
-                      Current Tier
-                    </div>
+                    <span className="status-chip status-chip--ok mt-3">Current tier</span>
                   )}
                 </div>
 
-                <div className="space-y-4">
+                <div className="space-y-5">
                   <div>
-                    <h4 className="text-lg font-semibold text-white mb-3">Benefits</h4>
+                    <h4 className="text-xs font-semibold tracking-wide uppercase text-brass mb-3">Benefits</h4>
                     <ul className="space-y-2">
                       {tier.benefits.map((benefit, idx) => (
-                        <li key={idx} className="flex items-start gap-2 text-white/80">
-                          <CheckCircle className="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0" />
-                          <span className="text-sm">{benefit}</span>
+                        <li key={idx} className="flex items-start gap-2 text-sm text-ink-muted">
+                          <CheckCircle className="w-4 h-4 text-forest mt-0.5 flex-shrink-0" />
+                          {benefit}
                         </li>
                       ))}
                     </ul>
                   </div>
-
                   <div>
-                    <h4 className="text-lg font-semibold text-white mb-3">Perks</h4>
+                    <h4 className="text-xs font-semibold tracking-wide uppercase text-brass mb-3">Perks</h4>
                     <ul className="space-y-2">
                       {tier.perks.map((perk, idx) => (
-                        <li key={idx} className="flex items-start gap-2 text-white/80">
-                          <Star className="w-4 h-4 text-yellow-400 mt-0.5 flex-shrink-0" />
-                          <span className="text-sm">{perk}</span>
+                        <li key={idx} className="flex items-start gap-2 text-sm text-ink-muted">
+                          <Star className="w-4 h-4 text-brass mt-0.5 flex-shrink-0" />
+                          {perk}
                         </li>
                       ))}
                     </ul>
@@ -373,108 +313,78 @@ const RewardsPage: React.FC = () => {
               </div>
             ))}
           </div>
-        </div>
+        </section>
 
-        {/* Redeem Points Section */}
-        <div className="animate-slide-in-right">
-          <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-8 border border-white/20 shadow-2xl">
-            <h2 className="text-3xl font-bold text-white mb-6 text-center flex items-center justify-center gap-3">
-              <Gift className="w-8 h-8 text-pink-400" />
-              Redeem Your Points
-            </h2>
+        <section className="panel mb-12">
+          <h2 className="font-display text-2xl text-ink mb-6 flex items-center gap-2">
+            <Gift className="w-5 h-5 text-brass" />
+            Redeem points
+          </h2>
 
-            {/* Category Filter */}
-            <div className="mb-8 flex flex-wrap gap-2 justify-center">
-              {['all', 'accommodation', 'dining', 'transport', 'wellness', 'amenities', 'discount'].map((category) => (
-                <button
-                  key={category}
-                  onClick={() => setSelectedCategory(category)}
-                  className={`px-4 py-2 rounded-xl font-medium transition-all duration-300 ${
-                    selectedCategory === category
-                      ? 'bg-gradient-to-r from-pink-500 to-purple-600 text-white shadow-lg'
-                      : 'bg-white/10 text-white/80 hover:bg-white/20'
-                  }`}
-                >
-                  {category.charAt(0).toUpperCase() + category.slice(1)}
-                </button>
-              ))}
-            </div>
+          <div className="mb-8 flex flex-wrap gap-2">
+            {['all', 'accommodation', 'dining', 'transport', 'wellness', 'amenities', 'discount'].map((category) => (
+              <button
+                key={category}
+                type="button"
+                onClick={() => setSelectedCategory(category)}
+                className={`px-4 py-2 text-sm font-semibold tracking-wide border transition-colors ${
+                  selectedCategory === category
+                    ? 'bg-ink text-white border-ink'
+                    : 'bg-white text-ink-muted border-sand-deep hover:border-ink hover:text-ink'
+                }`}
+              >
+                {category.charAt(0).toUpperCase() + category.slice(1)}
+              </button>
+            ))}
+          </div>
 
-            {/* Rewards Grid */}
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredRewards.map((item) => (
-                <div 
-                  key={item.id}
-                  className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10 hover:bg-white/10 transition-all duration-300 hover:scale-105"
-                >
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-12 h-12 bg-gradient-to-r from-pink-500 to-purple-600 rounded-xl flex items-center justify-center">
-                      {item.icon}
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-bold text-white">{item.title}</h3>
-                      <p className="text-pink-300 font-medium">{item.pointsCost.toLocaleString()} points</p>
-                    </div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {filteredRewards.map((item) => (
+              <div key={item.id} className="border border-sand-deep p-5 bg-sand-warm">
+                <div className="flex items-start gap-3 mb-4">
+                  <div className="w-10 h-10 border border-sand-deep bg-white flex items-center justify-center text-brass flex-shrink-0">
+                    {item.icon}
                   </div>
-                  
-                  <p className="text-white/80 mb-4 text-sm leading-relaxed">{item.description}</p>
-                  
-                  <button
-                    onClick={() => handleRedeem(item)}
-                    disabled={currentPoints < item.pointsCost}
-                    className={`w-full py-3 rounded-xl font-semibold transition-all duration-300 ${
-                      currentPoints >= item.pointsCost
-                        ? 'bg-gradient-to-r from-pink-500 to-purple-600 text-white hover:from-pink-600 hover:to-purple-700 hover:shadow-lg'
-                        : 'bg-gray-500/50 text-gray-300 cursor-not-allowed'
-                    }`}
-                  >
-                    {currentPoints >= item.pointsCost ? 'Redeem Now' : 'Insufficient Points'}
-                  </button>
+                  <div>
+                    <h3 className="font-semibold text-ink">{item.title}</h3>
+                    <p className="text-sm text-brass font-medium">{item.pointsCost.toLocaleString()} points</p>
+                  </div>
                 </div>
-              ))}
-            </div>
+                <p className="text-sm text-ink-muted mb-5 leading-relaxed">{item.description}</p>
+                <button
+                  type="button"
+                  onClick={() => handleRedeem(item)}
+                  disabled={currentPoints < item.pointsCost}
+                  className={
+                    currentPoints >= item.pointsCost
+                      ? 'btn-primary w-full text-sm py-2'
+                      : 'w-full py-2 text-sm font-semibold border border-sand-deep text-ink-muted bg-sand cursor-not-allowed'
+                  }
+                >
+                  {currentPoints >= item.pointsCost ? 'Redeem' : 'Insufficient points'}
+                </button>
+              </div>
+            ))}
           </div>
-        </div>
+        </section>
 
-        {/* How to Earn Points */}
-        <div className="mt-12 animate-fade-in">
-          <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-8 border border-white/20 shadow-2xl">
-            <h2 className="text-3xl font-bold text-white mb-6 text-center">How to Earn Points</h2>
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <div className="text-center">
-                <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Hotel className="w-8 h-8 text-white" />
-                </div>
-                <h3 className="text-lg font-bold text-white mb-2">Book Stays</h3>
-                <p className="text-white/80 text-sm">Earn 10-20 points per $1 spent based on your tier</p>
+        <section className="panel">
+          <h2 className="font-display text-2xl text-ink mb-6">How to earn points</h2>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              { icon: Hotel, title: 'Book stays', copy: '10–20 points per $1 based on tier' },
+              { icon: Star, title: 'Write reviews', copy: '50 points per verified review' },
+              { icon: Gift, title: 'Referrals', copy: '100 points per referred guest' },
+              { icon: Calendar, title: 'Promotions', copy: 'Bonus points during special events' },
+            ].map(({ icon: Icon, title, copy }) => (
+              <div key={title} className="border-t border-sand-deep pt-5">
+                <Icon className="w-5 h-5 text-brass mb-3" />
+                <h3 className="font-semibold text-ink mb-1">{title}</h3>
+                <p className="text-sm text-ink-muted">{copy}</p>
               </div>
-              
-              <div className="text-center">
-                <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Star className="w-8 h-8 text-white" />
-                </div>
-                <h3 className="text-lg font-bold text-white mb-2">Write Reviews</h3>
-                <p className="text-white/80 text-sm">Get 50 points for each verified review</p>
-              </div>
-              
-              <div className="text-center">
-                <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Gift className="w-8 h-8 text-white" />
-                </div>
-                <h3 className="text-lg font-bold text-white mb-2">Referrals</h3>
-                <p className="text-white/80 text-sm">Earn 100 points for each friend you refer</p>
-              </div>
-              
-              <div className="text-center">
-                <div className="w-16 h-16 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Calendar className="w-8 h-8 text-white" />
-                </div>
-                <h3 className="text-lg font-bold text-white mb-2">Special Events</h3>
-                <p className="text-white/80 text-sm">Bonus points during promotions and holidays</p>
-              </div>
-            </div>
+            ))}
           </div>
-        </div>
+        </section>
       </div>
     </div>
   );

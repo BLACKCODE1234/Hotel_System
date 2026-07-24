@@ -1,20 +1,15 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { 
-  MessageCircle, 
-  Phone, 
-  Mail, 
-  Clock, 
-  MapPin, 
-  Send, 
+import {
+  MessageCircle,
+  Phone,
+  Mail,
+  Clock,
+  MapPin,
+  Send,
   ArrowLeft,
   HelpCircle,
   FileText,
-  Users,
-  Star,
-  CheckCircle,
-  AlertCircle,
-  Info,
   Search,
   ChevronDown,
   ChevronUp
@@ -26,6 +21,9 @@ interface FAQ {
   answer: string;
   category: string;
 }
+
+const inputClass =
+  'w-full border border-sand-deep bg-white px-3 py-3 text-ink focus:outline-none focus:border-brass';
 
 const SupportPage: React.FC = () => {
   const [contactForm, setContactForm] = useState({
@@ -79,7 +77,6 @@ const SupportPage: React.FC = () => {
 
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission
     console.log('Support form submitted:', contactForm);
     alert('Thank you for contacting us! We\'ll get back to you within 24 hours.');
     setContactForm({
@@ -101,266 +98,215 @@ const SupportPage: React.FC = () => {
   };
 
   return (
-    <div 
-      className="min-h-screen relative"
-      style={{
-        backgroundImage: `url('/userdashboard.jpg')`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundAttachment: 'fixed'
-      }}
-    >
-      {/* Background Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-900/20 via-purple-900/30 to-emerald-900/20"></div>
-      
-      {/* Floating Background Elements */}
-      <div className="absolute top-20 left-10 w-72 h-72 bg-gradient-to-r from-pink-400/10 to-purple-600/10 rounded-full blur-3xl animate-float"></div>
-      <div className="absolute bottom-20 right-10 w-96 h-96 bg-gradient-to-r from-blue-400/10 to-emerald-600/10 rounded-full blur-3xl animate-bounce-slow"></div>
-
-      <div className="relative z-10 container mx-auto px-4 py-8">
-        {/* Back Button */}
-        <Link 
-          to="/dashboard" 
-          className="inline-flex items-center gap-2 text-white/80 hover:text-white mb-8 transition-colors group"
-        >
-          <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
-          Back to Dashboard
+    <div className="min-h-screen py-8 animate-fade-in">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <Link to="/dashboard" className="btn-ghost inline-flex items-center gap-2 mb-8 -ml-2">
+          <ArrowLeft className="h-4 w-4" />
+          Back to dashboard
         </Link>
 
-        {/* Header */}
-        <div className="text-center mb-12 animate-fade-in">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full mb-6 shadow-2xl">
-            <HelpCircle className="w-10 h-10 text-white" />
-          </div>
-          <h1 className="text-5xl font-bold bg-gradient-to-r from-white via-blue-100 to-purple-100 bg-clip-text text-transparent mb-4">
-            Support Center
-          </h1>
-          <p className="text-xl text-white/80 max-w-2xl mx-auto leading-relaxed">
-            We're here to help! Find answers to common questions or get in touch with our support team.
+        <header className="mb-10">
+          <p className="section-label mb-2">Guest services</p>
+          <h1 className="page-title mb-3">Support</h1>
+          <p className="text-ink-muted text-lg max-w-xl">
+            Find answers to common questions or reach our front desk team directly.
           </p>
+        </header>
+
+        <div className="grid md:grid-cols-3 gap-4 mb-12">
+          {[
+            {
+              icon: MessageCircle,
+              title: 'Live chat',
+              detail: 'Available 24/7',
+              desc: 'Instant help from our guest services team.',
+              action: 'Start chat',
+              onClick: () => {},
+            },
+            {
+              icon: Phone,
+              title: 'Phone',
+              detail: 'Mon–Fri 8 AM–8 PM',
+              desc: 'Speak with a reservations specialist.',
+              action: 'Call now',
+              href: 'tel:+1-800-HOTEL-01',
+            },
+            {
+              icon: Mail,
+              title: 'Email',
+              detail: 'Response within 2 hours',
+              desc: 'Send a detailed message about your stay.',
+              action: 'Send email',
+              href: 'mailto:support@hotel.com',
+            },
+          ].map(({ icon: Icon, title, detail, desc, action, href, onClick }) => (
+            <div key={title} className="panel">
+              <Icon className="w-5 h-5 text-brass mb-3" />
+              <h3 className="font-display text-xl text-ink mb-1">{title}</h3>
+              <p className="text-xs text-brass font-semibold tracking-wide uppercase mb-2">{detail}</p>
+              <p className="text-sm text-ink-muted mb-5">{desc}</p>
+              {href ? (
+                <a href={href} className="btn-secondary w-full text-sm py-2">{action}</a>
+              ) : (
+                <button type="button" onClick={onClick} className="btn-secondary w-full text-sm py-2">{action}</button>
+              )}
+            </div>
+          ))}
         </div>
 
-        {/* Quick Contact Cards */}
-        <div className="grid md:grid-cols-3 gap-6 mb-12 animate-slide-up">
-          <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-8 border border-white/20 hover:bg-white/15 transition-all duration-300 hover:scale-105 hover:shadow-2xl group">
-            <div className="flex items-center gap-4 mb-4">
-              <div className="w-12 h-12 bg-gradient-to-r from-green-400 to-emerald-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
-                <MessageCircle className="w-6 h-6 text-white" />
+        <div className="grid lg:grid-cols-2 gap-8">
+          <div className="panel">
+            <h2 className="font-display text-2xl text-ink mb-6 flex items-center gap-2">
+              <FileText className="w-5 h-5 text-brass" />
+              Frequently asked questions
+            </h2>
+
+            <div className="mb-6 space-y-3">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-muted w-4 h-4" />
+                <input
+                  type="text"
+                  placeholder="Search FAQs"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className={`${inputClass} pl-10`}
+                />
               </div>
-              <div>
-                <h3 className="text-xl font-bold text-white">Live Chat</h3>
-                <p className="text-green-300 text-sm">Available 24/7</p>
-              </div>
+              <select
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                className={inputClass}
+              >
+                <option value="all">All categories</option>
+                <option value="booking">Booking</option>
+                <option value="payment">Payment</option>
+                <option value="rewards">Rewards</option>
+                <option value="account">Account</option>
+              </select>
             </div>
-            <p className="text-white/80 mb-4">Get instant help from our support team</p>
-            <button className="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white py-3 rounded-xl font-semibold hover:from-green-600 hover:to-emerald-700 transition-all duration-300 hover:shadow-lg">
-              Start Chat
-            </button>
-          </div>
 
-          <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-8 border border-white/20 hover:bg-white/15 transition-all duration-300 hover:scale-105 hover:shadow-2xl group">
-            <div className="flex items-center gap-4 mb-4">
-              <div className="w-12 h-12 bg-gradient-to-r from-blue-400 to-blue-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
-                <Phone className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <h3 className="text-xl font-bold text-white">Phone Support</h3>
-                <p className="text-blue-300 text-sm">Mon-Fri 8AM-8PM</p>
-              </div>
-            </div>
-            <p className="text-white/80 mb-4">Speak directly with our experts</p>
-            <a 
-              href="tel:+1-800-HOTEL-01" 
-              className="block w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white py-3 rounded-xl font-semibold hover:from-blue-600 hover:to-blue-700 transition-all duration-300 hover:shadow-lg text-center"
-            >
-              Call Now
-            </a>
-          </div>
-
-          <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-8 border border-white/20 hover:bg-white/15 transition-all duration-300 hover:scale-105 hover:shadow-2xl group">
-            <div className="flex items-center gap-4 mb-4">
-              <div className="w-12 h-12 bg-gradient-to-r from-purple-400 to-purple-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
-                <Mail className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <h3 className="text-xl font-bold text-white">Email Support</h3>
-                <p className="text-purple-300 text-sm">Response within 2 hours</p>
-              </div>
-            </div>
-            <p className="text-white/80 mb-4">Send us a detailed message</p>
-            <a 
-              href="mailto:support@hotel.com" 
-              className="block w-full bg-gradient-to-r from-purple-500 to-purple-600 text-white py-3 rounded-xl font-semibold hover:from-purple-600 hover:to-purple-700 transition-all duration-300 hover:shadow-lg text-center"
-            >
-              Send Email
-            </a>
-          </div>
-        </div>
-
-        <div className="grid lg:grid-cols-2 gap-12">
-          {/* FAQ Section */}
-          <div className="animate-slide-in-left">
-            <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-8 border border-white/20 shadow-2xl">
-              <h2 className="text-3xl font-bold text-white mb-6 flex items-center gap-3">
-                <FileText className="w-8 h-8 text-blue-400" />
-                Frequently Asked Questions
-              </h2>
-
-              {/* Search and Filter */}
-              <div className="mb-6 space-y-4">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/60 w-5 h-5" />
-                  <input
-                    type="text"
-                    placeholder="Search FAQs..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                </div>
-                
-                <select
-                  value={selectedCategory}
-                  onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                >
-                  <option value="all">All Categories</option>
-                  <option value="booking">Booking</option>
-                  <option value="payment">Payment</option>
-                  <option value="rewards">Rewards</option>
-                  <option value="account">Account</option>
-                </select>
-              </div>
-
-              {/* FAQ Items */}
-              <div className="space-y-4 max-h-96 overflow-y-auto">
-                {filteredFAQs.map((faq) => (
-                  <div key={faq.id} className="border border-white/20 rounded-xl overflow-hidden">
+            <div className="space-y-2 max-h-96 overflow-y-auto">
+              {filteredFAQs.length === 0 ? (
+                <p className="text-ink-muted text-sm py-8 text-center">
+                  No questions match your search.
+                </p>
+              ) : (
+                filteredFAQs.map((faq) => (
+                  <div key={faq.id} className="border border-sand-deep">
                     <button
+                      type="button"
                       onClick={() => toggleFAQ(faq.id)}
-                      className="w-full px-6 py-4 text-left bg-white/5 hover:bg-white/10 transition-colors flex items-center justify-between"
+                      className="w-full px-4 py-3 text-left bg-sand-warm hover:bg-sand flex items-center justify-between gap-4 transition-colors"
                     >
-                      <span className="text-white font-medium">{faq.question}</span>
+                      <span className="font-medium text-ink text-sm">{faq.question}</span>
                       {expandedFAQ === faq.id ? (
-                        <ChevronUp className="w-5 h-5 text-white/60" />
+                        <ChevronUp className="w-4 h-4 text-ink-muted flex-shrink-0" />
                       ) : (
-                        <ChevronDown className="w-5 h-5 text-white/60" />
+                        <ChevronDown className="w-4 h-4 text-ink-muted flex-shrink-0" />
                       )}
                     </button>
                     {expandedFAQ === faq.id && (
-                      <div className="px-6 py-4 bg-white/5 border-t border-white/10">
-                        <p className="text-white/80 leading-relaxed">{faq.answer}</p>
+                      <div className="px-4 py-3 border-t border-sand-deep bg-white">
+                        <p className="text-sm text-ink-muted leading-relaxed">{faq.answer}</p>
                       </div>
                     )}
                   </div>
-                ))}
-              </div>
+                ))
+              )}
             </div>
           </div>
 
-          {/* Contact Form */}
-          <div className="animate-slide-in-right">
-            <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-8 border border-white/20 shadow-2xl">
-              <h2 className="text-3xl font-bold text-white mb-6 flex items-center gap-3">
-                <Send className="w-8 h-8 text-purple-400" />
-                Contact Us
-              </h2>
+          <div className="panel">
+            <h2 className="font-display text-2xl text-ink mb-6 flex items-center gap-2">
+              <Send className="w-5 h-5 text-brass" />
+              Contact us
+            </h2>
 
-              <form onSubmit={handleFormSubmit} className="space-y-6">
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-white/80 mb-2 font-medium">Name</label>
-                    <input
-                      type="text"
-                      required
-                      value={contactForm.name}
-                      onChange={(e) => setContactForm({...contactForm, name: e.target.value})}
-                      className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                      placeholder="Your full name"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-white/80 mb-2 font-medium">Email</label>
-                    <input
-                      type="email"
-                      required
-                      value={contactForm.email}
-                      onChange={(e) => setContactForm({...contactForm, email: e.target.value})}
-                      className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                      placeholder="your.email@example.com"
-                    />
-                  </div>
-                </div>
-
-
-
+            <form onSubmit={handleFormSubmit} className="space-y-5">
+              <div className="grid md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-white/80 mb-2 font-medium">Message</label>
-                  <textarea
+                  <label className="block text-sm font-medium text-ink-muted mb-2">Name</label>
+                  <input
+                    type="text"
                     required
-                    rows={6}
-                    value={contactForm.message}
-                    onChange={(e) => setContactForm({...contactForm, message: e.target.value})}
-                    className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
-                    placeholder="Please describe your issue in detail..."
+                    value={contactForm.name}
+                    onChange={(e) => setContactForm({ ...contactForm, name: e.target.value })}
+                    className={inputClass}
+                    placeholder="Your full name"
                   />
                 </div>
+                <div>
+                  <label className="block text-sm font-medium text-ink-muted mb-2">Email</label>
+                  <input
+                    type="email"
+                    required
+                    value={contactForm.email}
+                    onChange={(e) => setContactForm({ ...contactForm, email: e.target.value })}
+                    className={inputClass}
+                    placeholder="your.email@example.com"
+                  />
+                </div>
+              </div>
 
-                <button
-                  type="submit"
-                  className="w-full bg-gradient-to-r from-purple-500 to-pink-600 text-white py-4 rounded-xl font-bold text-lg hover:from-purple-600 hover:to-pink-700 transition-all duration-300 hover:shadow-2xl hover:scale-105 flex items-center justify-center gap-2"
-                >
-                  <Send className="w-5 h-5" />
-                  Send Message
-                </button>
-              </form>
-            </div>
+              <div>
+                <label className="block text-sm font-medium text-ink-muted mb-2">Message</label>
+                <textarea
+                  required
+                  rows={6}
+                  value={contactForm.message}
+                  onChange={(e) => setContactForm({ ...contactForm, message: e.target.value })}
+                  className={`${inputClass} resize-none`}
+                  placeholder="Describe your question or issue"
+                />
+              </div>
+
+              <button type="submit" className="btn-primary w-full">
+                <Send className="w-4 h-4" />
+                Send message
+              </button>
+            </form>
           </div>
         </div>
 
-        {/* Additional Support Info */}
-        <div className="mt-12 grid md:grid-cols-2 gap-8 animate-fade-in">
-          <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-8 border border-white/20">
-            <h3 className="text-2xl font-bold text-white mb-4 flex items-center gap-3">
-              <Clock className="w-6 h-6 text-yellow-400" />
-              Support Hours
+        <div className="mt-10 grid md:grid-cols-2 gap-6">
+          <div className="panel">
+            <h3 className="font-display text-xl text-ink mb-4 flex items-center gap-2">
+              <Clock className="w-5 h-5 text-brass" />
+              Support hours
             </h3>
-            <div className="space-y-3 text-white/80">
-              <div className="flex justify-between">
-                <span>Monday - Friday:</span>
-                <span className="text-green-300">8:00 AM - 8:00 PM</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Saturday:</span>
-                <span className="text-green-300">9:00 AM - 6:00 PM</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Sunday:</span>
-                <span className="text-green-300">10:00 AM - 4:00 PM</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Emergency Support:</span>
-                <span className="text-red-300">24/7 Available</span>
-              </div>
-            </div>
+            <dl className="space-y-2 text-sm">
+              {[
+                ['Monday – Friday', '8:00 AM – 8:00 PM'],
+                ['Saturday', '9:00 AM – 6:00 PM'],
+                ['Sunday', '10:00 AM – 4:00 PM'],
+                ['Emergency line', '24/7'],
+              ].map(([day, hours]) => (
+                <div key={day} className="flex justify-between gap-4">
+                  <dt className="text-ink-muted">{day}</dt>
+                  <dd className="font-medium text-ink">{hours}</dd>
+                </div>
+              ))}
+            </dl>
           </div>
 
-          <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-8 border border-white/20">
-            <h3 className="text-2xl font-bold text-white mb-4 flex items-center gap-3">
-              <MapPin className="w-6 h-6 text-red-400" />
-              Visit Our Office
+          <div className="panel">
+            <h3 className="font-display text-xl text-ink mb-4 flex items-center gap-2">
+              <MapPin className="w-5 h-5 text-brass" />
+              Front desk
             </h3>
-            <div className="text-white/80 space-y-2">
+            <address className="text-sm text-ink-muted not-italic space-y-1">
               <p>123 Hotel Plaza</p>
               <p>Accra, Greater Accra</p>
               <p>Ghana</p>
-              <p className="mt-4 text-blue-300">
-                <strong>Phone:</strong> +1 (800) HOTEL-01
-              </p>
-              <p className="text-purple-300">
-                <strong>Email:</strong> support@hotel.com
-              </p>
-            </div>
+            </address>
+            <p className="text-sm text-ink mt-4">
+              <span className="text-ink-muted">Phone:</span>{' '}
+              <a href="tel:+1-800-HOTEL-01" className="text-brass hover:text-brass-deep">+1 (800) HOTEL-01</a>
+            </p>
+            <p className="text-sm text-ink">
+              <span className="text-ink-muted">Email:</span>{' '}
+              <a href="mailto:support@hotel.com" className="text-brass hover:text-brass-deep">support@hotel.com</a>
+            </p>
           </div>
         </div>
       </div>

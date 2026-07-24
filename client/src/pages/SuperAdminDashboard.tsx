@@ -113,11 +113,11 @@ const SuperAdminDashboard: React.FC = () => {
 
     const levels = [
       { strength: 0, label: '', color: '' },
-      { strength: 1, label: 'Very Weak', color: 'bg-red-500' },
-      { strength: 2, label: 'Weak', color: 'bg-orange-500' },
-      { strength: 3, label: 'Fair', color: 'bg-yellow-500' },
-      { strength: 4, label: 'Good', color: 'bg-blue-500' },
-      { strength: 5, label: 'Strong', color: 'bg-green-500' }
+      { strength: 1, label: 'Very Weak', color: 'bg-red-700' },
+      { strength: 2, label: 'Weak', color: 'bg-brass' },
+      { strength: 3, label: 'Fair', color: 'bg-brass' },
+      { strength: 4, label: 'Good', color: 'bg-ink' },
+      { strength: 5, label: 'Strong', color: 'bg-forest' }
     ];
 
     return levels[strength];
@@ -126,30 +126,30 @@ const SuperAdminDashboard: React.FC = () => {
   const passwordStrength = getPasswordStrength();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50">
+    <div className="ops-shell">
       {/* Header */}
-      <div className="bg-gradient-to-r from-purple-700 via-blue-700 to-indigo-700 text-white px-4 py-4 shadow-xl">
+      <div className="ops-topbar text-white px-4 py-4 ">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
             <Link 
               to="/admin"
-              className="inline-flex items-center px-3 py-2 sm:px-4 bg-white/20 backdrop-blur-sm text-white font-medium rounded-lg hover:bg-white/30 transition-all duration-200 text-sm sm:text-base"
+              className="inline-flex items-center px-3 py-2 sm:px-4 bg-white/20 backdrop-blur-sm text-white font-medium rounded-sm hover:bg-white/30 transition-all duration-200 text-sm sm:text-base"
             >
               <ArrowLeft className="h-4 w-4 mr-2" />
               Back to Admin
             </Link>
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-full flex items-center justify-center shadow-lg">
+              <div className="w-12 h-12 bg-brass rounded-sm flex items-center justify-center ">
                 <Crown className="w-6 h-6 text-white" />
               </div>
               <div>
                 <h1 className="text-xl sm:text-2xl font-bold">Super Administrator Dashboard</h1>
-                <p className="text-purple-100 text-sm">Manage administrators and system settings</p>
+                <p className="text-white/70 text-sm">Manage administrators and system settings</p>
               </div>
             </div>
           </div>
           <div className="flex items-center gap-2 self-end sm:self-auto">
-            <Crown className="w-5 h-5 text-yellow-300" />
+            <Crown className="w-5 h-5 text-brass" />
             <span className="font-medium">Super Admin Panel</span>
           </div>
         </div>
@@ -158,7 +158,7 @@ const SuperAdminDashboard: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Navigation Tabs */}
         <div className="mb-8">
-          <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-2">
+          <div className="bg-white rounded-xl  border border-sand-deep p-2">
             <nav className="flex flex-wrap gap-2">
               {[
                 { id: 'create-admin', label: 'Create Administrator', icon: Shield },
@@ -169,10 +169,10 @@ const SuperAdminDashboard: React.FC = () => {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-2 px-4 py-3 rounded-lg font-medium text-sm transition-all duration-200 ${
+                  className={`flex items-center gap-2 px-4 py-3 rounded-sm font-medium text-sm transition-all duration-200 ${
                     activeTab === tab.id
-                      ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg'
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                      ? 'bg-ink text-white '
+                      : 'text-ink-muted hover:text-ink hover:bg-sand-warm'
                   }`}
                 >
                   <tab.icon className="w-4 h-4" />
@@ -188,23 +188,23 @@ const SuperAdminDashboard: React.FC = () => {
           <div>
             {/* Success Message */}
             {successMessage && (
-              <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg flex items-center gap-3">
-                <CheckCircle className="w-5 h-5 text-green-600" />
+              <div className="mb-6 p-4 bg-accent-50 border border-accent-100 rounded-sm flex items-center gap-3">
+                <CheckCircle className="w-5 h-5 text-forest" />
                 <span className="text-green-800 font-medium">{successMessage}</span>
               </div>
             )}
 
             {/* Main Form Card */}
-            <div className="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden">
+            <div className="panel overflow-hidden p-0">
               {/* Card Header */}
-              <div className="bg-gradient-to-r from-purple-600 to-blue-600 px-6 py-4">
+              <div className="bg-ink px-6 py-4">
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
                     <Shield className="w-6 h-6 text-white" />
                   </div>
                   <div>
                     <h2 className="text-xl font-bold text-white">Create New Administrator</h2>
-                    <p className="text-purple-100 text-sm">Add a new administrator to the hotel management system</p>
+                    <p className="text-white/70 text-sm">Add a new administrator to the hotel management system</p>
                   </div>
                 </div>
               </div>
@@ -215,15 +215,15 @@ const SuperAdminDashboard: React.FC = () => {
                   {/* Personal Information */}
                   <div className="space-y-6">
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                        <User className="w-5 h-5 text-purple-600" />
+                      <h3 className="text-lg font-semibold text-ink mb-4 flex items-center gap-2">
+                        <User className="w-5 h-5 text-brass" />
                         Personal Information
                       </h3>
                       
                       <div className="space-y-4">
                         {/* First Name */}
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                          <label className="block text-sm font-medium text-ink-soft mb-2">
                             First Name *
                           </label>
                           <input
@@ -231,8 +231,8 @@ const SuperAdminDashboard: React.FC = () => {
                             name="first_name"
                             value={formData.first_name}
                             onChange={handleInputChange}
-                            className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 ${
-                              errors.first_name ? 'border-red-500' : 'border-gray-300'
+                            className={`w-full px-4 py-3 border rounded-sm focus:outline-none focus:border-brass transition-all duration-200 ${
+                              errors.first_name ? 'border-red-500' : 'border-sand-deep'
                             }`}
                             placeholder="Enter first name"
                           />
@@ -246,7 +246,7 @@ const SuperAdminDashboard: React.FC = () => {
 
                         {/* Last Name */}
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                          <label className="block text-sm font-medium text-ink-soft mb-2">
                             Last Name *
                           </label>
                           <input
@@ -254,8 +254,8 @@ const SuperAdminDashboard: React.FC = () => {
                             name="last_name"
                             value={formData.last_name}
                             onChange={handleInputChange}
-                            className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 ${
-                              errors.last_name ? 'border-red-500' : 'border-gray-300'
+                            className={`w-full pl-10 pr-4 py-3 border rounded-sm focus:outline-none focus:border-brass transition-all duration-200 ${
+                              errors.last_name ? 'border-red-500' : 'border-sand-deep'
                             }`}
                             placeholder="Enter last name"
                           />
@@ -269,18 +269,18 @@ const SuperAdminDashboard: React.FC = () => {
 
                         {/* Email */}
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                          <label className="block text-sm font-medium text-ink-soft mb-2">
                             Email Address *
                           </label>
                           <div className="relative">
-                            <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                            <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-ink-muted" />
                             <input
                               type="email"
                               name="email"
                               value={formData.email}
                               onChange={handleInputChange}
-                              className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 ${
-                                errors.email ? 'border-red-500' : 'border-gray-300'
+                              className={`w-full pl-10 pr-4 py-3 border rounded-sm focus:outline-none focus:border-brass transition-all duration-200 ${
+                                errors.email ? 'border-red-500' : 'border-sand-deep'
                               }`}
                               placeholder="admin@hotel.com"
                             />
@@ -295,17 +295,17 @@ const SuperAdminDashboard: React.FC = () => {
 
                         {/* Phone */}
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                          <label className="block text-sm font-medium text-ink-soft mb-2">
                             Phone Number
                           </label>
                           <div className="relative">
-                            <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                            <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-ink-muted" />
                             <input
                               type="tel"
                               name="mobile_number"
                               value={formData.mobile_number}
                               onChange={handleInputChange}
-                              className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
+                              className="w-full pl-10 pr-4 py-3 border border-sand-deep rounded-sm focus:outline-none focus:border-brass transition-all duration-200"
                               placeholder="+1 (555) 123-4567"
                             />
                           </div>
@@ -317,33 +317,33 @@ const SuperAdminDashboard: React.FC = () => {
                   {/* Security & Role Information */}
                   <div className="space-y-6">
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                        <Shield className="w-5 h-5 text-purple-600" />
+                      <h3 className="text-lg font-semibold text-ink mb-4 flex items-center gap-2">
+                        <Shield className="w-5 h-5 text-brass" />
                         Security & Role Information
                       </h3>
                       
                       <div className="space-y-4">
                         {/* Password */}
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                          <label className="block text-sm font-medium text-ink-soft mb-2">
                             Password *
                           </label>
                           <div className="relative">
-                            <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                            <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-ink-muted" />
                             <input
                               type={showPassword ? 'text' : 'password'}
                               name="password"
                               value={formData.password}
                               onChange={handleInputChange}
-                              className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 ${
-                                errors.password ? 'border-red-500' : 'border-gray-300'
+                              className={`w-full pl-10 pr-12 py-3 border rounded-sm focus:outline-none focus:border-brass transition-all duration-200 ${
+                                errors.password ? 'border-red-500' : 'border-sand-deep'
                               }`}
                               placeholder="Enter secure password"
                             />
                             <button
                               type="button"
                               onClick={() => setShowPassword(!showPassword)}
-                              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-ink-muted hover:text-ink-muted"
                             >
                               {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                             </button>
@@ -359,7 +359,7 @@ const SuperAdminDashboard: React.FC = () => {
                                     style={{ width: `${(passwordStrength.strength / 5) * 100}%` }}
                                   />
                                 </div>
-                                <span className="text-xs font-medium text-gray-600">{passwordStrength.label}</span>
+                                <span className="text-xs font-medium text-ink-muted">{passwordStrength.label}</span>
                               </div>
                             </div>
                           )}
@@ -374,25 +374,25 @@ const SuperAdminDashboard: React.FC = () => {
 
                         {/* Confirm Password */}
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                          <label className="block text-sm font-medium text-ink-soft mb-2">
                             Confirm Password *
                           </label>
                           <div className="relative">
-                            <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                            <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-ink-muted" />
                             <input
                               type={showConfirmPassword ? 'text' : 'password'}
                               name="confirm_password"
                               value={formData.confirm_password}
                               onChange={handleInputChange}
-                              className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 ${
-                                errors.confirm_password ? 'border-red-500' : 'border-gray-300'
+                              className={`w-full pl-10 pr-12 py-3 border rounded-sm focus:outline-none focus:border-brass transition-all duration-200 ${
+                                errors.confirm_password ? 'border-red-500' : 'border-sand-deep'
                               }`}
                               placeholder="Confirm password"
                             />
                             <button
                               type="button"
                               onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-ink-muted hover:text-ink-muted"
                             >
                               {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                             </button>
@@ -407,16 +407,16 @@ const SuperAdminDashboard: React.FC = () => {
 
                         {/* Department */}
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                          <label className="block text-sm font-medium text-ink-soft mb-2">
                             Department
                           </label>
                           <div className="relative">
-                            <Building className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                            <Building className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-ink-muted" />
                             <select
                               name="department"
                               value={formData.department}
                               onChange={handleInputChange}
-                              className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
+                              className="w-full pl-10 pr-4 py-3 border border-sand-deep rounded-sm focus:outline-none focus:border-brass transition-all duration-200"
                             >
                               <option value="Hotel Management">Hotel Management</option>
                               <option value="Operations">Operations</option>
@@ -432,7 +432,7 @@ const SuperAdminDashboard: React.FC = () => {
 
                         {/* Position */}
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                          <label className="block text-sm font-medium text-ink-soft mb-2">
                             Position
                           </label>
                           <input
@@ -440,7 +440,7 @@ const SuperAdminDashboard: React.FC = () => {
                             name="position"
                             value={formData.position}
                             onChange={handleInputChange}
-                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
+                            className="w-full px-4 py-3 border border-sand-deep rounded-sm focus:outline-none focus:border-brass transition-all duration-200"
                             placeholder="Hotel Administrator"
                           />
                         </div>
@@ -451,7 +451,7 @@ const SuperAdminDashboard: React.FC = () => {
 
                 {/* Submit Error */}
                 {errors.submit && (
-                  <div className="mt-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-3">
+                  <div className="mt-6 p-4 bg-red-50 border border-red-200 rounded-sm flex items-center gap-3">
                     <AlertCircle className="w-5 h-5 text-red-600" />
                     <span className="text-red-800">{errors.submit}</span>
                   </div>
@@ -471,14 +471,14 @@ const SuperAdminDashboard: React.FC = () => {
                       department: 'Hotel Management',
                       position: 'Hotel Administrator'
                     })}
-                    className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200 text-center"
+                    className="px-6 py-3 border border-sand-deep text-ink-soft rounded-sm hover:bg-sand-warm transition-colors duration-200 text-center"
                   >
                     Clear Form
                   </button>
                   <button
                     type="submit"
                     disabled={isLoading}
-                    className="px-8 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white font-medium rounded-lg hover:shadow-lg transform transition-all duration-200 hover:scale-105 disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-2"
+                    className="px-8 py-3 bg-ink text-white font-medium rounded-sm hover: transform transition-all duration-200  disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-2"
                   >
                     {isLoading ? (
                       <>
@@ -497,9 +497,9 @@ const SuperAdminDashboard: React.FC = () => {
             </div>
 
             {/* Info Card */}
-            <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <div className="mt-6 bg-sand-warm border border-sand-deep rounded-sm p-4">
               <div className="flex items-start gap-3">
-                <AlertCircle className="w-5 h-5 text-blue-600 mt-0.5" />
+                <AlertCircle className="w-5 h-5 text-brass mt-0.5" />
                 <div>
                   <h4 className="font-medium text-blue-900 mb-1">Administrator Privileges</h4>
                   <p className="text-sm text-blue-800">
@@ -517,53 +517,53 @@ const SuperAdminDashboard: React.FC = () => {
           <div className="space-y-6">
             {/* User Stats */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+              <div className="panel">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-gray-600">Total Users</p>
-                    <p className="text-2xl font-bold text-gray-900">1,247</p>
-                    <p className="text-sm text-green-600">+12% this month</p>
+                    <p className="text-sm font-medium text-ink-muted">Total Users</p>
+                    <p className="text-2xl font-bold text-ink">1,247</p>
+                    <p className="text-sm text-forest">+12% this month</p>
                   </div>
-                  <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                    <Users className="w-6 h-6 text-blue-600" />
+                  <div className="w-12 h-12 bg-sand border border-sand-deep rounded-sm flex items-center justify-center">
+                    <Users className="w-6 h-6 text-brass" />
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+              <div className="panel">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-gray-600">Administrators</p>
-                    <p className="text-2xl font-bold text-gray-900">23</p>
-                    <p className="text-sm text-blue-600">+2 this week</p>
+                    <p className="text-sm font-medium text-ink-muted">Administrators</p>
+                    <p className="text-2xl font-bold text-ink">23</p>
+                    <p className="text-sm text-brass">+2 this week</p>
                   </div>
-                  <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                    <Shield className="w-6 h-6 text-purple-600" />
+                  <div className="w-12 h-12 bg-sand border border-sand-deep rounded-sm flex items-center justify-center">
+                    <Shield className="w-6 h-6 text-brass" />
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+              <div className="panel">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-gray-600">Active Today</p>
-                    <p className="text-2xl font-bold text-gray-900">89</p>
-                    <p className="text-sm text-green-600">+5% vs yesterday</p>
+                    <p className="text-sm font-medium text-ink-muted">Active Today</p>
+                    <p className="text-2xl font-bold text-ink">89</p>
+                    <p className="text-sm text-forest">+5% vs yesterday</p>
                   </div>
-                  <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                    <UserCheck className="w-6 h-6 text-green-600" />
+                  <div className="w-12 h-12 bg-accent-50 border border-accent-100 rounded-sm flex items-center justify-center">
+                    <UserCheck className="w-6 h-6 text-forest" />
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+              <div className="panel">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-gray-600">Pending Verification</p>
-                    <p className="text-2xl font-bold text-gray-900">15</p>
+                    <p className="text-sm font-medium text-ink-muted">Pending Verification</p>
+                    <p className="text-2xl font-bold text-ink">15</p>
                     <p className="text-sm text-orange-600">Needs attention</p>
                   </div>
-                  <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
+                  <div className="w-12 h-12 bg-orange-100 rounded-sm flex items-center justify-center">
                     <Mail className="w-6 h-6 text-orange-600" />
                   </div>
                 </div>
@@ -571,54 +571,54 @@ const SuperAdminDashboard: React.FC = () => {
             </div>
 
             {/* Quick Actions */}
-            <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
+            <div className="bg-white rounded-xl  border border-sand-deep p-6">
+              <h3 className="text-lg font-semibold text-ink mb-4">Quick Actions</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <button className="flex items-center gap-3 p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
-                  <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                    <Plus className="w-5 h-5 text-blue-600" />
+                <button className="flex items-center gap-3 p-4 border border-sand-deep rounded-sm hover:bg-sand-warm transition-colors">
+                  <div className="w-10 h-10 bg-sand border border-sand-deep rounded-sm flex items-center justify-center">
+                    <Plus className="w-5 h-5 text-brass" />
                   </div>
                   <div className="text-left">
-                    <p className="font-medium text-gray-900">Bulk Import</p>
-                    <p className="text-sm text-gray-600">Import users from CSV</p>
+                    <p className="font-medium text-ink">Bulk Import</p>
+                    <p className="text-sm text-ink-muted">Import users from CSV</p>
                   </div>
                 </button>
 
-                <button className="flex items-center gap-3 p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
-                  <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                    <Mail className="w-5 h-5 text-green-600" />
+                <button className="flex items-center gap-3 p-4 border border-sand-deep rounded-sm hover:bg-sand-warm transition-colors">
+                  <div className="w-10 h-10 bg-accent-50 border border-accent-100 rounded-sm flex items-center justify-center">
+                    <Mail className="w-5 h-5 text-forest" />
                   </div>
                   <div className="text-left">
-                    <p className="font-medium text-gray-900">Send Notifications</p>
-                    <p className="text-sm text-gray-600">Bulk email to users</p>
+                    <p className="font-medium text-ink">Send Notifications</p>
+                    <p className="text-sm text-ink-muted">Bulk email to users</p>
                   </div>
                 </button>
 
-                <button className="flex items-center gap-3 p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
-                  <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-                    <BarChart3 className="w-5 h-5 text-purple-600" />
+                <button className="flex items-center gap-3 p-4 border border-sand-deep rounded-sm hover:bg-sand-warm transition-colors">
+                  <div className="w-10 h-10 bg-sand border border-sand-deep rounded-sm flex items-center justify-center">
+                    <BarChart3 className="w-5 h-5 text-brass" />
                   </div>
                   <div className="text-left">
-                    <p className="font-medium text-gray-900">Export Report</p>
-                    <p className="text-sm text-gray-600">Download user data</p>
+                    <p className="font-medium text-ink">Export Report</p>
+                    <p className="text-sm text-ink-muted">Download user data</p>
                   </div>
                 </button>
 
-                <button className="flex items-center gap-3 p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
-                  <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
+                <button className="flex items-center gap-3 p-4 border border-sand-deep rounded-sm hover:bg-sand-warm transition-colors">
+                  <div className="w-10 h-10 bg-red-100 rounded-sm flex items-center justify-center">
                     <Settings className="w-5 h-5 text-red-600" />
                   </div>
                   <div className="text-left">
-                    <p className="font-medium text-gray-900">Bulk Actions</p>
-                    <p className="text-sm text-gray-600">Mass user operations</p>
+                    <p className="font-medium text-ink">Bulk Actions</p>
+                    <p className="text-sm text-ink-muted">Mass user operations</p>
                   </div>
                 </button>
               </div>
             </div>
 
             {/* Recent Activity */}
-            <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Recent User Activity</h3>
+            <div className="bg-white rounded-xl  border border-sand-deep p-6">
+              <h3 className="text-lg font-semibold text-ink mb-4">Recent User Activity</h3>
               <div className="space-y-4">
                 {[
                   { user: 'John Smith', action: 'Created new account', time: '2 minutes ago', type: 'success' },
@@ -627,17 +627,17 @@ const SuperAdminDashboard: React.FC = () => {
                   { user: 'Admin User', action: 'Created new administrator', time: '2 hours ago', type: 'success' },
                   { user: 'Emma Davis', action: 'Account suspended', time: '3 hours ago', type: 'error' }
                 ].map((activity, index) => (
-                  <div key={index} className="flex items-center gap-4 p-3 border border-gray-100 rounded-lg">
+                  <div key={index} className="flex items-center gap-4 p-3 border border-sand-deep rounded-sm">
                     <div className={`w-2 h-2 rounded-full ${
-                      activity.type === 'success' ? 'bg-green-500' :
-                      activity.type === 'warning' ? 'bg-yellow-500' :
-                      activity.type === 'error' ? 'bg-red-500' : 'bg-blue-500'
+                      activity.type === 'success' ? 'bg-forest' :
+                      activity.type === 'warning' ? 'bg-brass' :
+                      activity.type === 'error' ? 'bg-red-500' : 'bg-ink'
                     }`}></div>
                     <div className="flex-1">
-                      <p className="text-sm font-medium text-gray-900">{activity.user}</p>
-                      <p className="text-sm text-gray-600">{activity.action}</p>
+                      <p className="text-sm font-medium text-ink">{activity.user}</p>
+                      <p className="text-sm text-ink-muted">{activity.action}</p>
                     </div>
-                    <p className="text-xs text-gray-500">{activity.time}</p>
+                    <p className="text-xs text-ink-muted">{activity.time}</p>
                   </div>
                 ))}
               </div>
@@ -651,72 +651,72 @@ const SuperAdminDashboard: React.FC = () => {
             {/* Settings Categories */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* General Settings */}
-              <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                  <Settings className="w-5 h-5 text-purple-600" />
+              <div className="bg-white rounded-xl  border border-sand-deep p-6">
+                <h3 className="text-lg font-semibold text-ink mb-4 flex items-center gap-2">
+                  <Settings className="w-5 h-5 text-brass" />
                   General Settings
                 </h3>
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Hotel Name</label>
+                    <label className="block text-sm font-medium text-ink-soft mb-2">Hotel Name</label>
                     <input
                       type="text"
                       defaultValue="Luxury Grand Hotel"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-sand-deep rounded-sm focus:outline-none focus:border-brass"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Contact Email</label>
+                    <label className="block text-sm font-medium text-ink-soft mb-2">Contact Email</label>
                     <input
                       type="email"
                       defaultValue="contact@luxurygrandhotel.com"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-sand-deep rounded-sm focus:outline-none focus:border-brass"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+                    <label className="block text-sm font-medium text-ink-soft mb-2">Phone Number</label>
                     <input
                       type="tel"
                       defaultValue="+1 (555) 123-4567"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-sand-deep rounded-sm focus:outline-none focus:border-brass"
                     />
                   </div>
                 </div>
               </div>
 
               {/* Security Settings */}
-              <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                  <Shield className="w-5 h-5 text-purple-600" />
+              <div className="bg-white rounded-xl  border border-sand-deep p-6">
+                <h3 className="text-lg font-semibold text-ink mb-4 flex items-center gap-2">
+                  <Shield className="w-5 h-5 text-brass" />
                   Security Settings
                 </h3>
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="font-medium text-gray-900">Two-Factor Authentication</p>
-                      <p className="text-sm text-gray-600">Require 2FA for all admin accounts</p>
+                      <p className="font-medium text-ink">Two-Factor Authentication</p>
+                      <p className="text-sm text-ink-muted">Require 2FA for all admin accounts</p>
                     </div>
                     <label className="relative inline-flex items-center cursor-pointer">
                       <input type="checkbox" className="sr-only peer" defaultChecked />
-                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
+                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-brass/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-sand-deep after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brass"></div>
                     </label>
                   </div>
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="font-medium text-gray-900">Email Verification</p>
-                      <p className="text-sm text-gray-600">Require email verification for new accounts</p>
+                      <p className="font-medium text-ink">Email Verification</p>
+                      <p className="text-sm text-ink-muted">Require email verification for new accounts</p>
                     </div>
                     <label className="relative inline-flex items-center cursor-pointer">
                       <input type="checkbox" className="sr-only peer" defaultChecked />
-                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
+                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-brass/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-sand-deep after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brass"></div>
                     </label>
                   </div>
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="font-medium text-gray-900">Session Timeout</p>
-                      <p className="text-sm text-gray-600">Auto-logout inactive users</p>
+                      <p className="font-medium text-ink">Session Timeout</p>
+                      <p className="text-sm text-ink-muted">Auto-logout inactive users</p>
                     </div>
-                    <select className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                    <select className="px-3 py-2 border border-sand-deep rounded-sm focus:outline-none focus:border-brass">
                       <option>30 minutes</option>
                       <option>1 hour</option>
                       <option>2 hours</option>
@@ -727,67 +727,67 @@ const SuperAdminDashboard: React.FC = () => {
               </div>
 
               {/* Email Settings */}
-              <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                  <Mail className="w-5 h-5 text-purple-600" />
+              <div className="bg-white rounded-xl  border border-sand-deep p-6">
+                <h3 className="text-lg font-semibold text-ink mb-4 flex items-center gap-2">
+                  <Mail className="w-5 h-5 text-brass" />
                   Email Settings
                 </h3>
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">SMTP Server</label>
+                    <label className="block text-sm font-medium text-ink-soft mb-2">SMTP Server</label>
                     <input
                       type="text"
                       defaultValue="smtp.gmail.com"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-sand-deep rounded-sm focus:outline-none focus:border-brass"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">SMTP Port</label>
+                    <label className="block text-sm font-medium text-ink-soft mb-2">SMTP Port</label>
                     <input
                       type="number"
                       defaultValue="587"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-sand-deep rounded-sm focus:outline-none focus:border-brass"
                     />
                   </div>
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="font-medium text-gray-900">Enable SSL/TLS</p>
-                      <p className="text-sm text-gray-600">Secure email transmission</p>
+                      <p className="font-medium text-ink">Enable SSL/TLS</p>
+                      <p className="text-sm text-ink-muted">Secure email transmission</p>
                     </div>
                     <label className="relative inline-flex items-center cursor-pointer">
                       <input type="checkbox" className="sr-only peer" defaultChecked />
-                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
+                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-brass/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-sand-deep after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brass"></div>
                     </label>
                   </div>
                 </div>
               </div>
 
               {/* Backup Settings */}
-              <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                  <Save className="w-5 h-5 text-purple-600" />
+              <div className="bg-white rounded-xl  border border-sand-deep p-6">
+                <h3 className="text-lg font-semibold text-ink mb-4 flex items-center gap-2">
+                  <Save className="w-5 h-5 text-brass" />
                   Backup & Maintenance
                 </h3>
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="font-medium text-gray-900">Automatic Backups</p>
-                      <p className="text-sm text-gray-600">Daily database backups</p>
+                      <p className="font-medium text-ink">Automatic Backups</p>
+                      <p className="text-sm text-ink-muted">Daily database backups</p>
                     </div>
                     <label className="relative inline-flex items-center cursor-pointer">
                       <input type="checkbox" className="sr-only peer" defaultChecked />
-                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
+                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-brass/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-sand-deep after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brass"></div>
                     </label>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Backup Frequency</label>
-                    <select className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                    <label className="block text-sm font-medium text-ink-soft mb-2">Backup Frequency</label>
+                    <select className="w-full px-3 py-2 border border-sand-deep rounded-sm focus:outline-none focus:border-brass">
                       <option>Daily</option>
                       <option>Weekly</option>
                       <option>Monthly</option>
                     </select>
                   </div>
-                  <button className="w-full px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
+                  <button className="w-full px-4 py-2 btn-primary transition-colors">
                     Create Backup Now
                   </button>
                 </div>
@@ -796,7 +796,7 @@ const SuperAdminDashboard: React.FC = () => {
 
             {/* Save Settings */}
             <div className="flex justify-end">
-              <button className="px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white font-medium rounded-lg hover:shadow-lg transform transition-all duration-200 hover:scale-105">
+              <button className="px-6 py-3 bg-ink text-white font-medium rounded-sm hover: transform transition-all duration-200 ">
                 Save All Settings
               </button>
             </div>
@@ -808,53 +808,53 @@ const SuperAdminDashboard: React.FC = () => {
           <div className="space-y-6">
             {/* Analytics Overview */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+              <div className="panel">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-gray-600">Total Revenue</p>
-                    <p className="text-2xl font-bold text-gray-900">$89,247</p>
-                    <p className="text-sm text-green-600">+12% this month</p>
+                    <p className="text-sm font-medium text-ink-muted">Total Revenue</p>
+                    <p className="text-2xl font-bold text-ink">$89,247</p>
+                    <p className="text-sm text-forest">+12% this month</p>
                   </div>
-                  <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                    <BarChart3 className="w-6 h-6 text-green-600" />
+                  <div className="w-12 h-12 bg-accent-50 border border-accent-100 rounded-sm flex items-center justify-center">
+                    <BarChart3 className="w-6 h-6 text-forest" />
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+              <div className="panel">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-gray-600">Bookings</p>
-                    <p className="text-2xl font-bold text-gray-900">1,456</p>
-                    <p className="text-sm text-blue-600">+8% this month</p>
+                    <p className="text-sm font-medium text-ink-muted">Bookings</p>
+                    <p className="text-2xl font-bold text-ink">1,456</p>
+                    <p className="text-sm text-brass">+8% this month</p>
                   </div>
-                  <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                    <Calendar className="w-6 h-6 text-blue-600" />
+                  <div className="w-12 h-12 bg-sand border border-sand-deep rounded-sm flex items-center justify-center">
+                    <Calendar className="w-6 h-6 text-brass" />
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+              <div className="panel">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-gray-600">Occupancy Rate</p>
-                    <p className="text-2xl font-bold text-gray-900">78%</p>
-                    <p className="text-sm text-green-600">+5% vs last month</p>
+                    <p className="text-sm font-medium text-ink-muted">Occupancy Rate</p>
+                    <p className="text-2xl font-bold text-ink">78%</p>
+                    <p className="text-sm text-forest">+5% vs last month</p>
                   </div>
-                  <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                    <Users className="w-6 h-6 text-purple-600" />
+                  <div className="w-12 h-12 bg-sand border border-sand-deep rounded-sm flex items-center justify-center">
+                    <Users className="w-6 h-6 text-brass" />
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+              <div className="panel">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-gray-600">Avg. Rating</p>
-                    <p className="text-2xl font-bold text-gray-900">4.8</p>
-                    <p className="text-sm text-green-600">+0.2 this month</p>
+                    <p className="text-sm font-medium text-ink-muted">Avg. Rating</p>
+                    <p className="text-2xl font-bold text-ink">4.8</p>
+                    <p className="text-sm text-forest">+0.2 this month</p>
                   </div>
-                  <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
+                  <div className="w-12 h-12 bg-yellow-100 rounded-sm flex items-center justify-center">
                     <Crown className="w-6 h-6 text-yellow-600" />
                   </div>
                 </div>
@@ -862,15 +862,15 @@ const SuperAdminDashboard: React.FC = () => {
             </div>
 
             {/* Charts and Reports */}
-            <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">System Performance</h3>
+            <div className="bg-white rounded-xl  border border-sand-deep p-6">
+              <h3 className="text-lg font-semibold text-ink mb-4">System Performance</h3>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div className="p-4 border border-gray-200 rounded-lg">
-                  <h4 className="font-medium text-gray-900 mb-2">Server Status</h4>
+                <div className="p-4 border border-sand-deep rounded-sm">
+                  <h4 className="font-medium text-ink mb-2">Server Status</h4>
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-gray-600">CPU Usage</span>
-                      <span className="text-sm font-medium text-green-600">23%</span>
+                      <span className="text-sm text-ink-muted">CPU Usage</span>
+                      <span className="text-sm font-medium text-forest">23%</span>
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2">
                       <div className="bg-green-600 h-2 rounded-full" style={{width: '23%'}}></div>
@@ -878,8 +878,8 @@ const SuperAdminDashboard: React.FC = () => {
                   </div>
                   <div className="space-y-2 mt-4">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-gray-600">Memory Usage</span>
-                      <span className="text-sm font-medium text-blue-600">67%</span>
+                      <span className="text-sm text-ink-muted">Memory Usage</span>
+                      <span className="text-sm font-medium text-brass">67%</span>
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2">
                       <div className="bg-blue-600 h-2 rounded-full" style={{width: '67%'}}></div>
@@ -887,20 +887,20 @@ const SuperAdminDashboard: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="p-4 border border-gray-200 rounded-lg">
-                  <h4 className="font-medium text-gray-900 mb-2">Database Status</h4>
+                <div className="p-4 border border-sand-deep rounded-sm">
+                  <h4 className="font-medium text-ink mb-2">Database Status</h4>
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-gray-600">Connection Pool</span>
-                      <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">Healthy</span>
+                      <span className="text-sm text-ink-muted">Connection Pool</span>
+                      <span className="px-2 py-1 status-chip status-chip--ok text-xs rounded-full">Healthy</span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-gray-600">Query Performance</span>
-                      <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">Optimal</span>
+                      <span className="text-sm text-ink-muted">Query Performance</span>
+                      <span className="px-2 py-1 status-chip status-chip--ok text-xs rounded-full">Optimal</span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-gray-600">Storage Used</span>
-                      <span className="text-sm font-medium text-gray-900">2.3 GB / 10 GB</span>
+                      <span className="text-sm text-ink-muted">Storage Used</span>
+                      <span className="text-sm font-medium text-ink">2.3 GB / 10 GB</span>
                     </div>
                   </div>
                 </div>
@@ -911,12 +911,12 @@ const SuperAdminDashboard: React.FC = () => {
 
         {/* Placeholder for other tabs */}
         {!['create-admin', 'manage-users', 'system-settings', 'analytics'].includes(activeTab) && (
-          <div className="bg-white rounded-2xl shadow-xl border border-gray-200 p-8 text-center">
+          <div className="bg-white rounded-sm  border border-sand-deep p-8 text-center">
             <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Settings className="w-8 h-8 text-gray-400" />
+              <Settings className="w-8 h-8 text-ink-muted" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Coming Soon</h3>
-            <p className="text-gray-600">This feature will be available in the next update.</p>
+            <h3 className="text-lg font-semibold text-ink mb-2">Coming Soon</h3>
+            <p className="text-ink-muted">This feature will be available in the next update.</p>
           </div>
         )}
       </div>

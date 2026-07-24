@@ -41,8 +41,8 @@ function ProtectedRoute({ children, roles }: ProtectedRouteProps) {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      <div className="min-h-screen flex items-center justify-center bg-sand">
+        <div className="h-10 w-10 border-2 border-sand-deep border-t-brass rounded-full animate-spin" />
       </div>
     );
   }
@@ -67,7 +67,7 @@ function AppContent() {
                       location.pathname === '/staff';
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-sand text-ink">
       {!isAdminRoute && <Header />}
       <Routes>
           <Route path="/" element={<HomePage />} />

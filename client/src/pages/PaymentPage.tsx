@@ -1,19 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { api } from '../services/api';
-import { 
-  CreditCard, 
-  Lock, 
-  ArrowLeft, 
-  CheckCircle, 
+import {
+  CreditCard,
+  Lock,
+  ArrowLeft,
+  CheckCircle,
   Calendar,
   Users,
   MapPin,
   Mail,
   Phone,
   Shield,
-  User
+  User,
+  Eye,
+  EyeOff,
 } from 'lucide-react';
+
+const inputClass =
+  'w-full border border-sand-deep bg-white px-3 py-3 text-ink focus:outline-none focus:border-brass transition-colors';
+const labelClass = 'block text-xs uppercase tracking-wider text-ink-muted mb-2';
 
 interface BookingData {
   checkIn: string;
@@ -255,8 +261,8 @@ const PaymentPage: React.FC = () => {
 
   if (!bookingData) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin h-12 w-12 border-2 border-sand-deep border-t-brass" />
       </div>
     );
   }
@@ -282,103 +288,92 @@ const PaymentPage: React.FC = () => {
   
   const totalGuests = parseInt(bookingData.adults) + parseInt(bookingData.children);
 
+  const methodBtnClass = (active: boolean) =>
+    `p-4 border flex items-center gap-3 transition-colors text-left ${
+      active
+        ? 'border-brass bg-sand text-ink'
+        : 'border-sand-deep bg-white text-ink-muted hover:border-brass/50'
+    }`;
+
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen py-10 md:py-14">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Back Button */}
-        <Link 
-          to="/booking" 
-          className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-8 transition-colors group"
+        <Link
+          to="/booking"
+          className="inline-flex items-center gap-2 text-ink-muted hover:text-ink mb-8 transition-colors"
         >
-          <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
-          Back to Booking Details
+          <ArrowLeft className="w-4 h-4" />
+          Back to booking details
         </Link>
 
-        {/* Header */}
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-green-500 to-blue-600 rounded-full mb-6">
-            <Lock className="w-8 h-8 text-white" />
-          </div>
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">Secure Payment</h1>
-          <p className="text-lg text-gray-600">Complete your booking with our secure payment system</p>
+        <div className="mb-10 md:mb-12">
+          <p className="section-label mb-2">Checkout</p>
+          <h1 className="page-title mb-3">Secure payment</h1>
+          <p className="text-ink-muted text-lg max-w-xl">
+            Complete your reservation with our encrypted payment system.
+          </p>
         </div>
 
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Payment Form */}
           <div className="lg:col-span-2">
             <form onSubmit={handleSubmit} className="space-y-8">
-              {/* Payment Method Selection */}
-              <div className="bg-white rounded-xl shadow-sm border p-8">
-                <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3">
-                  <CreditCard className="w-6 h-6 text-blue-600" />
-                  Payment Method
+              <div className="panel">
+                <p className="section-label mb-2">Step 1</p>
+                <h2 className="font-display text-2xl text-ink mb-6 flex items-center gap-3">
+                  <CreditCard className="w-5 h-5 text-brass" />
+                  Payment method
                 </h2>
-                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-2">
                   <button
                     type="button"
                     onClick={() => setPaymentMethod('credit-card')}
-                    className={`p-4 border-2 rounded-xl flex items-center gap-3 transition-all ${
-                      paymentMethod === 'credit-card' 
-                        ? 'border-blue-500 bg-blue-50 text-blue-700' 
-                        : 'border-gray-200 hover:border-gray-300'
-                    }`}
+                    className={methodBtnClass(paymentMethod === 'credit-card')}
                   >
-                    <CreditCard className="w-5 h-5" />
-                    <span className="font-medium">Credit Card</span>
+                    <CreditCard className="w-5 h-5 shrink-0" />
+                    <span className="font-medium text-sm">Credit card</span>
                   </button>
                   <button
                     type="button"
                     onClick={() => setPaymentMethod('paypal')}
-                    className={`p-4 border-2 rounded-xl flex items-center gap-3 transition-all ${
-                      paymentMethod === 'paypal' 
-                        ? 'border-blue-500 bg-blue-50 text-blue-700' 
-                        : 'border-gray-200 hover:border-gray-300'
-                    }`}
+                    className={methodBtnClass(paymentMethod === 'paypal')}
                   >
-                    <Mail className="w-5 h-5" />
-                    <span className="font-medium">PayPal</span>
+                    <Mail className="w-5 h-5 shrink-0" />
+                    <span className="font-medium text-sm">PayPal</span>
                   </button>
                   <button
                     type="button"
                     onClick={() => setPaymentMethod('mobile-money')}
-                    className={`p-4 border-2 rounded-xl flex items-center gap-3 transition-all ${
-                      paymentMethod === 'mobile-money' 
-                        ? 'border-blue-500 bg-blue-50 text-blue-700' 
-                        : 'border-gray-200 hover:border-gray-300'
-                    }`}
+                    className={methodBtnClass(paymentMethod === 'mobile-money')}
                   >
-                    <Phone className="w-5 h-5" />
-                    <span className="font-medium">Mobile Money</span>
+                    <Phone className="w-5 h-5 shrink-0" />
+                    <span className="font-medium text-sm">Mobile money</span>
                   </button>
                   <button
                     type="button"
                     onClick={() => setPaymentMethod('cash-front-desk')}
-                    className={`p-4 border-2 rounded-xl flex flex-col items-center gap-2 transition-all ${
-                      paymentMethod === 'cash-front-desk' 
-                        ? 'border-green-500 bg-green-50 text-green-700' 
-                        : 'border-gray-200 hover:border-gray-300'
-                    }`}
+                    className={methodBtnClass(paymentMethod === 'cash-front-desk')}
                   >
-                    <MapPin className="w-5 h-5" />
-                    <div className="text-center">
-                      <span className="font-medium text-sm">Cash at Front Desk</span>
-                      <p className="text-xs text-orange-600 font-medium">+$20 fee</p>
+                    <MapPin className="w-5 h-5 shrink-0" />
+                    <div>
+                      <span className="font-medium text-sm block">Cash at desk</span>
+                      <span className="text-xs text-brass">+$20 fee</span>
                     </div>
                   </button>
                 </div>
               </div>
 
-              {/* Payment Information */}
-              <div className="bg-white rounded-xl shadow-sm border p-8">
-                <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3">
-                  <Lock className="w-6 h-6 text-green-600" />
-                  Payment Details
+              <div className="panel">
+                <p className="section-label mb-2">Step 2</p>
+                <h2 className="font-display text-2xl text-ink mb-6 flex items-center gap-3">
+                  <Lock className="w-5 h-5 text-forest" />
+                  Payment details
                 </h2>
-                
+
                 {paymentMethod === 'credit-card' && (
-                  <div className="space-y-6">
+                  <div className="space-y-5">
                     <div>
-                      <label className="block text-gray-700 mb-2 font-medium">Card Number *</label>
+                      <label className={labelClass}>Card number *</label>
                       <div className="relative">
                         <input
                           type="text"
@@ -392,44 +387,38 @@ const PaymentPage: React.FC = () => {
                           }}
                           placeholder="1234 5678 9012 3456"
                           maxLength={19}
-                          className={`w-full px-4 py-3 pr-12 border-2 rounded-xl focus:ring-2 focus:ring-blue-500 transition-all ${
-                            errors.cardNumber ? 'border-red-500' : 'border-gray-300 focus:border-blue-500'
-                          }`}
+                          className={`${inputClass} pr-24 ${errors.cardNumber ? 'border-[#E8C9C3]' : ''}`}
                           required
                         />
                         {paymentData.cardNumber && (
-                          <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                            <span className="text-xs font-medium text-blue-600 bg-blue-50 px-2 py-1 rounded">
-                              {getCardType(paymentData.cardNumber)}
-                            </span>
-                          </div>
+                          <span className="absolute right-3 top-1/2 -translate-y-1/2 status-chip status-chip--neutral text-[10px]">
+                            {getCardType(paymentData.cardNumber)}
+                          </span>
                         )}
                       </div>
                       {errors.cardNumber && (
-                        <p className="mt-1 text-sm text-red-600">{errors.cardNumber}</p>
+                        <p className="mt-1 text-sm text-[#8B3A32]">{errors.cardNumber}</p>
                       )}
                     </div>
 
                     <div>
-                      <label className="block text-gray-700 mb-2 font-medium">Cardholder Name *</label>
+                      <label className={labelClass}>Cardholder name *</label>
                       <input
                         type="text"
                         name="cardName"
                         value={paymentData.cardName}
                         onChange={handleInputChange}
                         placeholder="John Doe"
-                        className={`w-full px-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-blue-500 transition-all ${
-                          errors.cardName ? 'border-red-500' : 'border-gray-300 focus:border-blue-500'
-                        }`}
+                        className={`${inputClass} ${errors.cardName ? 'border-[#E8C9C3]' : ''}`}
                         required
                       />
                       {errors.cardName && (
-                        <p className="mt-1 text-sm text-red-600">{errors.cardName}</p>
+                        <p className="mt-1 text-sm text-[#8B3A32]">{errors.cardName}</p>
                       )}
                     </div>
 
                     <div>
-                      <label className="block text-gray-700 mb-2 font-medium">CVV/CVC *</label>
+                      <label className={labelClass}>CVV / CVC *</label>
                       <div className="relative">
                         <input
                           type={showCVV ? 'text' : 'password'}
@@ -443,83 +432,72 @@ const PaymentPage: React.FC = () => {
                           }}
                           placeholder="123"
                           maxLength={4}
-                          className={`w-full px-4 py-3 pr-12 border-2 rounded-xl focus:ring-2 focus:ring-blue-500 transition-all ${
-                            errors.cvv ? 'border-red-500' : 'border-gray-300 focus:border-blue-500'
-                          }`}
+                          className={`${inputClass} pr-12 ${errors.cvv ? 'border-[#E8C9C3]' : ''}`}
                           required
                         />
                         <button
                           type="button"
                           onClick={() => setShowCVV(!showCVV)}
-                          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-ink-muted hover:text-ink"
+                          aria-label={showCVV ? 'Hide CVV' : 'Show CVV'}
                         >
-                          {showCVV ? '👁️' : '👁️‍🗨️'}
+                          {showCVV ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                         </button>
                       </div>
                       {errors.cvv && (
-                        <p className="mt-1 text-sm text-red-600">{errors.cvv}</p>
+                        <p className="mt-1 text-sm text-[#8B3A32]">{errors.cvv}</p>
                       )}
-                      <p className="mt-1 text-xs text-gray-500">3-4 digit security code on back of card</p>
+                      <p className="mt-1 text-xs text-ink-muted">3–4 digit security code on back of card</p>
                     </div>
 
-                    <div className="flex items-center justify-between p-4 bg-blue-50 border border-blue-200 rounded-xl">
+                    <div className="flex items-center justify-between border border-sand-deep bg-sand px-4 py-3">
                       <div className="flex items-center gap-2">
-                        <Lock className="w-4 h-4 text-blue-600" />
-                        <span className="text-blue-800 font-medium">Save card for future bookings</span>
+                        <Lock className="w-4 h-4 text-forest" />
+                        <span className="text-sm text-ink">Save card for future bookings</span>
                       </div>
                       <button
                         type="button"
                         onClick={() => setPaymentData(prev => ({ ...prev, saveCard: !prev.saveCard }))}
-                        className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
-                          paymentData.saveCard
-                            ? 'bg-blue-600 text-white shadow-md hover:bg-blue-700'
-                            : 'bg-white text-blue-600 border border-blue-300 hover:bg-blue-50'
-                        }`}
+                        className={paymentData.saveCard ? 'btn-primary py-2 px-4 text-sm' : 'btn-secondary py-2 px-4 text-sm'}
                       >
-                        {paymentData.saveCard ? 'Saved' : 'Save Card'}
+                        {paymentData.saveCard ? 'Saved' : 'Save card'}
                       </button>
                     </div>
                   </div>
                 )}
 
                 {paymentMethod === 'paypal' && (
-                  <div className="space-y-6">
+                  <div className="space-y-5">
                     <div>
-                      <label className="block text-gray-700 mb-2 font-medium">PayPal Email *</label>
+                      <label className={labelClass}>PayPal email *</label>
                       <input
                         type="email"
                         name="paypalEmail"
                         value={paymentData.paypalEmail}
                         onChange={handleInputChange}
                         placeholder="your.email@example.com"
-                        className={`w-full px-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-blue-500 transition-all ${
-                          errors.paypalEmail ? 'border-red-500' : 'border-gray-300 focus:border-blue-500'
-                        }`}
+                        className={`${inputClass} ${errors.paypalEmail ? 'border-[#E8C9C3]' : ''}`}
                         required
                       />
                       {errors.paypalEmail && (
-                        <p className="mt-1 text-sm text-red-600">{errors.paypalEmail}</p>
+                        <p className="mt-1 text-sm text-[#8B3A32]">{errors.paypalEmail}</p>
                       )}
                     </div>
-                    <div className="p-4 bg-blue-50 border border-blue-200 rounded-xl">
-                      <p className="text-blue-800 text-sm">
-                        You will be redirected to PayPal to complete your payment securely.
-                      </p>
+                    <div className="border border-sand-deep bg-sand px-4 py-3 text-sm text-ink-muted">
+                      You will be redirected to PayPal to complete your payment securely.
                     </div>
                   </div>
                 )}
 
                 {paymentMethod === 'mobile-money' && (
-                  <div className="space-y-6">
+                  <div className="space-y-5">
                     <div>
-                      <label className="block text-gray-700 mb-2 font-medium">Mobile Carrier *</label>
+                      <label className={labelClass}>Mobile carrier *</label>
                       <select
                         name="mobileCarrier"
                         value={paymentData.mobileCarrier || ''}
                         onChange={handleInputChange}
-                        className={`w-full px-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-blue-500 transition-all ${
-                          errors.mobileCarrier ? 'border-red-500' : 'border-gray-300 focus:border-blue-500'
-                        }`}
+                        className={`${inputClass} ${errors.mobileCarrier ? 'border-[#E8C9C3]' : ''}`}
                         required
                       >
                         <option value="">Select your mobile carrier</option>
@@ -529,140 +507,139 @@ const PaymentPage: React.FC = () => {
                         <option value="telecel">Telecel Cash</option>
                       </select>
                       {errors.mobileCarrier && (
-                        <p className="mt-1 text-sm text-red-600">{errors.mobileCarrier}</p>
+                        <p className="mt-1 text-sm text-[#8B3A32]">{errors.mobileCarrier}</p>
                       )}
                     </div>
-                    
+
                     <div>
-                      <label className="block text-gray-700 mb-2 font-medium">Phone Number *</label>
+                      <label className={labelClass}>Phone number *</label>
                       <input
                         type="tel"
                         name="phoneNumber"
                         value={paymentData.phoneNumber}
                         onChange={handleInputChange}
                         placeholder="+233 XX XXX XXXX"
-                        className={`w-full px-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-blue-500 transition-all ${
-                          errors.phoneNumber ? 'border-red-500' : 'border-gray-300 focus:border-blue-500'
-                        }`}
+                        className={`${inputClass} ${errors.phoneNumber ? 'border-[#E8C9C3]' : ''}`}
                         required
                       />
                       {errors.phoneNumber && (
-                        <p className="mt-1 text-sm text-red-600">{errors.phoneNumber}</p>
+                        <p className="mt-1 text-sm text-[#8B3A32]">{errors.phoneNumber}</p>
                       )}
-                      <p className="mt-1 text-xs text-gray-500">
+                      <p className="mt-1 text-xs text-ink-muted">
                         Enter the phone number registered with your mobile money account
                       </p>
                     </div>
-                    
-                    <div className="p-4 bg-green-50 border border-green-200 rounded-xl">
-                      <h4 className="font-medium text-green-800 mb-2">How it works:</h4>
-                      <ul className="text-green-700 text-sm space-y-1">
-                        <li>• Select your mobile carrier above</li>
-                        <li>• Enter your registered mobile money number</li>
-                        <li>• You'll receive a payment prompt on your phone</li>
-                        <li>• Enter your mobile money PIN to complete payment</li>
+
+                    <div className="border border-[#C5DED6] bg-[#E8F2EF] px-4 py-3">
+                      <h4 className="font-medium text-forest mb-2 text-sm">How it works</h4>
+                      <ul className="text-forest/90 text-sm space-y-1 list-disc list-inside">
+                        <li>Select your mobile carrier above</li>
+                        <li>Enter your registered mobile money number</li>
+                        <li>You will receive a payment prompt on your phone</li>
+                        <li>Enter your mobile money PIN to complete payment</li>
                       </ul>
                     </div>
                   </div>
                 )}
 
                 {paymentMethod === 'cash-front-desk' && (
-                  <div className="space-y-6">
-                    <div className="p-6 bg-orange-50 border border-orange-200 rounded-xl">
-                      <h4 className="font-medium text-orange-800 mb-3 flex items-center gap-2">
-                        <MapPin className="w-5 h-5" />
-                        Cash Payment at Front Desk
-                      </h4>
-                      <div className="space-y-3 text-orange-700">
-                        <p className="text-sm">
-                          <strong>Additional Fee:</strong> $20 will be added to your total for cash payment processing.
+                  <div className="border border-sand-deep bg-sand px-5 py-4">
+                    <h4 className="font-medium text-ink mb-3 flex items-center gap-2">
+                      <MapPin className="w-5 h-5 text-brass" />
+                      Cash payment at front desk
+                    </h4>
+                    <div className="space-y-3 text-ink-muted text-sm">
+                      <p>
+                        <strong className="text-ink">Additional fee:</strong> $20 will be added to your total for cash payment processing.
+                      </p>
+                      <div>
+                        <p className="font-medium text-ink mb-2">Payment instructions</p>
+                        <ul className="space-y-1 list-disc list-inside">
+                          <li>Complete this booking to reserve your room</li>
+                          <li>Pay the full amount in cash at the front desk during check-in</li>
+                          <li>Bring a valid ID and this booking confirmation</li>
+                          <li>Payment must be made in USD or local currency equivalent</li>
+                        </ul>
+                      </div>
+                      <div className="border border-[#EDE0C8] bg-[#F7F1E4] px-3 py-2 status-chip--warn">
+                        <p className="text-sm font-medium">
+                          Your room will be held for 24 hours. Payment must be completed during check-in or your reservation may be cancelled.
                         </p>
-                        <div className="text-sm">
-                          <p className="font-medium mb-2">Payment Instructions:</p>
-                          <ul className="space-y-1 ml-4">
-                            <li>• Complete this booking to reserve your room</li>
-                            <li>• Pay the full amount in cash at the front desk during check-in</li>
-                            <li>• Bring a valid ID and this booking confirmation</li>
-                            <li>• Payment must be made in USD or local currency equivalent</li>
-                          </ul>
-                        </div>
-                        <div className="p-3 bg-orange-100 rounded-lg">
-                          <p className="text-sm font-medium text-orange-800">
-                            ⚠️ Note: Your room will be held for 24 hours. Payment must be completed during check-in or your reservation may be cancelled.
-                          </p>
-                        </div>
                       </div>
                     </div>
                   </div>
                 )}
               </div>
 
-              {/* Terms & Conditions */}
-              <div className="bg-white rounded-xl shadow-sm border p-8">
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">Terms & Conditions</h2>
-                
+              <div className="panel">
+                <h2 className="font-display text-2xl text-ink mb-6">Terms & conditions</h2>
+
                 <div className="space-y-4">
                   <div className="flex items-start gap-3">
                     <input
                       type="checkbox"
                       checked={acceptTerms}
                       onChange={(e) => setAcceptTerms(e.target.checked)}
-                      className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-1"
+                      className="w-4 h-4 mt-1 accent-brass border-sand-deep"
                       required
                     />
-                    <label className="text-gray-700 text-sm">
-                      I agree to the <a href="#" className="text-blue-600 hover:underline">Terms of Service</a> and <a href="#" className="text-blue-600 hover:underline">Privacy Policy</a>. I understand that my booking is subject to availability and the hotel's cancellation policy.
+                    <label className="text-ink-muted text-sm leading-relaxed">
+                      I agree to the{' '}
+                      <a href="#" className="text-brass hover:text-brass-deep underline">
+                        Terms of Service
+                      </a>{' '}
+                      and{' '}
+                      <a href="#" className="text-brass hover:text-brass-deep underline">
+                        Privacy Policy
+                      </a>
+                      . I understand that my booking is subject to availability and the hotel&apos;s cancellation policy.
                     </label>
                   </div>
                   {errors.terms && (
-                    <p className="text-sm text-red-600">{errors.terms}</p>
+                    <p className="text-sm text-[#8B3A32]">{errors.terms}</p>
                   )}
-                  
+
                   <div className="flex items-start gap-3">
                     <input
                       type="checkbox"
                       checked={acceptMarketing}
                       onChange={(e) => setAcceptMarketing(e.target.checked)}
-                      className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-1"
+                      className="w-4 h-4 mt-1 accent-brass border-sand-deep"
                     />
-                    <label className="text-gray-700 text-sm">
+                    <label className="text-ink-muted text-sm leading-relaxed">
                       I would like to receive promotional emails about special offers and new services (optional).
                     </label>
                   </div>
                 </div>
               </div>
 
-              {/* Confirm Pay Button */}
               <div className="text-center">
                 <button
                   type="submit"
                   disabled={isProcessing || !acceptTerms}
-                  className={`font-bold py-5 px-16 rounded-xl text-xl transition-all duration-300 flex items-center gap-3 mx-auto shadow-xl ${
-                    isProcessing || !acceptTerms
-                      ? 'bg-gray-400 cursor-not-allowed'
-                      : 'bg-gradient-to-r from-green-500 via-blue-600 to-purple-600 hover:from-green-600 hover:via-blue-700 hover:to-purple-700 hover:scale-105 hover:shadow-2xl'
-                  } text-white`}
+                  className={`btn-primary text-lg py-4 px-10 mx-auto ${
+                    isProcessing || !acceptTerms ? 'opacity-50 cursor-not-allowed' : ''
+                  }`}
                 >
                   {isProcessing ? (
-                    <>
-                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
-                      Processing Payment...
-                    </>
+                    <span className="flex items-center gap-3">
+                      <span className="animate-spin h-5 w-5 border-2 border-white border-t-transparent" />
+                      Processing payment…
+                    </span>
                   ) : (
-                    <>
-                      <Lock className="w-6 h-6" />
-                      <span>Confirm & Pay ${totalAmount}</span>
-                      <CheckCircle className="w-6 h-6" />
-                    </>
+                    <span className="flex items-center gap-3">
+                      <Lock className="w-5 h-5" />
+                      Confirm & pay ${totalAmount}
+                    </span>
                   )}
                 </button>
-                
-                <div className="mt-6 space-y-2">
-                  <div className="flex items-center justify-center gap-2 text-gray-500">
+
+                <div className="mt-6 space-y-1">
+                  <p className="flex items-center justify-center gap-2 text-ink-muted text-sm">
                     <Shield className="w-4 h-4" />
-                    <span className="text-sm">Secured by 256-bit SSL encryption</span>
-                  </div>
-                  <p className="text-xs text-gray-400">
+                    Secured by 256-bit SSL encryption
+                  </p>
+                  <p className="text-xs text-ink-muted/70">
                     Your payment information is protected and encrypted
                   </p>
                 </div>
@@ -670,133 +647,139 @@ const PaymentPage: React.FC = () => {
             </form>
           </div>
 
-          {/* Booking Summary */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-xl shadow-lg border p-8 sticky top-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Booking Summary</h2>
-              
-              {/* Guest Information */}
-              <div className="mb-6 p-4 bg-gray-50 rounded-xl border">
-                <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                  <User className="w-5 h-5 text-blue-600" />
-                  Guest Details
+            <div className="panel sticky top-8">
+              <p className="section-label mb-2">Summary</p>
+              <h2 className="font-display text-2xl text-ink mb-6">Booking summary</h2>
+
+              <div className="mb-6 border border-sand-deep bg-sand px-4 py-3">
+                <h3 className="text-xs uppercase tracking-wider text-ink-muted mb-3 flex items-center gap-2">
+                  <User className="w-4 h-4 text-brass" />
+                  Guest details
                 </h3>
-                <div className="space-y-2 text-gray-700">
-                  <p><strong>Name:</strong> {bookingData.firstName} {bookingData.lastName}</p>
+                <div className="space-y-2 text-sm text-ink-muted">
+                  <p>
+                    <span className="text-ink font-medium">Name:</span> {bookingData.firstName} {bookingData.lastName}
+                  </p>
                   <p className="flex items-center gap-2">
-                    <Mail className="w-4 h-4" />
+                    <Mail className="w-4 h-4 text-brass" />
                     {bookingData.email}
                   </p>
                   <p className="flex items-center gap-2">
-                    <Phone className="w-4 h-4" />
+                    <Phone className="w-4 h-4 text-brass" />
                     {bookingData.phone}
                   </p>
                 </div>
               </div>
 
-              {/* Booking Details */}
-              <div className="mb-6 p-4 bg-gray-50 rounded-xl border">
-                <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                  <Calendar className="w-5 h-5 text-purple-600" />
-                  Stay Details
+              <div className="mb-6 border border-sand-deep bg-sand px-4 py-3">
+                <h3 className="text-xs uppercase tracking-wider text-ink-muted mb-3 flex items-center gap-2">
+                  <Calendar className="w-4 h-4 text-brass" />
+                  Stay details
                 </h3>
-                <div className="space-y-2 text-gray-700">
-                  <p><strong>Check-in:</strong> {new Date(bookingData.checkIn).toLocaleDateString()}</p>
-                  <p><strong>Check-out:</strong> {new Date(bookingData.checkOut).toLocaleDateString()}</p>
+                <div className="space-y-2 text-sm text-ink-muted">
+                  <p>
+                    <span className="text-ink font-medium">Check-in:</span>{' '}
+                    {new Date(bookingData.checkIn).toLocaleDateString()}
+                  </p>
+                  <p>
+                    <span className="text-ink font-medium">Check-out:</span>{' '}
+                    {new Date(bookingData.checkOut).toLocaleDateString()}
+                  </p>
                   <p className="flex items-center gap-2">
-                    <Users className="w-4 h-4" />
+                    <Users className="w-4 h-4 text-brass" />
                     {totalGuests} Guest{totalGuests !== 1 ? 's' : ''}
                   </p>
-                  <p><strong>Room:</strong> {bookingData.roomType.charAt(0).toUpperCase() + bookingData.roomType.slice(1)} Room</p>
-                  <p><strong>Nights:</strong> {bookingData.nights}</p>
+                  <p>
+                    <span className="text-ink font-medium">Room:</span>{' '}
+                    {bookingData.roomType.charAt(0).toUpperCase() + bookingData.roomType.slice(1)} Room
+                  </p>
+                  <p>
+                    <span className="text-ink font-medium">Nights:</span> {bookingData.nights}
+                  </p>
                 </div>
               </div>
 
-              {/* Price Summary */}
               <div className="space-y-4">
-                <h4 className="font-semibold text-gray-900 mb-4">Price Summary</h4>
-                
-                {/* Room Cost */}
-                <div className="space-y-2">
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-600">Room Rate</span>
-                    <span className="text-gray-900">${basePrice}/night</span>
+                <h4 className="text-xs uppercase tracking-wider text-ink-muted">Price summary</h4>
+
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between items-center text-ink-muted">
+                    <span>Room rate</span>
+                    <span className="text-ink">${basePrice}/night</span>
                   </div>
-                  <div className="flex justify-between items-center pb-2 border-b border-gray-200">
-                    <span className="text-gray-600">{bookingData.nights} nights × ${basePrice}</span>
-                    <span className="text-gray-900 font-medium">${roomSubtotal}</span>
+                  <div className="flex justify-between items-center pb-2 border-b border-sand-deep text-ink-muted">
+                    <span>
+                      {bookingData.nights} nights × ${basePrice}
+                    </span>
+                    <span className="text-ink font-medium">${roomSubtotal}</span>
                   </div>
                 </div>
 
-                {/* Add-ons Section */}
                 {(bookingData.specialRequests || roomSubtotal > basePrice * bookingData.nights) && (
-                  <div className="space-y-2">
-                    <h5 className="font-medium text-gray-800">Add-ons & Services</h5>
-                    <div className="flex justify-between items-center text-sm">
-                      <span className="text-gray-600">• Spa & Wellness Package</span>
-                      <span className="text-gray-900">$150</span>
+                  <div className="space-y-2 text-sm">
+                    <h5 className="text-xs uppercase tracking-wider text-ink-muted">Add-ons & services</h5>
+                    <div className="flex justify-between text-ink-muted">
+                      <span>Spa & wellness package</span>
+                      <span className="text-ink">$150</span>
                     </div>
-                    <div className="flex justify-between items-center text-sm">
-                      <span className="text-gray-600">• Daily Breakfast ({bookingData.nights} days)</span>
-                      <span className="text-gray-900">${25 * bookingData.nights}</span>
+                    <div className="flex justify-between text-ink-muted">
+                      <span>Daily breakfast ({bookingData.nights} days)</span>
+                      <span className="text-ink">${25 * bookingData.nights}</span>
                     </div>
-                    <div className="flex justify-between items-center text-sm">
-                      <span className="text-gray-600">• Airport Transfer</span>
-                      <span className="text-gray-900">$45</span>
+                    <div className="flex justify-between text-ink-muted">
+                      <span>Airport transfer</span>
+                      <span className="text-ink">$45</span>
                     </div>
-                    <div className="flex justify-between items-center text-sm pb-2 border-b border-gray-200">
-                      <span className="text-gray-600">• Late Checkout</span>
-                      <span className="text-gray-900">$50</span>
+                    <div className="flex justify-between pb-2 border-b border-sand-deep text-ink-muted">
+                      <span>Late checkout</span>
+                      <span className="text-ink">$50</span>
                     </div>
                   </div>
                 )}
 
-                {/* Fees & Taxes */}
-                <div className="space-y-2">
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-600">Taxes (12%)</span>
-                    <span className="text-gray-900">${taxes}</span>
+                <div className="space-y-2 text-sm text-ink-muted">
+                  <div className="flex justify-between">
+                    <span>Taxes (12%)</span>
+                    <span className="text-ink">${taxes}</span>
                   </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-600">Service Fee</span>
-                    <span className="text-gray-900">${serviceFee}</span>
+                  <div className="flex justify-between">
+                    <span>Service fee</span>
+                    <span className="text-ink">${serviceFee}</span>
                   </div>
                   {cashFee > 0 && (
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-600">Cash Payment Fee</span>
-                      <span className="text-gray-900">${cashFee}</span>
+                    <div className="flex justify-between">
+                      <span>Cash payment fee</span>
+                      <span className="text-ink">${cashFee}</span>
                     </div>
                   )}
                 </div>
 
-                {/* Discounts */}
                 {promoDiscount > 0 && (
-                  <div className="space-y-2 py-2 border-t border-gray-200">
-                    <h5 className="font-medium text-green-800">Discounts Applied</h5>
-                    <div className="flex justify-between items-center text-green-600">
-                      <span>• Promo Code Discount ({promoDiscount}%)</span>
+                  <div className="space-y-2 py-2 border-t border-sand-deep text-sm">
+                    <h5 className="text-xs uppercase tracking-wider text-forest">Discounts applied</h5>
+                    <div className="flex justify-between text-forest">
+                      <span>Promo code ({promoDiscount}%)</span>
                       <span>-${promoDiscountAmount}</span>
                     </div>
                   </div>
                 )}
 
-                {/* Total Payable */}
-                <div className="pt-4 border-t-2 border-gray-300">
-                  <div className="flex justify-between items-center py-3 text-xl font-bold bg-gradient-to-r from-blue-50 to-green-50 px-4 rounded-lg border">
-                    <span className="text-gray-900">Total Payable</span>
-                    <span className="text-blue-600">${totalAmount}</span>
+                <div className="pt-4 border-t-2 border-sand-deep">
+                  <div className="flex justify-between items-center py-2">
+                    <span className="font-display text-xl text-ink">Total payable</span>
+                    <span className="font-display text-2xl text-brass">${totalAmount}</span>
                   </div>
-                  <p className="text-xs text-gray-500 mt-2 text-center">All taxes and fees included</p>
+                  <p className="text-xs text-ink-muted text-center mt-1">All taxes and fees included</p>
                 </div>
               </div>
 
-              {/* Security Badge */}
-              <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-xl">
-                <div className="flex items-center gap-3 text-green-700">
-                  <CheckCircle className="w-5 h-5" />
-                  <span className="font-medium">Secure Payment</span>
+              <div className="mt-6 border border-[#C5DED6] bg-[#E8F2EF] px-4 py-3">
+                <div className="flex items-center gap-3 text-forest">
+                  <CheckCircle className="w-5 h-5 shrink-0" />
+                  <span className="font-medium text-sm">Secure payment</span>
                 </div>
-                <p className="text-green-600 text-sm mt-1">
+                <p className="text-forest/80 text-sm mt-1">
                   Your payment information is encrypted and secure
                 </p>
               </div>

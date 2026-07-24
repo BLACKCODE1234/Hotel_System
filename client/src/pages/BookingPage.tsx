@@ -2,6 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Calendar, Users, User, Mail, Phone, MapPin, ArrowRight, Clock, Info, CheckCircle, AlertCircle, Utensils, Car, Heart, Shield } from 'lucide-react';
 
+const inputClass =
+  'w-full border border-sand-deep bg-white px-3 py-3 text-ink focus:outline-none focus:border-brass transition-colors';
+const labelClass = 'block text-xs uppercase tracking-wider text-ink-muted mb-2';
+
 const BookingPage: React.FC = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -259,162 +263,160 @@ const BookingPage: React.FC = () => {
   const taxes = Math.round(discountedSubtotal * taxRate);
   const totalPrice = discountedSubtotal + taxes + serviceFee;
 
+  const upsellCardClass = (selected: boolean) =>
+    `border p-5 cursor-pointer transition-colors ${
+      selected ? 'border-brass bg-sand' : 'border-sand-deep bg-white hover:border-brass/50'
+    }`;
+
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">Complete Your Booking</h1>
-          <p className="text-lg text-gray-600 mb-8">
-            Just a few more details and you'll be all set for your luxury stay
+    <div className="min-h-screen py-10 md:py-14">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 animate-rise">
+        <div className="mb-10 md:mb-12">
+          <p className="section-label mb-2">Reservation</p>
+          <h1 className="page-title mb-3">Complete your booking</h1>
+          <p className="text-ink-muted text-lg max-w-xl">
+            A few more details and you will be ready for your stay.
           </p>
-          
-          {/* Progress Steps */}
-          <div className="max-w-2xl mx-auto mb-8">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold ${
-                  currentStep >= 1 ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-600'
-                }`}>
-                  1
-                </div>
-                <span className={`ml-3 font-medium ${currentStep >= 1 ? 'text-blue-600' : 'text-gray-500'}`}>
-                  Dates & Guests
-                </span>
-              </div>
-              
-              <div className={`flex-1 h-1 mx-4 ${currentStep >= 2 ? 'bg-blue-600' : 'bg-gray-200'}`}></div>
-              
-              <div className="flex items-center">
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold ${
-                  currentStep >= 2 ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-600'
-                }`}>
-                  2
-                </div>
-                <span className={`ml-3 font-medium ${currentStep >= 2 ? 'text-blue-600' : 'text-gray-500'}`}>
-                  Guest Info
-                </span>
-              </div>
-              
-              <div className={`flex-1 h-1 mx-4 ${currentStep >= 3 ? 'bg-blue-600' : 'bg-gray-200'}`}></div>
-              
-              <div className="flex items-center">
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold ${
-                  currentStep >= 3 ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-600'
-                }`}>
-                  3
-                </div>
-                <span className={`ml-3 font-medium ${currentStep >= 3 ? 'text-blue-600' : 'text-gray-500'}`}>
-                  Payment
-                </span>
-              </div>
+
+          <div className="max-w-2xl mt-8">
+            <div className="flex items-center justify-between gap-2">
+              {[
+                { step: 1, label: 'Dates & guests' },
+                { step: 2, label: 'Guest info' },
+                { step: 3, label: 'Payment' },
+              ].map(({ step, label }, i) => (
+                <React.Fragment key={step}>
+                  <div className="flex items-center gap-2 min-w-0">
+                    <div
+                      className={`w-8 h-8 shrink-0 flex items-center justify-center text-sm font-semibold border ${
+                        currentStep >= step
+                          ? 'bg-brass text-white border-brass-deep'
+                          : 'bg-sand text-ink-muted border-sand-deep'
+                      }`}
+                    >
+                      {step}
+                    </div>
+                    <span
+                      className={`text-xs sm:text-sm font-medium truncate hidden sm:inline ${
+                        currentStep >= step ? 'text-ink' : 'text-ink-muted'
+                      }`}
+                    >
+                      {label}
+                    </span>
+                  </div>
+                  {i < 2 && (
+                    <div
+                      className={`flex-1 h-px ${currentStep > step ? 'bg-brass' : 'bg-sand-deep'}`}
+                    />
+                  )}
+                </React.Fragment>
+              ))}
             </div>
           </div>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-8">
-          {/* Guest Information */}
-          <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-8 flex items-center">
-              <User className="h-6 w-6 mr-3 text-blue-600" />
-              Guest Information
+          <div className="panel">
+            <p className="section-label mb-2">Guest</p>
+            <h2 className="font-display text-2xl text-ink mb-6 flex items-center gap-3">
+              <User className="h-5 w-5 text-brass" />
+              Guest information
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div>
-                <label className="block text-sm font-semibold text-gray-800 mb-3">First Name *</label>
+                <label className={labelClass}>First name *</label>
                 <input
                   type="text"
                   name="firstName"
                   value={formData.firstName}
                   onChange={handleInputChange}
                   placeholder="Enter your first name"
-                  className={`w-full px-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-blue-500 transition-all duration-200 bg-gray-50 hover:bg-white ${
-                    errors.firstName ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-blue-500'
-                  }`}
+                  className={`${inputClass} ${errors.firstName ? 'border-[#E8C9C3]' : ''}`}
                   required
                 />
                 {errors.firstName && (
-                  <p className="mt-2 text-sm text-red-600 flex items-center gap-1">
+                  <p className="mt-2 text-sm text-[#8B3A32] flex items-center gap-1">
                     <AlertCircle className="w-4 h-4" />
                     {errors.firstName}
                   </p>
                 )}
               </div>
               <div>
-                <label className="block text-sm font-semibold text-gray-800 mb-3">Last Name *</label>
+                <label className={labelClass}>Last name *</label>
                 <input
                   type="text"
                   name="lastName"
                   value={formData.lastName}
                   onChange={handleInputChange}
                   placeholder="Enter your last name"
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-gray-50 hover:bg-white"
+                  className={inputClass}
                   required
                 />
               </div>
               <div>
-                <label className="block text-sm font-semibold text-gray-800 mb-3">Email Address *</label>
+                <label className={labelClass}>Email address *</label>
                 <div className="relative">
-                  <Mail className="absolute left-4 top-4 h-5 w-5 text-gray-400" />
+                  <Mail className="absolute left-3 top-3.5 h-4 w-4 text-ink-muted" />
                   <input
                     type="email"
                     name="email"
                     value={formData.email}
                     onChange={handleInputChange}
                     placeholder="your.email@example.com"
-                    className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-gray-50 hover:bg-white"
+                    className={`${inputClass} pl-10`}
                     required
                   />
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-semibold text-gray-800 mb-3">Phone Number *</label>
+                <label className={labelClass}>Phone number *</label>
                 <div className="relative">
-                  <Phone className="absolute left-4 top-4 h-5 w-5 text-gray-400" />
+                  <Phone className="absolute left-3 top-3.5 h-4 w-4 text-ink-muted" />
                   <input
                     type="tel"
                     name="phone"
                     value={formData.phone}
                     onChange={handleInputChange}
                     placeholder="+1 (555) 123-4567"
-                    className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-gray-50 hover:bg-white"
+                    className={`${inputClass} pl-10`}
                     required
                   />
                 </div>
               </div>
               <div className="md:col-span-2">
-                <label className="block text-sm font-semibold text-gray-800 mb-3">Street Address *</label>
+                <label className={labelClass}>Street address *</label>
                 <div className="relative">
-                  <MapPin className="absolute left-4 top-4 h-5 w-5 text-gray-400" />
+                  <MapPin className="absolute left-3 top-3.5 h-4 w-4 text-ink-muted" />
                   <input
                     type="text"
                     name="address"
                     value={formData.address}
                     onChange={handleInputChange}
                     placeholder="123 Main Street, Apartment 4B"
-                    className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-gray-50 hover:bg-white"
+                    className={`${inputClass} pl-10`}
                     required
                   />
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-semibold text-gray-800 mb-3">City *</label>
+                <label className={labelClass}>City *</label>
                 <input
                   type="text"
                   name="city"
                   value={formData.city}
                   onChange={handleInputChange}
                   placeholder="New York"
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-gray-50 hover:bg-white"
+                  className={inputClass}
                   required
                 />
               </div>
               <div>
-                <label className="block text-sm font-semibold text-gray-800 mb-3">Country *</label>
+                <label className={labelClass}>Country *</label>
                 <select
                   name="country"
                   value={formData.country}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-gray-50 hover:bg-white"
+                  className={inputClass}
                   required
                 >
                   <option value="">Select your country</option>
@@ -433,86 +435,67 @@ const BookingPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Booking Details */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-8 flex items-center">
-              <Calendar className="h-6 w-6 mr-3 text-blue-600" />
-              Booking Details
+          <div className="panel">
+            <p className="section-label mb-2">Stay</p>
+            <h2 className="font-display text-2xl text-ink mb-6 flex items-center gap-3">
+              <Calendar className="h-5 w-5 text-brass" />
+              Booking details
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
               <div>
-                <label className="block text-sm font-semibold text-gray-800 mb-3">Check-in Date *</label>
+                <label className={labelClass}>Check-in date *</label>
                 <input
                   type="date"
                   name="checkIn"
                   value={formData.checkIn}
                   onChange={handleInputChange}
                   min={today}
-                  className={`w-full px-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-blue-500 transition-all duration-200 bg-gray-50 hover:bg-white ${
-                    errors.checkIn ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-blue-500'
-                  }`}
+                  className={`${inputClass} ${errors.checkIn ? 'border-[#E8C9C3]' : ''}`}
                   required
                 />
                 {errors.checkIn && (
-                  <p className="mt-2 text-sm text-red-600 flex items-center gap-1">
+                  <p className="mt-2 text-sm text-[#8B3A32] flex items-center gap-1">
                     <AlertCircle className="w-4 h-4" />
                     {errors.checkIn}
                   </p>
                 )}
-                <p className="mt-1 text-xs text-gray-500 flex items-center gap-1">
+                <p className="mt-1 text-xs text-ink-muted flex items-center gap-1">
                   <Clock className="w-3 h-3" />
                   Check-in: 3:00 PM onwards
                 </p>
               </div>
               <div>
-                <label className="block text-sm font-semibold text-gray-800 mb-3">Check-out Date</label>
+                <label className={labelClass}>Check-out date</label>
                 <input
                   type="date"
                   name="checkOut"
                   value={formData.checkOut}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-gray-50 hover:bg-white"
+                  className={inputClass}
                   required
                 />
               </div>
               <div>
-                <label className="block text-sm font-semibold text-gray-800 mb-3">Adults</label>
-                <select
-                  name="adults"
-                  value={formData.adults}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-gray-50 hover:bg-white"
-                >
+                <label className={labelClass}>Adults</label>
+                <select name="adults" value={formData.adults} onChange={handleInputChange} className={inputClass}>
                   <option value="1">1 Adult</option>
                   <option value="2">2 Adults</option>
                   <option value="3">3 Adults</option>
                   <option value="4">4 Adults</option>
                 </select>
               </div>
-              
               <div>
-                <label className="block text-sm font-semibold text-gray-800 mb-3">Children</label>
-                <select
-                  name="children"
-                  value={formData.children}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-gray-50 hover:bg-white"
-                >
+                <label className={labelClass}>Children</label>
+                <select name="children" value={formData.children} onChange={handleInputChange} className={inputClass}>
                   <option value="0">0 Children</option>
                   <option value="1">1 Child</option>
                   <option value="2">2 Children</option>
                   <option value="3">3 Children</option>
                 </select>
               </div>
-              
               <div>
-                <label className="block text-sm font-semibold text-gray-800 mb-3">Room Quantity</label>
-                <select
-                  name="roomQuantity"
-                  value={formData.roomQuantity}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-gray-50 hover:bg-white"
-                >
+                <label className={labelClass}>Room quantity</label>
+                <select name="roomQuantity" value={formData.roomQuantity} onChange={handleInputChange} className={inputClass}>
                   <option value="1">1 Room</option>
                   <option value="2">2 Rooms</option>
                   <option value="3">3 Rooms</option>
@@ -520,206 +503,130 @@ const BookingPage: React.FC = () => {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-semibold text-gray-800 mb-3">Room Type</label>
-                <select
-                  name="roomType"
-                  value={formData.roomType}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-gray-50 hover:bg-white"
-                >
-                  <option value="standard">Standard Room - From $149/night</option>
-                  <option value="deluxe">Deluxe Room - From $229/night</option>
-                  <option value="executive">Executive Suite - From $389/night</option>
-                  <option value="presidential">Presidential Suite - From $749/night</option>
+                <label className={labelClass}>Room type</label>
+                <select name="roomType" value={formData.roomType} onChange={handleInputChange} className={inputClass}>
+                  <option value="standard">Standard Room — From $149/night</option>
+                  <option value="deluxe">Deluxe Room — From $229/night</option>
+                  <option value="executive">Executive Suite — From $389/night</option>
+                  <option value="presidential">Presidential Suite — From $749/night</option>
                 </select>
               </div>
             </div>
-            
-            
-            {/* Special Requests */}
+
             <div className="mt-6">
-              <label className="block text-sm font-semibold text-gray-800 mb-3">Special Requests</label>
+              <label className={labelClass}>Special requests</label>
               <textarea
                 name="specialRequests"
                 value={formData.specialRequests}
                 onChange={handleInputChange}
                 placeholder="Any special requests or requirements? (e.g., wheelchair accessibility, dietary restrictions, room preferences)"
                 rows={4}
-                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-gray-50 hover:bg-white resize-none"
+                className={`${inputClass} resize-none`}
               />
-              <p className="mt-1 text-xs text-gray-500">Optional - We'll do our best to accommodate your requests</p>
+              <p className="mt-1 text-xs text-ink-muted">Optional — we will do our best to accommodate your requests</p>
             </div>
           </div>
 
-          {/* Recommended Services */}
-          <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
-              <Shield className="h-6 w-6 mr-3 text-purple-600" />
-              Recommended Services
+          <div className="panel">
+            <p className="section-label mb-2">Enhancements</p>
+            <h2 className="font-display text-2xl text-ink mb-2 flex items-center gap-3">
+              <Shield className="h-5 w-5 text-brass" />
+              Recommended services
             </h2>
-            <p className="text-gray-600 mb-6">Enhance your stay with our premium services</p>
-            
-            <div className="grid md:grid-cols-2 gap-6">
-              {/* Spa Package */}
-              <div className={`border-2 rounded-xl p-6 cursor-pointer transition-all duration-300 ${
-                upsells.spa ? 'border-purple-500 bg-purple-50' : 'border-gray-200 hover:border-purple-300'
-              }`} onClick={() => handleServiceToggle('spa')}>
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex items-center gap-3">
-                    <div className={`p-3 rounded-lg ${upsells.spa ? 'bg-purple-500' : 'bg-purple-100'}`}>
-                      <Heart className={`w-6 h-6 ${upsells.spa ? 'text-white' : 'text-purple-600'}`} />
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-bold text-gray-900">Spa & Wellness Package</h3>
-                      <p className="text-purple-600 font-semibold">$150</p>
-                    </div>
-                  </div>
-                  <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
-                    upsells.spa ? 'border-purple-500 bg-purple-500' : 'border-gray-300'
-                  }`}>
-                    {upsells.spa && <CheckCircle className="w-4 h-4 text-white" />}
-                  </div>
-                </div>
-                <p className="text-gray-600 text-sm mb-3">90-minute premium spa treatment including massage, facial, and access to wellness facilities</p>
-                <div className="flex items-center gap-2 text-xs text-gray-500">
-                  <CheckCircle className="w-3 h-3 text-green-500" />
-                  <span>Includes sauna and steam room access</span>
-                </div>
-              </div>
+            <p className="text-ink-muted mb-6">Enhance your stay with our premium services</p>
 
-              {/* Airport Pickup */}
-              <div className={`border-2 rounded-xl p-6 cursor-pointer transition-all duration-300 ${
-                upsells.airportPickup ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-blue-300'
-              }`} onClick={() => handleServiceToggle('airportPickup')}>
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex items-center gap-3">
-                    <div className={`p-3 rounded-lg ${upsells.airportPickup ? 'bg-blue-500' : 'bg-blue-100'}`}>
-                      <Car className={`w-6 h-6 ${upsells.airportPickup ? 'text-white' : 'text-blue-600'}`} />
+            <div className="grid md:grid-cols-2 gap-4">
+              {[
+                { key: 'spa' as const, icon: Heart, title: 'Spa & wellness package', price: '$150', desc: '90-minute premium spa treatment including massage, facial, and access to wellness facilities', note: 'Includes sauna and steam room access' },
+                { key: 'airportPickup' as const, icon: Car, title: 'Airport transfer', price: '$45', desc: 'Comfortable round-trip airport transfer in a luxury vehicle with professional driver', note: 'Meet & greet service included' },
+                { key: 'lateCheckout' as const, icon: Clock, title: 'Late checkout', price: '$50', desc: 'Extend your checkout time until 6:00 PM instead of standard 12:00 PM', note: 'Subject to availability' },
+                { key: 'breakfast' as const, icon: Utensils, title: 'Daily breakfast', price: '$25', priceNote: 'per day', desc: 'Continental breakfast buffet with fresh local and international cuisine', note: 'Served 6:30 AM – 10:30 AM daily' },
+              ].map(({ key, icon: Icon, title, price, priceNote, desc, note }) => (
+                <div
+                  key={key}
+                  className={upsellCardClass(upsells[key])}
+                  onClick={() => handleServiceToggle(key)}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => e.key === 'Enter' && handleServiceToggle(key)}
+                >
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex items-center gap-3">
+                      <div className={`p-2 border ${upsells[key] ? 'bg-brass border-brass-deep' : 'bg-sand border-sand-deep'}`}>
+                        <Icon className={`w-5 h-5 ${upsells[key] ? 'text-white' : 'text-brass'}`} />
+                      </div>
+                      <div>
+                        <h3 className="font-display text-lg text-ink">{title}</h3>
+                        <p className="text-brass font-semibold text-sm">
+                          {price}
+                          {priceNote && <span className="text-ink-muted font-normal ml-1">{priceNote}</span>}
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="text-lg font-bold text-gray-900">Airport Transfer</h3>
-                      <p className="text-blue-600 font-semibold">$45</p>
-                    </div>
-                  </div>
-                  <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
-                    upsells.airportPickup ? 'border-blue-500 bg-blue-500' : 'border-gray-300'
-                  }`}>
-                    {upsells.airportPickup && <CheckCircle className="w-4 h-4 text-white" />}
-                  </div>
-                </div>
-                <p className="text-gray-600 text-sm mb-3">Comfortable round-trip airport transfer in a luxury vehicle with professional driver</p>
-                <div className="flex items-center gap-2 text-xs text-gray-500">
-                  <CheckCircle className="w-3 h-3 text-green-500" />
-                  <span>Meet & greet service included</span>
-                </div>
-              </div>
-
-              {/* Late Checkout */}
-              <div className={`border-2 rounded-xl p-6 cursor-pointer transition-all duration-300 ${
-                upsells.lateCheckout ? 'border-green-500 bg-green-50' : 'border-gray-200 hover:border-green-300'
-              }`} onClick={() => handleServiceToggle('lateCheckout')}>
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex items-center gap-3">
-                    <div className={`p-3 rounded-lg ${upsells.lateCheckout ? 'bg-green-500' : 'bg-green-100'}`}>
-                      <Clock className={`w-6 h-6 ${upsells.lateCheckout ? 'text-white' : 'text-green-600'}`} />
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-bold text-gray-900">Late Checkout</h3>
-                      <p className="text-green-600 font-semibold">$50</p>
+                    <div
+                      className={`w-5 h-5 border flex items-center justify-center shrink-0 ${
+                        upsells[key] ? 'border-brass bg-brass' : 'border-sand-deep'
+                      }`}
+                    >
+                      {upsells[key] && <CheckCircle className="w-3.5 h-3.5 text-white" />}
                     </div>
                   </div>
-                  <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
-                    upsells.lateCheckout ? 'border-green-500 bg-green-500' : 'border-gray-300'
-                  }`}>
-                    {upsells.lateCheckout && <CheckCircle className="w-4 h-4 text-white" />}
-                  </div>
+                  <p className="text-ink-muted text-sm mb-2">{desc}</p>
+                  <p className="flex items-center gap-2 text-xs text-ink-muted">
+                    <CheckCircle className="w-3 h-3 text-forest shrink-0" />
+                    {note}
+                  </p>
                 </div>
-                <p className="text-gray-600 text-sm mb-3">Extend your checkout time until 6:00 PM instead of standard 12:00 PM</p>
-                <div className="flex items-center gap-2 text-xs text-gray-500">
-                  <CheckCircle className="w-3 h-3 text-green-500" />
-                  <span>Subject to availability</span>
-                </div>
-              </div>
-
-              {/* Breakfast Package */}
-              <div className={`border-2 rounded-xl p-6 cursor-pointer transition-all duration-300 ${
-                upsells.breakfast ? 'border-orange-500 bg-orange-50' : 'border-gray-200 hover:border-orange-300'
-              }`} onClick={() => handleServiceToggle('breakfast')}>
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex items-center gap-3">
-                    <div className={`p-3 rounded-lg ${upsells.breakfast ? 'bg-orange-500' : 'bg-orange-100'}`}>
-                      <Utensils className={`w-6 h-6 ${upsells.breakfast ? 'text-white' : 'text-orange-600'}`} />
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-bold text-gray-900">Daily Breakfast</h3>
-                      <p className="text-orange-600 font-semibold">$25 <span className="text-sm text-gray-500">per day</span></p>
-                    </div>
-                  </div>
-                  <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
-                    upsells.breakfast ? 'border-orange-500 bg-orange-500' : 'border-gray-300'
-                  }`}>
-                    {upsells.breakfast && <CheckCircle className="w-4 h-4 text-white" />}
-                  </div>
-                </div>
-                <p className="text-gray-600 text-sm mb-3">Continental breakfast buffet with fresh local and international cuisine</p>
-                <div className="flex items-center gap-2 text-xs text-gray-500">
-                  <CheckCircle className="w-3 h-3 text-green-500" />
-                  <span>Served 6:30 AM - 10:30 AM daily</span>
-                </div>
-              </div>
+              ))}
             </div>
 
-            {/* Service Summary */}
-            {Object.values(upsells).some(selected => selected) && (
-              <div className="mt-6 p-4 bg-gray-50 rounded-lg border">
-                <h4 className="font-semibold text-gray-900 mb-3">Selected Services:</h4>
-                <div className="space-y-2">
+            {Object.values(upsells).some((selected) => selected) && (
+              <div className="mt-6 border border-sand-deep bg-sand px-4 py-3">
+                <h4 className="text-xs uppercase tracking-wider text-ink-muted mb-3">Selected services</h4>
+                <div className="space-y-2 text-sm">
                   {upsells.spa && (
-                    <div className="flex justify-between items-center text-sm">
-                      <span className="text-gray-700">Spa & Wellness Package</span>
-                      <span className="font-semibold">$150</span>
+                    <div className="flex justify-between text-ink-muted">
+                      <span>Spa & wellness package</span>
+                      <span className="text-ink font-medium">$150</span>
                     </div>
                   )}
                   {upsells.airportPickup && (
-                    <div className="flex justify-between items-center text-sm">
-                      <span className="text-gray-700">Airport Transfer</span>
-                      <span className="font-semibold">$45</span>
+                    <div className="flex justify-between text-ink-muted">
+                      <span>Airport transfer</span>
+                      <span className="text-ink font-medium">$45</span>
                     </div>
                   )}
                   {upsells.lateCheckout && (
-                    <div className="flex justify-between items-center text-sm">
-                      <span className="text-gray-700">Late Checkout</span>
-                      <span className="font-semibold">$50</span>
+                    <div className="flex justify-between text-ink-muted">
+                      <span>Late checkout</span>
+                      <span className="text-ink font-medium">$50</span>
                     </div>
                   )}
                   {upsells.breakfast && (
-                    <div className="flex justify-between items-center text-sm">
-                      <span className="text-gray-700">Daily Breakfast ({nights} days)</span>
-                      <span className="font-semibold">${25 * nights}</span>
+                    <div className="flex justify-between text-ink-muted">
+                      <span>Daily breakfast ({nights} days)</span>
+                      <span className="text-ink font-medium">${25 * nights}</span>
                     </div>
                   )}
-                  <div className="border-t pt-2 mt-2">
-                    <div className="flex justify-between items-center font-semibold">
-                      <span>Services Total:</span>
-                      <span className="text-purple-600">${upsellTotal}</span>
-                    </div>
+                  <div className="border-t border-sand-deep pt-2 mt-2 flex justify-between font-medium text-ink">
+                    <span>Services total</span>
+                    <span className="text-brass">${upsellTotal}</span>
                   </div>
                 </div>
               </div>
             )}
           </div>
 
-          {/* Promo Code & Loyalty Points */}
-          <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
-              <CheckCircle className="h-6 w-6 mr-3 text-green-600" />
-              Discounts & Loyalty Points
+          <div className="panel">
+            <p className="section-label mb-2">Savings</p>
+            <h2 className="font-display text-2xl text-ink mb-6 flex items-center gap-3">
+              <CheckCircle className="h-5 w-5 text-forest" />
+              Discounts & loyalty points
             </h2>
-            
+
             <div className="grid md:grid-cols-2 gap-6">
-              {/* Promo Code */}
               <div>
-                <label className="block text-sm font-semibold text-gray-800 mb-3">Promo Code</label>
+                <label className={labelClass}>Promo code</label>
                 <div className="flex gap-2">
                   <input
                     type="text"
@@ -727,191 +634,140 @@ const BookingPage: React.FC = () => {
                     value={formData.promoCode}
                     onChange={handleInputChange}
                     placeholder="Enter promo code"
-                    className="flex-1 px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-gray-50 hover:bg-white"
+                    className={`${inputClass} flex-1`}
                   />
-                  <button
-                    type="button"
-                    onClick={handlePromoCode}
-                    className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-colors"
-                  >
+                  <button type="button" onClick={handlePromoCode} className="btn-secondary py-3 px-5 shrink-0">
                     Apply
                   </button>
                 </div>
                 {promoDiscount > 0 && (
-                  <p className="mt-2 text-sm text-green-600 flex items-center gap-1">
+                  <p className="mt-2 text-sm text-forest flex items-center gap-1">
                     <CheckCircle className="w-4 h-4" />
-                    {promoDiscount}% discount applied!
+                    {promoDiscount}% discount applied
                   </p>
                 )}
-                <p className="mt-1 text-xs text-gray-500">
-                  Try: SAVE10, WELCOME15, WEEKEND20, LOYALTY25
-                </p>
+                <p className="mt-1 text-xs text-ink-muted">Try: SAVE10, WELCOME15, WEEKEND20, LOYALTY25</p>
               </div>
 
-              {/* Loyalty Points */}
               <div>
-                <label className="block text-sm font-semibold text-gray-800 mb-3">Loyalty Points</label>
-                <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-xl">
+                <label className={labelClass}>Loyalty points</label>
+                <div className="border border-sand-deep bg-sand px-4 py-3">
                   <div className="flex items-center justify-between mb-3">
-                    <span className="text-yellow-800 font-medium">Available Points</span>
-                    <span className="text-2xl font-bold text-yellow-600">{formData.loyaltyPoints.toLocaleString()}</span>
+                    <span className="text-sm text-ink-muted">Available points</span>
+                    <span className="font-display text-2xl text-brass">{formData.loyaltyPoints.toLocaleString()}</span>
                   </div>
                   <div className="flex items-center gap-3">
                     <input
                       type="checkbox"
                       checked={formData.usePoints}
-                      onChange={(e) => setFormData(prev => ({ ...prev, usePoints: e.target.checked }))}
-                      className="w-4 h-4 text-yellow-600 bg-gray-100 border-gray-300 rounded focus:ring-yellow-500"
+                      onChange={(e) => setFormData((prev) => ({ ...prev, usePoints: e.target.checked }))}
+                      className="w-4 h-4 accent-brass"
                     />
-                    <span className="text-sm text-yellow-800">
-                      Use points (Save up to ${Math.min(formData.loyaltyPoints * 0.01, subtotal * 0.1).toFixed(0)})
+                    <span className="text-sm text-ink-muted">
+                      Use points (save up to ${Math.min(formData.loyaltyPoints * 0.01, subtotal * 0.1).toFixed(0)})
                     </span>
                   </div>
-                  <p className="text-xs text-yellow-600 mt-2">
-                    1 point = $0.01 • Max 10% of booking total
-                  </p>
+                  <p className="text-xs text-ink-muted mt-2">1 point = $0.01 · Max 10% of booking total</p>
                 </div>
               </div>
             </div>
 
-            {/* Instant vs Request Booking */}
-            <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-xl">
-              <h3 className="font-semibold text-blue-900 mb-3">Booking Type</h3>
-              <div className="flex items-center gap-6">
+            <div className="mt-6 border border-sand-deep bg-sand px-4 py-3">
+              <h3 className="text-xs uppercase tracking-wider text-ink-muted mb-3">Booking type</h3>
+              <div className="flex flex-col sm:flex-row sm:items-center gap-4">
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input
                     type="radio"
                     name="bookingType"
                     checked={formData.instantBooking}
-                    onChange={() => setFormData(prev => ({ ...prev, instantBooking: true }))}
-                    className="w-4 h-4 text-blue-600"
+                    onChange={() => setFormData((prev) => ({ ...prev, instantBooking: true }))}
+                    className="w-4 h-4 accent-brass"
                   />
-                  <span className="text-blue-800 font-medium">Instant Booking</span>
-                  <span className="text-xs text-blue-600">(Immediate confirmation)</span>
+                  <span className="text-ink text-sm font-medium">Instant booking</span>
+                  <span className="text-xs text-ink-muted">(immediate confirmation)</span>
                 </label>
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input
                     type="radio"
                     name="bookingType"
                     checked={!formData.instantBooking}
-                    onChange={() => setFormData(prev => ({ ...prev, instantBooking: false }))}
-                    className="w-4 h-4 text-blue-600"
+                    onChange={() => setFormData((prev) => ({ ...prev, instantBooking: false }))}
+                    className="w-4 h-4 accent-brass"
                   />
-                  <span className="text-blue-800 font-medium">Request Booking</span>
-                  <span className="text-xs text-blue-600">(Subject to availability)</span>
+                  <span className="text-ink text-sm font-medium">Request booking</span>
+                  <span className="text-xs text-ink-muted">(subject to availability)</span>
                 </label>
               </div>
             </div>
 
-            {/* Live Availability */}
-            <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-xl">
+            <div className="mt-6 border border-[#C5DED6] bg-[#E8F2EF] px-4 py-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-                  <span className="font-semibold text-green-800">Live Availability</span>
+                  <span className="status-chip status-chip--ok">Live</span>
+                  <span className="font-medium text-forest text-sm">Availability</span>
                 </div>
-                <span className="text-green-600 font-bold">
+                <span className="text-forest font-semibold">
                   {availableRooms} room{availableRooms !== 1 ? 's' : ''} left
                 </span>
               </div>
-              <p className="text-sm text-green-700 mt-1">
-                {availableRooms <= 3 ? 'Limited availability - book now!' : 'Good availability for your dates'}
+              <p className="text-sm text-forest/80 mt-1">
+                {availableRooms <= 3 ? 'Limited availability — book now' : 'Good availability for your dates'}
               </p>
             </div>
           </div>
 
-          {/* Booking Summary */}
-          <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl shadow-lg border border-blue-200 p-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-8 flex items-center">
-              <Users className="h-6 w-6 mr-3 text-blue-600" />
-              Booking Summary
+          <div className="panel border-brass/30">
+            <p className="section-label mb-2">Summary</p>
+            <h2 className="font-display text-2xl text-ink mb-6 flex items-center gap-3">
+              <Users className="h-5 w-5 text-brass" />
+              Booking summary
             </h2>
             {nights > 0 ? (
-              <div className="space-y-6">
-                <div className="flex justify-between items-center py-3 border-b border-blue-200">
-                  <span className="text-gray-700 font-medium">Room Type</span>
-                  <span className="font-bold text-gray-900 capitalize">{formData.roomType} Room</span>
-                </div>
-                
-                <div className="flex justify-between items-center py-3 border-b border-blue-200">
-                  <span className="text-gray-700 font-medium">Check-in / Check-out</span>
-                  <span className="font-bold text-gray-900">
-                    {formData.checkIn && new Date(formData.checkIn).toLocaleDateString()} - {formData.checkOut && new Date(formData.checkOut).toLocaleDateString()}
-                  </span>
-                </div>
-                
-                <div className="flex justify-between items-center py-3 border-b border-blue-200">
-                  <span className="text-gray-700 font-medium">Duration</span>
-                  <span className="font-bold text-gray-900">{nights} night{nights !== 1 ? 's' : ''}</span>
-                </div>
-                
-                <div className="flex justify-between items-center py-3 border-b border-blue-200">
-                  <span className="text-gray-700 font-medium">Guests</span>
-                  <span className="font-bold text-gray-900">
-                    {formData.adults} Adult{formData.adults !== '1' ? 's' : ''}
-                    {parseInt(formData.children) > 0 && `, ${formData.children} Child${formData.children !== '1' ? 'ren' : ''}`}
-                  </span>
-                </div>
-                
-                <div className="flex justify-between items-center py-3 border-b border-blue-200">
-                  <span className="text-gray-700 font-medium">Room Quantity</span>
-                  <span className="font-bold text-gray-900">{formData.roomQuantity} Room{formData.roomQuantity !== '1' ? 's' : ''}</span>
-                </div>
-                
-                <div className="flex justify-between items-center py-3 border-b border-blue-200">
-                  <span className="text-gray-700 font-medium">
-                    Rate per Night {isWeekend && <span className="text-orange-600 text-xs">(Weekend Rate)</span>}
-                  </span>
-                  <span className="font-bold text-gray-900">${basePrice}</span>
-                </div>
-                
-                <div className="flex justify-between items-center py-3 border-b border-blue-200">
-                  <span className="text-gray-700 font-medium">Room Subtotal</span>
-                  <span className="font-bold text-gray-900">${subtotal}</span>
-                </div>
-                
-                <div className="flex justify-between items-center py-3 border-b border-blue-200">
-                  <span className="text-gray-700 font-medium">Taxes (12%)</span>
-                  <span className="font-bold text-gray-900">${taxes}</span>
-                </div>
-                
-                <div className="flex justify-between items-center py-3 border-b border-blue-200">
-                  <span className="text-gray-700 font-medium">Service Fee</span>
-                  <span className="font-bold text-gray-900">${serviceFee}</span>
-                </div>
-                
-                <div className="bg-white rounded-lg p-4 shadow-sm">
-                  <div className="flex justify-between items-center">
-                    <span className="text-xl font-bold text-gray-900">Total Amount</span>
-                    <span className="text-2xl font-bold text-blue-600">${totalPrice}</span>
+              <div className="space-y-0 text-sm">
+                {[
+                  ['Room type', `${formData.roomType.charAt(0).toUpperCase() + formData.roomType.slice(1)} room`],
+                  ['Check-in / check-out', `${formData.checkIn && new Date(formData.checkIn).toLocaleDateString()} – ${formData.checkOut && new Date(formData.checkOut).toLocaleDateString()}`],
+                  ['Duration', `${nights} night${nights !== 1 ? 's' : ''}`],
+                  ['Guests', `${formData.adults} adult${formData.adults !== '1' ? 's' : ''}${parseInt(formData.children) > 0 ? `, ${formData.children} child${formData.children !== '1' ? 'ren' : ''}` : ''}`],
+                  ['Room quantity', `${formData.roomQuantity} room${formData.roomQuantity !== '1' ? 's' : ''}`],
+                  ['Rate per night', `$${basePrice}${isWeekend ? ' (weekend)' : ''}`],
+                  ['Room subtotal', `$${subtotal}`],
+                  ['Taxes (12%)', `$${taxes}`],
+                  ['Service fee', `$${serviceFee}`],
+                ].map(([label, value]) => (
+                  <div key={label} className="flex justify-between items-center py-3 border-b border-sand-deep text-ink-muted">
+                    <span>{label}</span>
+                    <span className="text-ink font-medium">{value}</span>
                   </div>
-                  <p className="text-sm text-gray-600 mt-2">All taxes and fees included</p>
+                ))}
+                <div className="mt-4 border border-sand-deep bg-sand px-4 py-4">
+                  <div className="flex justify-between items-center">
+                    <span className="font-display text-xl text-ink">Total amount</span>
+                    <span className="font-display text-2xl text-brass">${totalPrice}</span>
+                  </div>
+                  <p className="text-sm text-ink-muted mt-2">All taxes and fees included</p>
                   {isWeekend && (
-                    <div className="mt-2 flex items-center gap-1 text-orange-600 text-sm">
+                    <p className="mt-2 flex items-center gap-1 text-brass text-sm">
                       <Info className="w-4 h-4" />
                       Weekend rates apply
-                    </div>
+                    </p>
                   )}
                 </div>
               </div>
             ) : (
               <div className="text-center py-8">
-                <Calendar className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                <p className="text-gray-500">Please select your check-in and check-out dates to see pricing</p>
+                <Calendar className="w-10 h-10 text-ink-muted/40 mx-auto mb-4" />
+                <p className="text-ink-muted">Select check-in and check-out dates to see pricing</p>
               </div>
             )}
           </div>
 
-          {/* Submit Button */}
-          <div className="text-center">
-            <button
-              type="submit"
-              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold py-4 px-12 rounded-lg text-lg transition-all duration-300 hover:scale-105 shadow-lg flex items-center gap-3 mx-auto"
-            >
-              Proceed to Payment
+          <div className="text-center pb-4">
+            <button type="submit" className="btn-primary text-lg py-4 px-10 mx-auto">
+              Proceed to payment
               <ArrowRight className="w-5 h-5" />
             </button>
-            <p className="text-sm text-gray-500 mt-4">
+            <p className="text-sm text-ink-muted mt-4">
               Review your booking details before proceeding to payment
             </p>
           </div>

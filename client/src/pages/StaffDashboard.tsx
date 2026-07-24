@@ -155,19 +155,19 @@ const StaffDashboard: React.FC = () => {
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'high': return 'bg-red-100 text-red-800 border-red-200';
-      case 'medium': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-      case 'low': return 'bg-green-100 text-green-800 border-green-200';
-      default: return 'bg-gray-100 text-gray-800 border-gray-200';
+      case 'high': return 'status-chip status-chip--danger border-red-200';
+      case 'medium': return 'status-chip status-chip--warn border-yellow-200';
+      case 'low': return 'status-chip status-chip--ok';
+      default: return 'status-chip status-chip--neutral border-sand-deep';
     }
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'completed': return 'bg-green-100 text-green-800';
-      case 'in-progress': return 'bg-blue-100 text-blue-800';
-      case 'pending': return 'bg-orange-100 text-orange-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'completed': return 'status-chip status-chip--ok';
+      case 'in-progress': return 'status-chip status-chip--neutral';
+      case 'pending': return 'status-chip status-chip--warn';
+      default: return 'status-chip status-chip--neutral';
     }
   };
 
@@ -178,11 +178,11 @@ const StaffDashboard: React.FC = () => {
   const getPresenceColor = (status: StaffContact['status']) => {
     switch (status) {
       case 'online':
-        return 'bg-emerald-100 text-emerald-800';
+        return 'status-chip status-chip--ok';
       case 'away':
         return 'bg-amber-100 text-amber-800';
       default:
-        return 'bg-gray-100 text-gray-700';
+        return 'status-chip status-chip--neutral';
     }
   };
 
@@ -197,29 +197,29 @@ const StaffDashboard: React.FC = () => {
   });
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="ops-shell">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200">
+      <div className="bg-white border-b border-sand-deep">
         <div className="max-w-7xl mx-auto px-4 py-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-start gap-3">
-            <div className="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center shadow-sm">
+            <div className="w-10 h-10 rounded-xl bg-forest text-white flex items-center justify-center ">
               <Briefcase className="w-5 h-5" />
             </div>
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-emerald-600">Staff Workspace</p>
-              <h1 className="text-2xl font-semibold text-gray-900">Housekeeping Operations</h1>
-              <p className="text-xs text-gray-500 mt-1">Monitor today&apos;s tasks, room status, and schedule in one place.</p>
+              <p className="text-xs font-semibold uppercase tracking-wide text-forest">Staff Workspace</p>
+              <h1 className="text-2xl font-semibold text-ink">Housekeeping Operations</h1>
+              <p className="text-xs text-ink-muted mt-1">Monitor today&apos;s tasks, room status, and schedule in one place.</p>
             </div>
           </div>
           <div className="flex items-center gap-6 self-end sm:self-auto">
-            <div className="hidden md:flex flex-col items-end text-xs text-gray-500">
-              <span className="font-medium text-gray-900">Today</span>
+            <div className="hidden md:flex flex-col items-end text-xs text-ink-muted">
+              <span className="font-medium text-ink">Today</span>
               <span>Shift: 8:00 AM - 4:00 PM</span>
             </div>
             <div className="flex items-center gap-3">
               <button
                 type="button"
-                className="relative inline-flex items-center justify-center w-9 h-9 rounded-full border border-gray-200 text-gray-600 hover:text-gray-900 hover:border-gray-300 hover:bg-gray-50 transition-colors"
+                className="relative inline-flex items-center justify-center w-9 h-9 rounded-full border border-sand-deep text-ink-muted hover:text-ink hover:border-sand-deep hover:bg-sand-warm transition-colors"
               >
                 <Bell className="w-4 h-4" />
                 <span className="absolute -top-1 -right-1 inline-flex items-center justify-center px-1.5 py-0.5 rounded-full bg-red-500 text-white text-[10px] leading-none font-semibold">
@@ -230,27 +230,27 @@ const StaffDashboard: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setShowProfileDropdown(!showProfileDropdown)}
-                  className="flex items-center gap-2 rounded-full border border-gray-200 px-2 py-1.5 hover:bg-gray-50 hover:border-gray-300 transition-colors"
+                  className="flex items-center gap-2 rounded-full border border-sand-deep px-2 py-1.5 hover:bg-sand-warm hover:border-sand-deep transition-colors"
                 >
-                  <div className="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center text-sm font-semibold">
+                  <div className="w-8 h-8 rounded-full bg-forest text-white flex items-center justify-center text-sm font-semibold">
                     S
                   </div>
                   <div className="hidden sm:flex flex-col items-start text-left">
-                    <span className="text-sm font-semibold leading-tight text-gray-900">Staff Member</span>
-                    <span className="text-xs text-gray-500 leading-tight">Housekeeping - Floor 2-3</span>
+                    <span className="text-sm font-semibold leading-tight text-ink">Staff Member</span>
+                    <span className="text-xs text-ink-muted leading-tight">Housekeeping - Floor 2-3</span>
                   </div>
-                  <ChevronDown className="w-3 h-3 text-gray-500" />
+                  <ChevronDown className="w-3 h-3 text-ink-muted" />
                 </button>
                 {showProfileDropdown && (
-                  <div className="absolute right-0 mt-2 w-60 bg-white text-gray-800 rounded-xl shadow-lg border border-gray-200 z-20">
-                    <div className="px-4 py-3 border-b border-gray-100">
+                  <div className="absolute right-0 mt-2 w-60 bg-white text-ink rounded-xl  border border-sand-deep z-20">
+                    <div className="px-4 py-3 border-b border-sand-deep">
                       <p className="text-sm font-semibold">Staff Member</p>
-                      <p className="text-xs text-gray-500">Housekeeping - Floor 2-3</p>
+                      <p className="text-xs text-ink-muted">Housekeeping - Floor 2-3</p>
                     </div>
                     <div className="py-1">
                       <Link
                         to="/profile"
-                        className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                        className="flex items-center gap-2 px-4 py-2 text-sm text-ink-soft hover:bg-sand-warm"
                         onClick={() => setShowProfileDropdown(false)}
                       >
                         <User className="w-4 h-4" />
@@ -258,13 +258,13 @@ const StaffDashboard: React.FC = () => {
                       </Link>
                       <Link
                         to="/settings"
-                        className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                        className="flex items-center gap-2 px-4 py-2 text-sm text-ink-soft hover:bg-sand-warm"
                         onClick={() => setShowProfileDropdown(false)}
                       >
                         <Settings className="w-4 h-4" />
                         <span>Account Settings</span>
                       </Link>
-                      <div className="border-t border-gray-100 my-1" />
+                      <div className="border-t border-sand-deep my-1" />
                       <button
                         onClick={async () => {
                           setShowProfileDropdown(false);
@@ -287,14 +287,14 @@ const StaffDashboard: React.FC = () => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {dataError && (
-          <div className="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          <div className="mb-6 rounded-sm border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
             {dataError}
           </div>
         )}
 
         {/* Navigation Tabs */}
         <div className="mb-8">
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-2">
+          <div className="panel p-2">
             <nav className="flex flex-wrap gap-2">
               {[
                 { id: 'overview', label: 'Overview', icon: Home },
@@ -306,10 +306,10 @@ const StaffDashboard: React.FC = () => {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-2 px-4 py-3 rounded-lg font-medium text-sm transition-all duration-200 ${
+                  className={`flex items-center gap-2 px-4 py-3 rounded-sm font-medium text-sm transition-all duration-200 ${
                     activeTab === tab.id
-                      ? 'bg-gradient-to-r from-emerald-600 to-sky-600 text-white shadow-md'
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                      ? 'bg-ink text-white '
+                      : 'text-ink-muted hover:text-ink hover:bg-sand-warm'
                   }`}
                 >
                   <tab.icon className="w-4 h-4" />
@@ -325,54 +325,54 @@ const StaffDashboard: React.FC = () => {
           <div className="space-y-6">
             {/* Stats Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
+              <div className="bg-white rounded-xl  p-6 border border-sand-deep">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-gray-600">Pending Tasks</p>
-                    <p className="text-2xl font-bold text-gray-900">{tasks.filter(task => task.status !== 'completed').length}</p>
+                    <p className="text-sm font-medium text-ink-muted">Pending Tasks</p>
+                    <p className="text-2xl font-bold text-ink">{tasks.filter(task => task.status !== 'completed').length}</p>
                     <p className="text-sm text-orange-600">Open tasks</p>
                   </div>
-                  <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
+                  <div className="w-12 h-12 bg-orange-100 rounded-sm flex items-center justify-center">
                     <ClipboardList className="w-6 h-6 text-orange-600" />
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+              <div className="panel">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-gray-600">Completed Today</p>
-                    <p className="text-2xl font-bold text-gray-900">{tasks.filter(task => task.status === 'completed').length}</p>
-                    <p className="text-sm text-green-600">From backend tasks</p>
+                    <p className="text-sm font-medium text-ink-muted">Completed Today</p>
+                    <p className="text-2xl font-bold text-ink">{tasks.filter(task => task.status === 'completed').length}</p>
+                    <p className="text-sm text-forest">From backend tasks</p>
                   </div>
-                  <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                    <CheckCircle className="w-6 h-6 text-green-600" />
+                  <div className="w-12 h-12 bg-accent-50 border border-accent-100 rounded-sm flex items-center justify-center">
+                    <CheckCircle className="w-6 h-6 text-forest" />
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+              <div className="panel">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-gray-600">Shift Hours</p>
-                    <p className="text-2xl font-bold text-gray-900">{isClockedIn ? 'Active' : 'Off'}</p>
-                    <p className="text-sm text-blue-600">Clock status</p>
+                    <p className="text-sm font-medium text-ink-muted">Shift Hours</p>
+                    <p className="text-2xl font-bold text-ink">{isClockedIn ? 'Active' : 'Off'}</p>
+                    <p className="text-sm text-brass">Clock status</p>
                   </div>
-                  <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                    <Clock className="w-6 h-6 text-blue-600" />
+                  <div className="w-12 h-12 bg-sand border border-sand-deep rounded-sm flex items-center justify-center">
+                    <Clock className="w-6 h-6 text-brass" />
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+              <div className="panel">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-gray-600">Department</p>
-                    <p className="text-lg font-bold text-gray-900">Housekeeping</p>
-                    <p className="text-sm text-gray-600">Floor 2-3</p>
+                    <p className="text-sm font-medium text-ink-muted">Department</p>
+                    <p className="text-lg font-bold text-ink">Housekeeping</p>
+                    <p className="text-sm text-ink-muted">Floor 2-3</p>
                   </div>
-                  <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                    <MapPin className="w-6 h-6 text-purple-600" />
+                  <div className="w-12 h-12 bg-sand border border-sand-deep rounded-sm flex items-center justify-center">
+                    <MapPin className="w-6 h-6 text-brass" />
                   </div>
                 </div>
               </div>
@@ -382,80 +382,80 @@ const StaffDashboard: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
               <button
                 type="button"
-                className="flex items-center gap-3 bg-white rounded-xl shadow-sm border border-gray-200 px-4 py-3 hover:shadow-md hover:border-blue-200 transition-all text-left"
+                className="flex items-center gap-3 bg-white rounded-xl  border border-sand-deep px-4 py-3 hover: hover:border-blue-200 transition-all text-left"
               >
-                <div className="w-9 h-9 rounded-lg bg-red-100 flex items-center justify-center">
+                <div className="w-9 h-9 rounded-sm bg-red-100 flex items-center justify-center">
                   <AlertCircle className="w-5 h-5 text-red-600" />
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-gray-900">Report an issue</p>
-                  <p className="text-xs text-gray-500">Notify maintenance or supervisor</p>
+                  <p className="text-sm font-semibold text-ink">Report an issue</p>
+                  <p className="text-xs text-ink-muted">Notify maintenance or supervisor</p>
                 </div>
               </button>
               <button
                 type="button"
-                className="flex items-center gap-3 bg-white rounded-xl shadow-sm border border-gray-200 px-4 py-3 hover:shadow-md hover:border-green-200 transition-all text-left"
+                className="flex items-center gap-3 bg-white rounded-xl  border border-sand-deep px-4 py-3 hover: hover:border-green-200 transition-all text-left"
               >
-                <div className="w-9 h-9 rounded-lg bg-green-100 flex items-center justify-center">
+                <div className="w-9 h-9 rounded-sm bg-green-100 flex items-center justify-center">
                   <Wrench className="w-5 h-5 text-green-700" />
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-gray-900">Request maintenance</p>
-                  <p className="text-xs text-gray-500">Log equipment or room issues</p>
+                  <p className="text-sm font-semibold text-ink">Request maintenance</p>
+                  <p className="text-xs text-ink-muted">Log equipment or room issues</p>
                 </div>
               </button>
               <button
                 type="button"
-                className="flex items-center gap-3 bg-white rounded-xl shadow-sm border border-gray-200 px-4 py-3 hover:shadow-md hover:border-amber-200 transition-all text-left"
+                className="flex items-center gap-3 bg-white rounded-xl  border border-sand-deep px-4 py-3 hover: hover:border-amber-200 transition-all text-left"
               >
-                <div className="w-9 h-9 rounded-lg bg-amber-100 flex items-center justify-center">
+                <div className="w-9 h-9 rounded-sm bg-amber-100 flex items-center justify-center">
                   <Coffee className="w-5 h-5 text-amber-700" />
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-gray-900">Take a break</p>
-                  <p className="text-xs text-gray-500">Coordinate your break schedule</p>
+                  <p className="text-sm font-semibold text-ink">Take a break</p>
+                  <p className="text-xs text-ink-muted">Coordinate your break schedule</p>
                 </div>
               </button>
             </div>
 
             {/* Recent Tasks */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Recent Tasks</h3>
+            <div className="panel p-6">
+              <h3 className="text-lg font-semibold text-ink mb-4">Recent Tasks</h3>
               <div className="space-y-3">
                 {tasks.slice(0, 3).map((task) => (
-                  <div key={task.id} className="flex items-center gap-4 p-3 border border-gray-100 rounded-lg">
+                  <div key={task.id} className="flex items-center gap-4 p-3 border border-sand-deep rounded-sm">
                     <div className={`w-3 h-3 rounded-full ${
-                      task.status === 'completed' ? 'bg-green-500' :
-                      task.status === 'in-progress' ? 'bg-blue-500' : 'bg-orange-500'
+                      task.status === 'completed' ? 'bg-forest' :
+                      task.status === 'in-progress' ? 'bg-ink' : 'bg-brass'
                     }`}></div>
                     <div className="flex-1">
-                      <p className="font-medium text-gray-900">{task.title}</p>
-                      <p className="text-sm text-gray-600">{task.room ? `Room ${task.room}` : task.department}</p>
+                      <p className="font-medium text-ink">{task.title}</p>
+                      <p className="text-sm text-ink-muted">{task.room ? `Room ${task.room}` : task.department}</p>
                     </div>
-                    <span className={`px-2 py-1 text-xs rounded-full ${getPriorityColor(task.priority)}`}>
+                    <span className={`status-chip ${getPriorityColor(task.priority)}`}>
                       {formatLabel(task.priority)}
                     </span>
-                    <span className="text-sm text-gray-500">{task.dueTime}</span>
+                    <span className="text-sm text-ink-muted">{task.dueTime}</span>
                   </div>
                 ))}
               </div>
             </div>
 
             {/* Announcements / Notices */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Announcements / Notices</h3>
+            <div className="panel p-6">
+              <h3 className="text-lg font-semibold text-ink mb-4">Announcements / Notices</h3>
               <div className="space-y-3">
                 {[
                   { title: 'New housekeeping SOP update', date: 'Nov 10', category: 'Policy' },
                   { title: 'Fire drill scheduled for Friday 3 PM', date: 'Nov 12', category: 'Safety' },
                   { title: 'Staff appreciation event next week', date: 'Nov 18', category: 'HR' }
                 ].map((announcement, index) => (
-                  <div key={index} className="flex items-start justify-between border border-gray-100 rounded-lg px-3 py-2">
+                  <div key={index} className="flex items-start justify-between border border-sand-deep rounded-sm px-3 py-2">
                     <div>
-                      <p className="text-sm font-medium text-gray-900">{announcement.title}</p>
-                      <p className="text-xs text-gray-500">{announcement.date}</p>
+                      <p className="text-sm font-medium text-ink">{announcement.title}</p>
+                      <p className="text-xs text-ink-muted">{announcement.date}</p>
                     </div>
-                    <span className="ml-3 inline-flex px-2 py-1 text-xs rounded-full bg-slate-100 text-slate-700">
+                    <span className="ml-3 inline-flex status-chip status-chip status-chip--neutral">
                       {announcement.category}
                     </span>
                   </div>
@@ -468,28 +468,28 @@ const StaffDashboard: React.FC = () => {
         {/* Tasks & Activity Tab */}
         {activeTab === 'tasks' && (
           <div className="space-y-6">
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Tasks &amp; Assignments</h3>
+            <div className="panel p-6">
+              <h3 className="text-lg font-semibold text-ink mb-4">Tasks &amp; Assignments</h3>
               <div className="space-y-4">
                 {tasks.map((task) => (
-                  <div key={task.id} className="border border-gray-200 rounded-lg p-4">
+                  <div key={task.id} className="border border-sand-deep rounded-sm p-4">
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex-1">
-                        <h4 className="font-medium text-gray-900">{task.title}</h4>
-                        <p className="text-sm text-gray-600 mt-1">{task.description}</p>
+                        <h4 className="font-medium text-ink">{task.title}</h4>
+                        <p className="text-sm text-ink-muted mt-1">{task.description}</p>
                         <div className="flex items-center gap-4 mt-2">
                           {task.room && (
-                            <span className="text-sm text-blue-600 font-medium">Room {task.room}</span>
+                            <span className="text-sm text-brass font-medium">Room {task.room}</span>
                           )}
-                          <span className="text-sm text-gray-500">Due: {task.dueTime}</span>
-                          <span className="text-sm text-gray-500">{task.department}</span>
+                          <span className="text-sm text-ink-muted">Due: {task.dueTime}</span>
+                          <span className="text-sm text-ink-muted">{task.department}</span>
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
-                        <span className={`px-2 py-1 text-xs rounded-full border ${getPriorityColor(task.priority)}`}>
+                        <span className={`status-chip border ${getPriorityColor(task.priority)}`}>
                           {formatLabel(task.priority)}
                         </span>
-                        <span className={`px-2 py-1 text-xs rounded-full ${getStatusColor(task.status)}`}>
+                        <span className={`status-chip ${getStatusColor(task.status)}`}>
                           {formatLabel(task.status)}
                         </span>
                       </div>
@@ -500,7 +500,7 @@ const StaffDashboard: React.FC = () => {
                           {task.status === 'pending' && (
                             <button
                               onClick={() => updateTaskStatus(task.id, 'in-progress')}
-                              className="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700"
+                              className="btn-primary text-xs py-1 px-3"
                             >
                               Start Task
                             </button>
@@ -508,7 +508,7 @@ const StaffDashboard: React.FC = () => {
                           {task.status === 'in-progress' && (
                             <button
                               onClick={() => updateTaskStatus(task.id, 'completed')}
-                              className="px-3 py-1 bg-green-600 text-white text-sm rounded hover:bg-green-700"
+                              className="btn-accent text-xs py-1 px-3"
                             >
                               Mark Complete
                             </button>
@@ -521,21 +521,21 @@ const StaffDashboard: React.FC = () => {
               </div>
             </div>
 
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Activity Log</h3>
-              <div className="space-y-3 text-sm text-gray-700">
+            <div className="panel p-6">
+              <h3 className="text-lg font-semibold text-ink mb-4">Activity Log</h3>
+              <div className="space-y-3 text-sm text-ink-soft">
                 {[
                   { action: 'Clocked in for morning shift', time: 'Today · 7:58 AM', meta: 'Shift 8:00 AM - 4:00 PM' },
                   { action: 'Completed task "Clean Room 205"', time: 'Today · 9:45 AM', meta: 'Housekeeping' },
                   { action: 'Requested maintenance for Room 301', time: 'Yesterday · 3:10 PM', meta: 'Maintenance' },
                   { action: 'Marked training "Fire Safety" as completed', time: 'Last week', meta: 'Compliance' }
                 ].map((entry, index) => (
-                  <div key={index} className="flex items-start justify-between border border-gray-100 rounded-lg px-3 py-2">
+                  <div key={index} className="flex items-start justify-between border border-sand-deep rounded-sm px-3 py-2">
                     <div>
-                      <p className="font-medium text-gray-900">{entry.action}</p>
-                      <p className="text-xs text-gray-500">{entry.time}</p>
+                      <p className="font-medium text-ink">{entry.action}</p>
+                      <p className="text-xs text-ink-muted">{entry.time}</p>
                     </div>
-                    <span className="ml-3 text-xs text-gray-500">{entry.meta}</span>
+                    <span className="ml-3 text-xs text-ink-muted">{entry.meta}</span>
                   </div>
                 ))}
               </div>
@@ -547,31 +547,31 @@ const StaffDashboard: React.FC = () => {
         {activeTab === 'rooms' && (
           <div className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Attendance Summary</h3>
-                <p className="text-sm text-gray-600 mb-4">This month</p>
-                <div className="space-y-2 text-sm text-gray-700">
-                  <p><span className="font-semibold text-gray-900">On-time shifts:</span> 18</p>
-                  <p><span className="font-semibold text-gray-900">Late arrivals:</span> 2</p>
-                  <p><span className="font-semibold text-gray-900">Absences:</span> 1</p>
+              <div className="panel p-6">
+                <h3 className="text-lg font-semibold text-ink mb-2">Attendance Summary</h3>
+                <p className="text-sm text-ink-muted mb-4">This month</p>
+                <div className="space-y-2 text-sm text-ink-soft">
+                  <p><span className="font-semibold text-ink">On-time shifts:</span> 18</p>
+                  <p><span className="font-semibold text-ink">Late arrivals:</span> 2</p>
+                  <p><span className="font-semibold text-ink">Absences:</span> 1</p>
                 </div>
               </div>
 
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 lg:col-span-2">
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Compliance &amp; Training</h3>
-                <p className="text-sm text-gray-600 mb-4">Your required trainings</p>
+              <div className="panel p-6 lg:col-span-2">
+                <h3 className="text-lg font-semibold text-ink mb-2">Compliance &amp; Training</h3>
+                <p className="text-sm text-ink-muted mb-4">Your required trainings</p>
                 <div className="space-y-3">
                   {[
-                    { title: 'Fire Safety Basics', status: 'Completed', statusColor: 'bg-green-100 text-green-800' },
-                    { title: 'Guest Privacy & Data Protection', status: 'Due soon', statusColor: 'bg-yellow-100 text-yellow-800' },
-                    { title: 'Workplace Safety Refresher', status: 'Overdue', statusColor: 'bg-red-100 text-red-800' }
+                    { title: 'Fire Safety Basics', status: 'Completed', statusColor: 'status-chip status-chip--ok' },
+                    { title: 'Guest Privacy & Data Protection', status: 'Due soon', statusColor: 'status-chip status-chip--warn' },
+                    { title: 'Workplace Safety Refresher', status: 'Overdue', statusColor: 'status-chip status-chip--danger' }
                   ].map((training, index) => (
-                    <div key={index} className="flex items-center justify-between border border-gray-100 rounded-lg px-3 py-2">
+                    <div key={index} className="flex items-center justify-between border border-sand-deep rounded-sm px-3 py-2">
                       <div>
-                        <p className="text-sm font-medium text-gray-900">{training.title}</p>
-                        <p className="text-xs text-gray-500">Housekeeping · Annual</p>
+                        <p className="text-sm font-medium text-ink">{training.title}</p>
+                        <p className="text-xs text-ink-muted">Housekeeping · Annual</p>
                       </div>
-                      <span className={`px-2 py-1 text-xs rounded-full ${training.statusColor}`}>
+                      <span className={`status-chip ${training.statusColor}`}>
                         {training.status}
                       </span>
                     </div>
@@ -580,9 +580,9 @@ const StaffDashboard: React.FC = () => {
               </div>
             </div>
 
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Pending Compliance Actions</h3>
-              <ul className="list-disc list-inside text-sm text-gray-700 space-y-1">
+            <div className="panel p-6">
+              <h3 className="text-lg font-semibold text-ink mb-4">Pending Compliance Actions</h3>
+              <ul className="list-disc list-inside text-sm text-ink-soft space-y-1">
                 <li>Complete "Workplace Safety Refresher" by Nov 20.</li>
                 <li>Review and sign the updated Housekeeping policies document.</li>
               </ul>
@@ -594,52 +594,52 @@ const StaffDashboard: React.FC = () => {
         {activeTab === 'schedule' && (
           <div className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Shift Details</h3>
-                <p className="text-sm text-gray-600 mb-4">Today · 8:00 AM - 4:00 PM</p>
-                <div className="space-y-1 text-sm text-gray-700">
+              <div className="panel p-6">
+                <h3 className="text-lg font-semibold text-ink mb-2">Shift Details</h3>
+                <p className="text-sm text-ink-muted mb-4">Today · 8:00 AM - 4:00 PM</p>
+                <div className="space-y-1 text-sm text-ink-soft">
                   <p>Department: Housekeeping</p>
                   <p>Location: Floors 2-3</p>
                   <p>Break: 30 minutes</p>
                 </div>
               </div>
 
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Clock In / Clock Out</h3>
-                <p className="text-sm text-gray-600 mb-4">
+              <div className="panel p-6">
+                <h3 className="text-lg font-semibold text-ink mb-2">Clock In / Clock Out</h3>
+                <p className="text-sm text-ink-muted mb-4">
                   {isClockedIn ? 'You are currently clocked in.' : 'You are currently clocked out.'}
                 </p>
                 <button
                   type="button"
                   onClick={toggleClockStatus}
-                  className="px-4 py-2.5 rounded-lg text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 transition-colors"
+                  className="px-4 py-2.5 rounded-sm text-sm font-medium text-white bg-forest hover:bg-forest-deep transition-colors"
                 >
                   {isClockedIn ? 'Clock Out' : 'Clock In'}
                 </button>
-                <p className="mt-3 text-xs text-gray-500">Clock state is synced with the backend attendance record.</p>
+                <p className="mt-3 text-xs text-ink-muted">Clock state is synced with the backend attendance record.</p>
               </div>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">My Schedule</h3>
+              <div className="panel p-6">
+                <h3 className="text-lg font-semibold text-ink mb-4">My Schedule</h3>
                 <div className="space-y-4">
                   {scheduleItems.map((schedule) => (
-                    <div key={schedule.id} className={`flex items-center justify-between p-4 rounded-lg border ${
-                      schedule.status === 'current' ? 'border-blue-200 bg-blue-50' :
-                      schedule.status === 'completed' ? 'border-green-200 bg-green-50' :
-                      'border-gray-200 bg-gray-50'
+                    <div key={schedule.id} className={`flex items-center justify-between p-4 rounded-sm border ${
+                      schedule.status === 'current' ? 'border-sand-deep bg-sand-warm' :
+                      schedule.status === 'completed' ? 'border-accent-100 bg-accent-50' :
+                      'border-sand-deep bg-sand-warm'
                     }`}>
                       <div>
-                        <p className="font-medium text-gray-900">{schedule.day}</p>
-                        <p className="text-sm text-gray-600">{schedule.date}</p>
+                        <p className="font-medium text-ink">{schedule.day}</p>
+                        <p className="text-sm text-ink-muted">{schedule.date}</p>
                       </div>
                       <div className="text-center">
-                        <p className="font-medium text-gray-900">{schedule.shift}</p>
-                        <span className={`inline-block mt-1 px-2 py-1 text-xs rounded-full ${
-                          schedule.status === 'current' ? 'bg-blue-100 text-blue-800' :
-                          schedule.status === 'completed' ? 'bg-green-100 text-green-800' :
-                          'bg-gray-100 text-gray-800'
+                        <p className="font-medium text-ink">{schedule.shift}</p>
+                        <span className={`inline-block mt-1 status-chip ${
+                          schedule.status === 'current' ? 'status-chip status-chip--neutral' :
+                          schedule.status === 'completed' ? 'status-chip status-chip--ok' :
+                          'status-chip status-chip--neutral'
                         }`}>
                           {formatLabel(schedule.status)}
                         </span>
@@ -647,23 +647,23 @@ const StaffDashboard: React.FC = () => {
                     </div>
                   ))}
                   {scheduleItems.length === 0 && (
-                    <p className="text-sm text-gray-500">No schedule entries found.</p>
+                    <p className="text-sm text-ink-muted">No schedule entries found.</p>
                   )}
                 </div>
               </div>
 
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Daily Checklist</h3>
+              <div className="panel p-6">
+                <h3 className="text-lg font-semibold text-ink mb-4">Daily Checklist</h3>
                 <div className="space-y-2">
                   {dailyChecklist.map(item => (
-                    <label key={item.id} className="flex items-center gap-3 text-sm text-gray-700">
+                    <label key={item.id} className="flex items-center gap-3 text-sm text-ink-soft">
                       <input
                         type="checkbox"
                         checked={item.completed}
                         onChange={() => toggleChecklistItem(item.id)}
-                        className="h-4 w-4 text-emerald-600 border-gray-300 rounded"
+                        className="h-4 w-4 text-forest border-sand-deep rounded"
                       />
-                      <span className={item.completed ? 'line-through text-gray-400' : ''}>{item.label}</span>
+                      <span className={item.completed ? 'line-through text-ink-muted' : ''}>{item.label}</span>
                     </label>
                   ))}
                 </div>
@@ -676,98 +676,98 @@ const StaffDashboard: React.FC = () => {
         {activeTab === 'profile' && (
           <div className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Requests</h3>
-                <p className="text-sm text-gray-600 mb-4">Submit requests to your supervisor.</p>
+              <div className="panel p-6">
+                <h3 className="text-lg font-semibold text-ink mb-4">Requests</h3>
+                <p className="text-sm text-ink-muted mb-4">Submit requests to your supervisor.</p>
                 <div className="flex flex-col sm:flex-row gap-3">
                   <button
                     type="button"
-                    className="flex-1 px-4 py-2.5 rounded-lg bg-emerald-600 text-white text-sm font-medium hover:bg-emerald-700 transition-colors"
+                    className="flex-1 px-4 py-2.5 rounded-sm bg-forest text-white text-sm font-medium hover:bg-forest-deep transition-colors"
                   >
                     Request Time Off
                   </button>
                   <button
                     type="button"
-                    className="flex-1 px-4 py-2.5 rounded-lg border border-gray-300 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+                    className="flex-1 px-4 py-2.5 rounded-sm border border-sand-deep text-sm font-medium text-ink-soft hover:bg-sand-warm transition-colors"
                   >
                     Request Shift Swap
                   </button>
                 </div>
-                <p className="mt-3 text-xs text-gray-500">
+                <p className="mt-3 text-xs text-ink-muted">
                   These actions can be connected to your HR or scheduling system later.
                 </p>
               </div>
 
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">My Profile</h3>
+              <div className="panel p-6">
+                <h3 className="text-lg font-semibold text-ink mb-4">My Profile</h3>
                 <div className="flex items-center gap-4 mb-4">
-                  <div className="w-12 h-12 rounded-full bg-emerald-600 text-white flex items-center justify-center text-lg font-semibold">
+                  <div className="w-12 h-12 rounded-full bg-forest text-white flex items-center justify-center text-lg font-semibold">
                     S
                   </div>
                   <div>
-                    <p className="font-medium text-gray-900">Staff Member</p>
-                    <p className="text-sm text-gray-600">Housekeeping · Floor 2-3</p>
-                    <p className="text-xs text-gray-500">Employee ID: HK-1024</p>
+                    <p className="font-medium text-ink">Staff Member</p>
+                    <p className="text-sm text-ink-muted">Housekeeping · Floor 2-3</p>
+                    <p className="text-xs text-ink-muted">Employee ID: HK-1024</p>
                   </div>
                 </div>
-                <div className="space-y-1 text-sm text-gray-700">
+                <div className="space-y-1 text-sm text-ink-soft">
                   <p>Email: staff@example.com</p>
                   <p>Phone: +1 (555) 000-1234</p>
                 </div>
                 <Link
                   to="/profile"
-                  className="inline-flex items-center gap-2 mt-4 text-sm font-medium text-emerald-700 hover:text-emerald-800"
+                  className="inline-flex items-center gap-2 mt-4 text-sm font-medium text-forest hover:text-emerald-800"
                 >
                   <span>View full profile</span>
                 </Link>
               </div>
             </div>
 
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Contact Colleagues</h3>
+            <div className="panel p-6">
+              <h3 className="text-lg font-semibold text-ink mb-4">Contact Colleagues</h3>
               <div className="mb-4">
                 <input
                   type="text"
                   value={staffSearchTerm}
                   onChange={(e) => setStaffSearchTerm(e.target.value)}
                   placeholder="Search by name, department, or role"
-                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                  className="w-full px-3 py-2 text-sm border border-sand-deep rounded-sm focus:outline-none focus:outline-none focus:border-brass"
                 />
               </div>
               <div className="space-y-3">
                 {filteredStaff.slice(0, 5).map((staff) => (
-                  <div key={staff.id} className="flex items-center justify-between border border-gray-100 rounded-lg px-3 py-2">
+                  <div key={staff.id} className="flex items-center justify-between border border-sand-deep rounded-sm px-3 py-2">
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-emerald-50 text-emerald-700 flex items-center justify-center text-sm font-semibold">
+                      <div className="w-8 h-8 rounded-full bg-emerald-50 text-forest flex items-center justify-center text-sm font-semibold">
                         {staff.name.charAt(0)}
                       </div>
                       <div>
-                        <p className="text-sm font-medium text-gray-900">{staff.name}</p>
-                        <p className="text-xs text-gray-500">{staff.role} · {staff.department}</p>
+                        <p className="text-sm font-medium text-ink">{staff.name}</p>
+                        <p className="text-xs text-ink-muted">{staff.role} · {staff.department}</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className={`px-2 py-1 text-xs rounded-full ${getPresenceColor(staff.status)}`}>
+                      <span className={`status-chip ${getPresenceColor(staff.status)}`}>
                         {formatLabel(staff.status)}
                       </span>
                       <div className="hidden md:flex items-center gap-1">
                         <button
                           type="button"
-                          className="p-1.5 rounded-full border border-gray-200 text-gray-600 hover:bg-gray-50"
+                          className="p-1.5 rounded-full border border-sand-deep text-ink-muted hover:bg-sand-warm"
                           title="Start chat"
                         >
                           <MessageCircle className="w-4 h-4" />
                         </button>
                         <button
                           type="button"
-                          className="p-1.5 rounded-full border border-gray-200 text-gray-600 hover:bg-gray-50"
+                          className="p-1.5 rounded-full border border-sand-deep text-ink-muted hover:bg-sand-warm"
                           title="Start audio call"
                         >
                           <Phone className="w-4 h-4" />
                         </button>
                         <button
                           type="button"
-                          className="p-1.5 rounded-full border border-gray-200 text-gray-600 hover:bg-gray-50"
+                          className="p-1.5 rounded-full border border-sand-deep text-ink-muted hover:bg-sand-warm"
                           title="Start video call"
                         >
                           <Video className="w-4 h-4" />
@@ -777,7 +777,7 @@ const StaffDashboard: React.FC = () => {
                   </div>
                 ))}
                 {filteredStaff.length === 0 && (
-                  <p className="text-sm text-gray-500">No colleagues found. Try a different search.</p>
+                  <p className="text-sm text-ink-muted">No colleagues found. Try a different search.</p>
                 )}
               </div>
             </div>
