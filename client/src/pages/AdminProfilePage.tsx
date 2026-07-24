@@ -99,26 +99,28 @@ const AdminProfilePage: React.FC = () => {
 
   return (
     <div className="ops-shell">
-      {/* Header Bar */}
-      <div className="bg-ink text-white px-4 py-3">
+      <header className="ops-topbar px-4 py-3">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 w-full sm:w-auto">
             <Link 
               to="/admin"
-              className="inline-flex items-center px-3 py-2 sm:px-4 bg-white/20 backdrop-blur-sm text-white font-medium rounded-sm hover:bg-white/30 transition-all duration-200 text-sm sm:text-base"
+              className="inline-flex items-center px-3 py-2 sm:px-4 border border-white/25 text-white font-medium rounded-sm hover:bg-white/10 transition-colors text-sm sm:text-base"
             >
               <ArrowLeft className="h-4 w-4 mr-2" />
               <span className="hidden xs:inline">Back to Dashboard</span>
               <span className="xs:hidden">Back</span>
             </Link>
-            <h1 className="text-lg sm:text-xl font-bold">Admin Profile Management</h1>
+            <div>
+              <p className="section-label text-brass/90">Operations</p>
+              <h1 className="font-display text-lg sm:text-xl font-semibold text-white">Admin Profile</h1>
+            </div>
           </div>
           <div className="flex items-center gap-2 self-end sm:self-auto">
-            <Shield className="w-4 h-4 sm:w-5 sm:h-5" />
-            <span className="font-medium text-sm sm:text-base">Administrator</span>
+            <Shield className="w-4 h-4 sm:w-5 sm:h-5 text-brass" />
+            <span className="font-medium text-sm sm:text-base text-white/90">Administrator</span>
           </div>
         </div>
-      </div>
+      </header>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Admin Stats Overview */}
@@ -165,15 +167,15 @@ const AdminProfilePage: React.FC = () => {
                 <p className="text-sm font-medium text-ink-muted">Security Level</p>
                 <p className="text-2xl font-bold text-ink">{adminStats.securityClearance}</p>
               </div>
-              <div className="w-12 h-12 bg-red-100 rounded-sm flex items-center justify-center">
-                <Shield className="w-6 h-6 text-red-600" />
+              <div className="w-12 h-12 bg-sand border border-sand-deep rounded-sm flex items-center justify-center">
+                <Shield className="w-6 h-6 text-brass" />
               </div>
             </div>
           </div>
         </div>
 
         {/* Main Profile Content */}
-        <div className="bg-white rounded-sm sm:rounded-sm  border border-sand-deep overflow-hidden">
+        <div className="panel overflow-hidden p-0">
           <div className="p-4 sm:p-6 lg:p-8">
             <div className="flex flex-col sm:flex-row items-start sm:items-center mb-6 sm:mb-8 gap-3 sm:gap-0">
               <User className="h-6 w-6 sm:h-8 sm:w-8 text-brass sm:mr-3" />
@@ -185,10 +187,10 @@ const AdminProfilePage: React.FC = () => {
               <div className="xl:col-span-1">
                 <div className="text-center">
                   <div className="relative inline-block mb-4 sm:mb-6">
-                    <div className="w-24 h-24 sm:w-32 sm:h-32 bg-brass rounded-full flex items-center justify-center text-white text-2xl sm:text-4xl font-bold ">
+                    <div className="w-24 h-24 sm:w-32 sm:h-32 bg-brass rounded-sm flex items-center justify-center text-white text-2xl sm:text-4xl font-bold font-display">
                       A
                     </div>
-                    <button className="absolute bottom-0 right-0 w-8 h-8 sm:w-10 sm:h-10 bg-white rounded-full  border-2 border-sand-deep flex items-center justify-center hover:bg-sand-warm transition-colors duration-200">
+                    <button className="absolute bottom-0 right-0 w-8 h-8 sm:w-10 sm:h-10 bg-white rounded-sm border border-sand-deep flex items-center justify-center hover:bg-sand-warm transition-colors duration-200">
                       <Camera className="h-4 w-4 sm:h-5 sm:w-5 text-ink-muted" />
                     </button>
                   </div>
@@ -331,7 +333,7 @@ const AdminProfilePage: React.FC = () => {
                     </h4>
                     <button
                       onClick={() => setShowPasswordSection(!showPasswordSection)}
-                      className="text-brass hover:text-blue-700 font-medium transition-colors duration-200 text-sm sm:text-base self-start sm:self-auto"
+                      className="text-brass hover:text-brass-deep font-medium transition-colors duration-200 text-sm sm:text-base self-start sm:self-auto"
                     >
                       {showPasswordSection ? 'Cancel' : 'Change Password'}
                     </button>
@@ -430,7 +432,7 @@ const AdminProfilePage: React.FC = () => {
                                 ...adminSettings,
                                 [key]: e.target.checked
                               })}
-                              className="rounded border-sand-deep text-brass focus:ring-blue-500 w-4 h-4"
+                              className="rounded-sm border-sand-deep text-brass focus:ring-brass/30 w-4 h-4"
                             />
                             <span className="ml-2 text-xs sm:text-sm text-ink-soft">{label}</span>
                           </label>
@@ -453,7 +455,7 @@ const AdminProfilePage: React.FC = () => {
                                 ...adminSettings,
                                 [key]: e.target.checked
                               })}
-                              className="rounded border-sand-deep text-brass focus:ring-blue-500 w-4 h-4"
+                              className="rounded-sm border-sand-deep text-brass focus:ring-brass/30 w-4 h-4"
                             />
                             <span className="ml-2 text-xs sm:text-sm text-ink-soft">{label}</span>
                           </label>
@@ -476,7 +478,7 @@ const AdminProfilePage: React.FC = () => {
                 <div className="flex flex-col sm:flex-row justify-center sm:justify-end pt-4 sm:pt-6 border-t border-sand-deep">
                   <button 
                     onClick={handleSaveProfile}
-                    className="inline-flex items-center justify-center px-4 py-2 sm:px-6 sm:py-3 bg-ink text-white font-medium rounded-sm hover: transform transition-all duration-200  text-sm sm:text-base w-full sm:w-auto"
+                    className="btn-primary text-sm sm:text-base w-full sm:w-auto"
                   >
                     <Save className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
                     Save Profile Changes

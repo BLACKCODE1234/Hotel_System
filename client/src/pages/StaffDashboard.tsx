@@ -155,8 +155,8 @@ const StaffDashboard: React.FC = () => {
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'high': return 'status-chip status-chip--danger border-red-200';
-      case 'medium': return 'status-chip status-chip--warn border-yellow-200';
+      case 'high': return 'status-chip status-chip--danger';
+      case 'medium': return 'status-chip status-chip--warn';
       case 'low': return 'status-chip status-chip--ok';
       default: return 'status-chip status-chip--neutral border-sand-deep';
     }
@@ -180,7 +180,7 @@ const StaffDashboard: React.FC = () => {
       case 'online':
         return 'status-chip status-chip--ok';
       case 'away':
-        return 'bg-amber-100 text-amber-800';
+        return 'status-chip status-chip--warn';
       default:
         return 'status-chip status-chip--neutral';
     }
@@ -198,31 +198,30 @@ const StaffDashboard: React.FC = () => {
 
   return (
     <div className="ops-shell">
-      {/* Header */}
-      <div className="bg-white border-b border-sand-deep">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <header className="ops-topbar">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-start gap-3">
-            <div className="w-10 h-10 rounded-xl bg-forest text-white flex items-center justify-center ">
+            <div className="w-10 h-10 rounded-sm bg-brass text-white flex items-center justify-center">
               <Briefcase className="w-5 h-5" />
             </div>
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-forest">Staff Workspace</p>
-              <h1 className="text-2xl font-semibold text-ink">Housekeeping Operations</h1>
-              <p className="text-xs text-ink-muted mt-1">Monitor today&apos;s tasks, room status, and schedule in one place.</p>
+              <p className="section-label text-brass/90">Staff workspace</p>
+              <h1 className="font-display text-2xl font-semibold text-white">Housekeeping Operations</h1>
+              <p className="text-xs text-white/70 mt-1">Tasks, schedule, and attendance</p>
             </div>
           </div>
           <div className="flex items-center gap-6 self-end sm:self-auto">
-            <div className="hidden md:flex flex-col items-end text-xs text-ink-muted">
-              <span className="font-medium text-ink">Today</span>
+            <div className="hidden md:flex flex-col items-end text-xs text-white/70">
+              <span className="font-medium text-white">Today</span>
               <span>Shift: 8:00 AM - 4:00 PM</span>
             </div>
             <div className="flex items-center gap-3">
               <button
                 type="button"
-                className="relative inline-flex items-center justify-center w-9 h-9 rounded-full border border-sand-deep text-ink-muted hover:text-ink hover:border-sand-deep hover:bg-sand-warm transition-colors"
+                className="relative inline-flex items-center justify-center w-9 h-9 rounded-sm border border-white/20 text-white/80 hover:text-white hover:border-white/40 transition-colors"
               >
                 <Bell className="w-4 h-4" />
-                <span className="absolute -top-1 -right-1 inline-flex items-center justify-center px-1.5 py-0.5 rounded-full bg-red-500 text-white text-[10px] leading-none font-semibold">
+                <span className="absolute -top-1 -right-1 status-chip status-chip--danger text-[10px] px-1 min-w-[1rem] justify-center">
                   3
                 </span>
               </button>
@@ -230,19 +229,19 @@ const StaffDashboard: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setShowProfileDropdown(!showProfileDropdown)}
-                  className="flex items-center gap-2 rounded-full border border-sand-deep px-2 py-1.5 hover:bg-sand-warm hover:border-sand-deep transition-colors"
+                  className="flex items-center gap-2 rounded-sm border border-white/20 px-2 py-1.5 hover:bg-white/10 transition-colors"
                 >
-                  <div className="w-8 h-8 rounded-full bg-forest text-white flex items-center justify-center text-sm font-semibold">
+                  <div className="w-8 h-8 rounded-sm bg-brass text-white flex items-center justify-center text-sm font-semibold">
                     S
                   </div>
                   <div className="hidden sm:flex flex-col items-start text-left">
-                    <span className="text-sm font-semibold leading-tight text-ink">Staff Member</span>
-                    <span className="text-xs text-ink-muted leading-tight">Housekeeping - Floor 2-3</span>
+                    <span className="text-sm font-semibold leading-tight text-white">Staff Member</span>
+                    <span className="text-xs text-white/70 leading-tight">Housekeeping - Floor 2-3</span>
                   </div>
                   <ChevronDown className="w-3 h-3 text-ink-muted" />
                 </button>
                 {showProfileDropdown && (
-                  <div className="absolute right-0 mt-2 w-60 bg-white text-ink rounded-xl  border border-sand-deep z-20">
+                  <div className="absolute right-0 mt-2 w-60 bg-white text-ink rounded-sm border border-sand-deep z-20">
                     <div className="px-4 py-3 border-b border-sand-deep">
                       <p className="text-sm font-semibold">Staff Member</p>
                       <p className="text-xs text-ink-muted">Housekeeping - Floor 2-3</p>
@@ -271,7 +270,7 @@ const StaffDashboard: React.FC = () => {
                           await api.logout();
                           navigate('/login');
                         }}
-                        className="flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 w-full text-left"
+                        className="flex items-center gap-2 px-4 py-2 text-sm text-ink-muted hover:bg-sand-warm w-full text-left"
                       >
                         <LogOut className="w-4 h-4" />
                         <span>Sign Out</span>
@@ -283,7 +282,7 @@ const StaffDashboard: React.FC = () => {
             </div>
           </div>
         </div>
-      </div>
+      </header>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {dataError && (
@@ -325,15 +324,15 @@ const StaffDashboard: React.FC = () => {
           <div className="space-y-6">
             {/* Stats Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              <div className="bg-white rounded-xl  p-6 border border-sand-deep">
+              <div className="panel">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-ink-muted">Pending Tasks</p>
                     <p className="text-2xl font-bold text-ink">{tasks.filter(task => task.status !== 'completed').length}</p>
-                    <p className="text-sm text-orange-600">Open tasks</p>
+                    <p className="text-sm text-brass-deep">Open tasks</p>
                   </div>
-                  <div className="w-12 h-12 bg-orange-100 rounded-sm flex items-center justify-center">
-                    <ClipboardList className="w-6 h-6 text-orange-600" />
+                  <div className="w-12 h-12 bg-sand border border-sand-deep rounded-sm flex items-center justify-center">
+                    <ClipboardList className="w-6 h-6 text-brass" />
                   </div>
                 </div>
               </div>
@@ -382,10 +381,10 @@ const StaffDashboard: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
               <button
                 type="button"
-                className="flex items-center gap-3 bg-white rounded-xl  border border-sand-deep px-4 py-3 hover: hover:border-blue-200 transition-all text-left"
+                className="flex items-center gap-3 panel px-4 py-3 hover:border-brass/40 transition-colors text-left"
               >
-                <div className="w-9 h-9 rounded-sm bg-red-100 flex items-center justify-center">
-                  <AlertCircle className="w-5 h-5 text-red-600" />
+                <div className="w-9 h-9 rounded-sm bg-sand border border-sand-deep flex items-center justify-center">
+                  <AlertCircle className="w-5 h-5 text-brass-deep" />
                 </div>
                 <div>
                   <p className="text-sm font-semibold text-ink">Report an issue</p>
@@ -394,10 +393,10 @@ const StaffDashboard: React.FC = () => {
               </button>
               <button
                 type="button"
-                className="flex items-center gap-3 bg-white rounded-xl  border border-sand-deep px-4 py-3 hover: hover:border-green-200 transition-all text-left"
+                className="flex items-center gap-3 panel px-4 py-3 hover:border-brass/40 transition-colors text-left"
               >
-                <div className="w-9 h-9 rounded-sm bg-green-100 flex items-center justify-center">
-                  <Wrench className="w-5 h-5 text-green-700" />
+                <div className="w-9 h-9 rounded-sm bg-sand border border-sand-deep flex items-center justify-center">
+                  <Wrench className="w-5 h-5 text-forest" />
                 </div>
                 <div>
                   <p className="text-sm font-semibold text-ink">Request maintenance</p>
@@ -406,10 +405,10 @@ const StaffDashboard: React.FC = () => {
               </button>
               <button
                 type="button"
-                className="flex items-center gap-3 bg-white rounded-xl  border border-sand-deep px-4 py-3 hover: hover:border-amber-200 transition-all text-left"
+                className="flex items-center gap-3 panel px-4 py-3 hover:border-brass/40 transition-colors text-left"
               >
-                <div className="w-9 h-9 rounded-sm bg-amber-100 flex items-center justify-center">
-                  <Coffee className="w-5 h-5 text-amber-700" />
+                <div className="w-9 h-9 rounded-sm bg-sand border border-sand-deep flex items-center justify-center">
+                  <Coffee className="w-5 h-5 text-brass" />
                 </div>
                 <div>
                   <p className="text-sm font-semibold text-ink">Take a break</p>
@@ -424,7 +423,7 @@ const StaffDashboard: React.FC = () => {
               <div className="space-y-3">
                 {tasks.slice(0, 3).map((task) => (
                   <div key={task.id} className="flex items-center gap-4 p-3 border border-sand-deep rounded-sm">
-                    <div className={`w-3 h-3 rounded-full ${
+                    <div className={`w-3 h-3 rounded-sm ${
                       task.status === 'completed' ? 'bg-forest' :
                       task.status === 'in-progress' ? 'bg-ink' : 'bg-brass'
                     }`}></div>
@@ -701,7 +700,7 @@ const StaffDashboard: React.FC = () => {
               <div className="panel p-6">
                 <h3 className="text-lg font-semibold text-ink mb-4">My Profile</h3>
                 <div className="flex items-center gap-4 mb-4">
-                  <div className="w-12 h-12 rounded-full bg-forest text-white flex items-center justify-center text-lg font-semibold">
+                  <div className="w-12 h-12 rounded-sm bg-brass text-white flex items-center justify-center text-lg font-semibold">
                     S
                   </div>
                   <div>
@@ -716,7 +715,7 @@ const StaffDashboard: React.FC = () => {
                 </div>
                 <Link
                   to="/profile"
-                  className="inline-flex items-center gap-2 mt-4 text-sm font-medium text-forest hover:text-emerald-800"
+                  className="inline-flex items-center gap-2 mt-4 text-sm font-medium text-brass hover:text-brass-deep"
                 >
                   <span>View full profile</span>
                 </Link>
@@ -738,7 +737,7 @@ const StaffDashboard: React.FC = () => {
                 {filteredStaff.slice(0, 5).map((staff) => (
                   <div key={staff.id} className="flex items-center justify-between border border-sand-deep rounded-sm px-3 py-2">
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-emerald-50 text-forest flex items-center justify-center text-sm font-semibold">
+                      <div className="w-8 h-8 rounded-sm bg-sand-warm border border-sand-deep text-forest flex items-center justify-center text-sm font-semibold">
                         {staff.name.charAt(0)}
                       </div>
                       <div>
@@ -753,21 +752,21 @@ const StaffDashboard: React.FC = () => {
                       <div className="hidden md:flex items-center gap-1">
                         <button
                           type="button"
-                          className="p-1.5 rounded-full border border-sand-deep text-ink-muted hover:bg-sand-warm"
+                          className="p-1.5 rounded-sm border border-sand-deep text-ink-muted hover:bg-sand-warm"
                           title="Start chat"
                         >
                           <MessageCircle className="w-4 h-4" />
                         </button>
                         <button
                           type="button"
-                          className="p-1.5 rounded-full border border-sand-deep text-ink-muted hover:bg-sand-warm"
+                          className="p-1.5 rounded-sm border border-sand-deep text-ink-muted hover:bg-sand-warm"
                           title="Start audio call"
                         >
                           <Phone className="w-4 h-4" />
                         </button>
                         <button
                           type="button"
-                          className="p-1.5 rounded-full border border-sand-deep text-ink-muted hover:bg-sand-warm"
+                          className="p-1.5 rounded-sm border border-sand-deep text-ink-muted hover:bg-sand-warm"
                           title="Start video call"
                         >
                           <Video className="w-4 h-4" />

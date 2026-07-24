@@ -306,67 +306,40 @@ const AdminDashboard: React.FC = () => {
 
   return (
     <div className="ops-shell">
-      {/* Trade Bar */}
-      <div className="bg-ink text-white px-2 sm:px-4 py-2">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-start sm:items-center text-xs sm:text-sm gap-2 sm:gap-0">
-          <div className="flex flex-wrap items-center gap-2 sm:gap-4 lg:gap-6">
-            <div className="flex items-center gap-1 sm:gap-2">
-              <div className="w-2 h-2 bg-forest rounded-full "></div>
-              <span className="whitespace-nowrap">System Online</span>
+      <header className="ops-topbar">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+            <div>
+              <p className="section-label text-brass/90">Operations</p>
+              <h1 className="font-display text-2xl sm:text-3xl font-semibold text-white">Admin Dashboard</h1>
+              <p className="text-sm text-white/70 mt-1">LuxuryStay property management</p>
             </div>
-            <div className="flex items-center gap-1 sm:gap-2">
-              <TrendingUp className="w-3 h-3 sm:w-4 sm:h-4" />
-              <span className="whitespace-nowrap">Revenue: $89,247</span>
-              <span className="text-accent-100 hidden sm:inline">+12%</span>
-            </div>
-            <div className="flex items-center gap-1 sm:gap-2">
-              <Hotel className="w-3 h-3 sm:w-4 sm:h-4" />
-              <span className="whitespace-nowrap">Occupancy: 78%</span>
-            </div>
-            <div className="flex items-center gap-1 sm:gap-2">
-              <Users className="w-3 h-3 sm:w-4 sm:h-4" />
-              <span className="whitespace-nowrap hidden sm:inline">Active Guests: 156</span>
-              <span className="whitespace-nowrap sm:hidden">Guests: 156</span>
-            </div>
-          </div>
-          <div className="flex items-center gap-2 sm:gap-4 self-end sm:self-auto">
-            <div className="flex items-center gap-2">
-              <Clock className="w-4 h-4" />
-              <span>{new Date().toLocaleTimeString()}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Calendar className="w-4 h-4" />
-              <span>{new Date().toLocaleDateString()}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Activity className="w-4 h-4" />
-              <span>Live Updates</span>
-            </div>
-            
-            {/* Admin Avatar in Trade Bar */}
+            <div className="flex flex-wrap items-center gap-3 text-xs sm:text-sm text-white/75">
+              <span className="hidden md:inline">Revenue ${stats.totalRevenue.toLocaleString()}</span>
+              <span className="hidden md:inline">Occupancy {stats.occupancyRate}%</span>
+              <span className="hidden lg:inline">{new Date().toLocaleDateString()}</span>
+              <span>{new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
             <div className="relative profile-dropdown-container">
               <button
                 onClick={() => setShowProfileDropdown(!showProfileDropdown)}
                 className="flex items-center gap-2 hover:bg-white/10 rounded-sm p-1 transition-colors"
               >
                 <div className="relative">
-                  <div className="w-8 h-8 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center text-white font-bold border border-white/30">
+                  <div className="w-8 h-8 bg-white/15 flex items-center justify-center text-white font-semibold border border-white/25 rounded-sm">
                     A
                   </div>
-                  <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full flex items-center justify-center text-xs text-white">
-                    3
-                  </div>
+                  <span className="absolute -top-1 -right-1 status-chip status-chip--danger text-[10px] px-1 min-w-[1rem] justify-center">3</span>
                 </div>
                 <ChevronDown className={`w-3 h-3 text-white/80 transition-transform ${showProfileDropdown ? 'rotate-180' : ''}`} />
               </button>
 
               {/* Profile Dropdown */}
               {showProfileDropdown && (
-                <div className="absolute right-0 top-full mt-2 w-80 bg-white panel shadow-none border border-sand-deep z-50">
+                <div className="absolute right-0 top-full mt-2 w-80 bg-white border border-sand-deep z-50 rounded-sm">
                   {/* Admin Profile Header */}
                   <div className="p-4 border-b border-sand-deep">
                     <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 bg-ink rounded-full flex items-center justify-center text-white font-bold text-lg">
+                      <div className="w-12 h-12 bg-brass flex items-center justify-center text-white font-semibold text-lg rounded-sm">
                         A
                       </div>
                       <div>
@@ -387,20 +360,20 @@ const AdminDashboard: React.FC = () => {
                         <Bell className="w-4 h-4" />
                         Notifications
                       </h4>
-                      <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full">3</span>
+                      <span className="status-chip status-chip--danger">3</span>
                     </div>
                     <div className="space-y-2">
-                      <div className="p-2 bg-sand-warm rounded-sm text-sm">
-                        <p className="font-medium text-blue-900">New booking received</p>
-                        <p className="text-blue-700">Room 205 - John Smith</p>
+                      <div className="p-2 bg-sand-warm rounded-sm text-sm border border-sand-deep">
+                        <p className="font-medium text-ink">New booking received</p>
+                        <p className="text-ink-muted">Room 205 — John Smith</p>
                       </div>
-                      <div className="p-2 bg-sand-warm rounded-sm text-sm">
-                        <p className="font-medium text-yellow-900">Maintenance required</p>
-                        <p className="text-yellow-700">Room 301 - AC unit</p>
+                      <div className="p-2 bg-sand-warm rounded-sm text-sm border border-sand-deep">
+                        <p className="font-medium text-ink">Maintenance required</p>
+                        <p className="text-ink-muted">Room 301 — AC unit</p>
                       </div>
-                      <div className="p-2 bg-accent-50 rounded-sm text-sm">
-                        <p className="font-medium text-green-900">Payment confirmed</p>
-                        <p className="text-green-700">Booking #LGH-002</p>
+                      <div className="p-2 bg-accent-50 rounded-sm text-sm border border-accent-100">
+                        <p className="font-medium text-ink">Payment confirmed</p>
+                        <p className="text-ink-muted">Booking #LGH-002</p>
                       </div>
                     </div>
                   </div>
@@ -447,7 +420,7 @@ const AdminDashboard: React.FC = () => {
                         await api.logout();
                         navigate('/login');
                       }}
-                      className="w-full flex items-center gap-3 px-3 py-2 text-red-600 hover:bg-red-50 rounded-sm transition-colors"
+                      className="w-full flex items-center gap-3 px-3 py-2 text-brass-deep hover:bg-red-50 rounded-sm transition-colors"
                     >
                       <LogOut className="w-4 h-4" />
                       <span>Logout</span>
@@ -456,32 +429,17 @@ const AdminDashboard: React.FC = () => {
                 </div>
               )}
             </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Header */}
-      <div className="bg-white  border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center py-4 sm:py-6 gap-4 sm:gap-0">
-            <div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-ink">Admin Dashboard</h1>
-              <p className="text-sm sm:text-base text-ink-muted">Luxury Grand Hotel Management</p>
-            </div>
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 w-full sm:w-auto">
-              <div className="flex items-center gap-2 bg-green-50 text-green-700 px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm">
-                <div className="w-2 h-2 bg-forest rounded-full"></div>
-                <span className="whitespace-nowrap">All Systems Operational</span>
-              </div>
-              <button className="btn-primary text-sm py-2 px-3 sm:px-4 flex items-center gap-2 text-sm sm:text-base w-full sm:w-auto justify-center">
-                <Download className="w-3 h-3 sm:w-4 sm:h-4" />
-                <span className="hidden xs:inline">Export Data</span>
-                <span className="xs:hidden">Export</span>
-              </button>
             </div>
           </div>
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mt-4 pt-4 border-t border-white/10">
+            <span className="status-chip status-chip--ok bg-accent-50/10 text-white border-accent-100/30">All systems operational</span>
+            <button type="button" className="btn-primary text-sm py-2 px-4 flex items-center gap-2 w-full sm:w-auto justify-center">
+              <Download className="w-4 h-4" />
+              Export Data
+            </button>
+          </div>
         </div>
-      </div>
+      </header>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {dataError && (
@@ -507,7 +465,7 @@ const AdminDashboard: React.FC = () => {
                   onClick={() => setActiveTab(tab.id)}
                   className={`flex items-center gap-1 sm:gap-2 py-2 px-2 sm:px-1 border-b-2 font-medium text-xs sm:text-sm whitespace-nowrap ${
                     activeTab === tab.id
-                      ? 'border-blue-500 text-brass'
+                      ? 'border-brass text-brass'
                       : 'border-transparent text-ink-muted hover:text-ink-soft hover:border-sand-deep'
                   }`}
                 >
@@ -556,7 +514,7 @@ const AdminDashboard: React.FC = () => {
                   <div>
                     <p className="text-xs sm:text-sm text-ink-muted">Occupancy Rate</p>
                     <p className="text-2xl sm:text-3xl font-bold text-ink">{stats.occupancyRate}%</p>
-                    <p className="text-xs sm:text-sm text-red-600">Based on room status</p>
+                    <p className="text-xs sm:text-sm text-ink-muted">Based on room status</p>
                   </div>
                   <div className="w-10 h-10 sm:w-12 sm:h-12 bg-sand border border-sand-deep rounded-sm flex items-center justify-center">
                     <Hotel className="w-5 h-5 sm:w-6 sm:h-6 text-brass" />
@@ -571,8 +529,8 @@ const AdminDashboard: React.FC = () => {
                     <p className="text-2xl sm:text-3xl font-bold text-ink">{stats.occupiedRooms}</p>
                     <p className="text-xs sm:text-sm text-forest">Live room state</p>
                   </div>
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-orange-100 rounded-sm flex items-center justify-center">
-                    <Users className="w-5 h-5 sm:w-6 sm:h-6 text-orange-600" />
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-sand border border-sand-deep rounded-sm flex items-center justify-center">
+                    <Users className="w-5 h-5 sm:w-6 sm:h-6 text-brass" />
                   </div>
                 </div>
               </div>
@@ -589,7 +547,7 @@ const AdminDashboard: React.FC = () => {
                   { action: 'Room maintenance completed', guest: 'Room 301', time: '2 hours ago', type: 'maintenance' }
                 ].map((activity, index) => (
                   <div key={index} className="flex items-center gap-3 sm:gap-4 p-2 sm:p-3 bg-sand-warm rounded-sm">
-                    <div className="w-6 h-6 sm:w-8 sm:h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                    <div className="w-6 h-6 sm:w-8 sm:h-8 bg-sand border border-sand-deep rounded-sm flex items-center justify-center flex-shrink-0">
                       <Activity className="w-3 h-3 sm:w-4 sm:h-4 text-brass" />
                     </div>
                     <div className="flex-1 min-w-0">
@@ -679,7 +637,7 @@ const AdminDashboard: React.FC = () => {
                         <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
                           <button
                             onClick={() => handleStatusChange(booking)}
-                            className={`status-chip cursor-pointer hover:opacity-80 transition-opacity ${getStatusColor(booking.status)}`}
+                            className={`${getStatusColor(booking.status)} hover:opacity-80 transition-opacity cursor-pointer`}
                           >
                             {booking.status}
                           </button>
@@ -689,10 +647,10 @@ const AdminDashboard: React.FC = () => {
                             <button className="text-brass hover:text-brass-deep">
                               <Eye className="w-3 h-3 sm:w-4 sm:h-4" />
                             </button>
-                            <button className="text-forest hover:text-green-800">
+                            <button className="text-forest hover:text-brass-deep">
                               <Edit className="w-3 h-3 sm:w-4 sm:h-4" />
                             </button>
-                            <button className="text-red-600 hover:text-red-800">
+                            <button className="text-ink-muted hover:text-brass-deep">
                               <Trash2 className="w-3 h-3 sm:w-4 sm:h-4" />
                             </button>
                           </div>
@@ -720,7 +678,7 @@ const AdminDashboard: React.FC = () => {
               
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 {rooms.map((room) => (
-                  <div key={room.id} className="border rounded-sm p-4 hover: transition-shadow">
+                  <div key={room.id} className="border border-sand-deep rounded-sm p-4 hover:border-brass/40 transition-colors">
                     <div className="flex justify-between items-start mb-3">
                       <div>
                         <h4 className="font-semibold text-ink">Room {room.number}</h4>
@@ -729,7 +687,7 @@ const AdminDashboard: React.FC = () => {
                       </div>
                       <button
                         onClick={() => handleRoomStatusChange(room)}
-                        className={`status-chip cursor-pointer hover:opacity-80 transition-opacity ${getStatusColor(room.status)}`}
+                        className={`${getStatusColor(room.status)} hover:opacity-80 transition-opacity cursor-pointer`}
                       >
                         {room.status}
                       </button>
@@ -740,7 +698,7 @@ const AdminDashboard: React.FC = () => {
                         <button className="text-brass hover:text-brass-deep">
                           <Eye className="w-4 h-4" />
                         </button>
-                        <button className="text-forest hover:text-green-800">
+                        <button className="text-forest hover:text-brass-deep">
                           <Edit className="w-4 h-4" />
                         </button>
                       </div>
@@ -821,10 +779,10 @@ const AdminDashboard: React.FC = () => {
                   <div>
                     <p className="text-sm text-ink-muted">Avg. Rating</p>
                     <p className="text-3xl font-bold text-ink">4.8</p>
-                    <p className="text-sm text-yellow-600">Guest satisfaction</p>
+                    <p className="text-sm text-brass-deep">Guest satisfaction</p>
                   </div>
-                  <div className="w-12 h-12 bg-yellow-100 rounded-sm flex items-center justify-center">
-                    <Users className="w-6 h-6 text-yellow-600" />
+                  <div className="w-12 h-12 bg-sand border border-sand-deep rounded-sm flex items-center justify-center">
+                    <Users className="w-6 h-6 text-brass-deep" />
                   </div>
                 </div>
               </div>
@@ -941,16 +899,14 @@ const AdminDashboard: React.FC = () => {
                       <tr key={guest.id} className="hover:bg-sand-warm">
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-brass rounded-full flex items-center justify-center text-white font-bold text-sm">
+                            <div className="w-10 h-10 bg-brass flex items-center justify-center text-white font-semibold text-sm rounded-sm">
                               {guest.avatar}
                             </div>
                             <div>
                               <div className="flex items-center gap-2">
                                 <div className="text-sm font-medium text-ink">{guest.name}</div>
                                 {guest.type === 'VIP' && (
-                                  <span className="status-chip cursor-pointer status-chip status-chip--warn">
-                                    VIP
-                                  </span>
+                                  <span className="status-chip status-chip--warn">VIP</span>
                                 )}
                               </div>
                               <div className="text-sm text-ink-muted">ID: {guest.id}</div>
@@ -962,7 +918,7 @@ const AdminDashboard: React.FC = () => {
                           <div className="text-sm text-ink-muted">{guest.phone}</div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <span className={`status-chip cursor-pointer ${getStatusColor(guest.status)}`}>
+                          <span className={getStatusColor(guest.status)}>
                             {guest.status.replace('-', ' ')}
                           </span>
                         </td>
@@ -980,13 +936,13 @@ const AdminDashboard: React.FC = () => {
                             <button className="text-brass hover:text-brass-deep">
                               <Eye className="w-4 h-4" />
                             </button>
-                            <button className="text-forest hover:text-green-800">
+                            <button className="text-forest hover:text-brass-deep">
                               <Edit className="w-4 h-4" />
                             </button>
                             <button className="text-brass hover:text-brass-deep">
                               <Mail className="w-4 h-4" />
                             </button>
-                            <button className="text-yellow-600 hover:text-yellow-800">
+                            <button className="text-brass-deep hover:text-brass-deep">
                               <Phone className="w-4 h-4" />
                             </button>
                           </div>
@@ -1016,9 +972,9 @@ const AdminDashboard: React.FC = () => {
                         <span className="text-sm font-medium text-ink">{item.preference}</span>
                         <span className="text-sm text-ink-muted">{item.count} guests</span>
                       </div>
-                      <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div className="w-full bg-sand-deep rounded-sm h-2">
                         <div 
-                          className="h-2 rounded-full bg-brass"
+                          className="h-2 rounded-sm bg-brass"
                           style={{ width: `${item.percentage}%` }}
                         ></div>
                       </div>
@@ -1040,12 +996,12 @@ const AdminDashboard: React.FC = () => {
                     { guest: 'Robert Wilson', action: 'Requested service', room: 'Room 405', time: '12 hours ago', type: 'service' }
                   ].map((activity, index) => (
                     <div key={index} className="flex items-center gap-4 p-3 bg-sand-warm rounded-sm">
-                      <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                        activity.type === 'checkin' ? 'bg-green-100 text-forest' :
-                        activity.type === 'checkout' ? 'bg-red-50 text-red-800' :
-                        activity.type === 'booking' ? 'bg-blue-100 text-brass' :
-                        activity.type === 'profile' ? 'bg-purple-100 text-brass' :
-                        'bg-sand text-brass'
+                      <div className={`w-8 h-8 rounded-sm flex items-center justify-center border border-sand-deep ${
+                        activity.type === 'checkin' ? 'bg-accent-50 text-forest' :
+                        activity.type === 'checkout' ? 'bg-sand-warm text-ink-muted' :
+                        activity.type === 'booking' ? 'bg-sand text-brass' :
+                        activity.type === 'profile' ? 'bg-sand text-ink-muted' :
+                        'bg-sand-warm text-brass-deep'
                       }`}>
                         <Activity className="w-4 h-4" />
                       </div>
@@ -1072,7 +1028,7 @@ const AdminDashboard: React.FC = () => {
                   <p className="text-ink-muted">Comprehensive insights and performance metrics</p>
                 </div>
                 <div className="flex gap-3">
-                  <select className="px-4 py-2 border border-sand-deep rounded-sm focus:ring-2 focus:ring-blue-500">
+                  <select className="px-4 py-2 border border-sand-deep rounded-sm focus:outline-none focus:border-brass">
                     <option>Last 7 days</option>
                     <option>Last 30 days</option>
                     <option>Last 3 months</option>
@@ -1121,8 +1077,8 @@ const AdminDashboard: React.FC = () => {
                     <p className="text-3xl font-bold text-ink">4.8/5</p>
                     <p className="text-sm text-forest">+0.2 vs last month</p>
                   </div>
-                  <div className="w-12 h-12 bg-yellow-100 rounded-sm flex items-center justify-center">
-                    <Users className="w-6 h-6 text-yellow-600" />
+                  <div className="w-12 h-12 bg-sand border border-sand-deep rounded-sm flex items-center justify-center">
+                    <Users className="w-6 h-6 text-brass-deep" />
                   </div>
                 </div>
               </div>
@@ -1132,7 +1088,7 @@ const AdminDashboard: React.FC = () => {
                   <div>
                     <p className="text-sm text-ink-muted">Repeat Guests</p>
                     <p className="text-3xl font-bold text-ink">34%</p>
-                    <p className="text-sm text-red-600">-2% vs last month</p>
+                    <p className="text-sm text-brass-deep">-2% vs last month</p>
                   </div>
                   <div className="w-12 h-12 bg-sand border border-sand-deep rounded-sm flex items-center justify-center">
                     <Activity className="w-6 h-6 text-brass" />
@@ -1155,8 +1111,8 @@ const AdminDashboard: React.FC = () => {
                       onClick={() => setChartPeriod('daily')}
                       className={`text-sm px-3 py-1 rounded-sm font-medium transition-colors ${
                         chartPeriod === 'daily' 
-                          ? 'bg-blue-100 text-brass' 
-                          : 'text-ink-muted hover:bg-gray-100'
+                          ? 'bg-sand text-brass border border-brass'
+                          : 'text-ink-muted hover:bg-sand-warm'
                       }`}
                     >
                       Daily
@@ -1165,8 +1121,8 @@ const AdminDashboard: React.FC = () => {
                       onClick={() => setChartPeriod('weekly')}
                       className={`text-sm px-3 py-1 rounded-sm font-medium transition-colors ${
                         chartPeriod === 'weekly' 
-                          ? 'bg-blue-100 text-brass' 
-                          : 'text-ink-muted hover:bg-gray-100'
+                          ? 'bg-sand text-brass border border-brass'
+                          : 'text-ink-muted hover:bg-sand-warm'
                       }`}
                     >
                       Weekly
@@ -1175,8 +1131,8 @@ const AdminDashboard: React.FC = () => {
                       onClick={() => setChartPeriod('monthly')}
                       className={`text-sm px-3 py-1 rounded-sm font-medium transition-colors ${
                         chartPeriod === 'monthly' 
-                          ? 'bg-blue-100 text-brass' 
-                          : 'text-ink-muted hover:bg-gray-100'
+                          ? 'bg-sand text-brass border border-brass'
+                          : 'text-ink-muted hover:bg-sand-warm'
                       }`}
                     >
                       Monthly
@@ -1195,7 +1151,7 @@ const AdminDashboard: React.FC = () => {
                     <span className="text-ink-muted">Service Revenue</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 bg-gradient-to-t from-purple-600 to-purple-400 rounded"></div>
+                    <div className="w-3 h-3 bg-brass rounded-sm"></div>
                     <span className="text-ink-muted">Total Revenue</span>
                   </div>
                 </div>
@@ -1241,14 +1197,14 @@ const AdminDashboard: React.FC = () => {
                         </div>
                         
                         {/* Tooltip */}
-                        <div className="absolute -top-20 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs px-3 py-2 rounded-sm opacity-0 group-hover:opacity-100 transition-opacity z-20 whitespace-nowrap">
+                        <div className="absolute -top-20 left-1/2 transform -translate-x-1/2 bg-ink text-white text-xs px-3 py-2 rounded-sm opacity-0 group-hover:opacity-100 transition-opacity z-20 whitespace-nowrap">
                           <div className="text-center">
                             <div className="font-semibold">{data.day}</div>
                             <div className="text-white/80">Room: ${(data.room * scale.multiplier).toLocaleString()}</div>
                             <div className="text-accent-100">Service: ${(data.service * scale.multiplier).toLocaleString()}</div>
                             <div className="text-brass font-semibold">Total: ${(data.total * scale.multiplier).toLocaleString()}</div>
                           </div>
-                          <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-900"></div>
+                          <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-ink"></div>
                         </div>
 
                         {/* Peak Indicator */}
@@ -1316,7 +1272,7 @@ const AdminDashboard: React.FC = () => {
                       <span>Cleaning (8%)</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 bg-red-400 rounded-full"></div>
+                      <div className="w-3 h-3 bg-brass-deep rounded-sm"></div>
                       <span>Maintenance (2%)</span>
                     </div>
                   </div>
@@ -1364,16 +1320,16 @@ const AdminDashboard: React.FC = () => {
                     { source: 'Direct Website', bookings: 145, percentage: 45, color: 'bg-ink' },
                     { source: 'Booking.com', bookings: 89, percentage: 28, color: 'bg-forest' },
                     { source: 'Expedia', bookings: 52, percentage: 16, color: 'bg-brass' },
-                    { source: 'Walk-in', bookings: 35, percentage: 11, color: 'bg-purple-500' }
+                    { source: 'Walk-in', bookings: 35, percentage: 11, color: 'bg-brass' }
                   ].map((source, index) => (
                     <div key={index} className="space-y-2">
                       <div className="flex justify-between items-center">
                         <span className="text-sm font-medium text-ink">{source.source}</span>
                         <span className="text-sm text-ink-muted">{source.bookings} bookings</span>
                       </div>
-                      <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div className="w-full bg-sand-deep rounded-sm h-2">
                         <div 
-                          className={`h-2 rounded-full ${source.color}`}
+                          className={`h-2 rounded-sm ${source.color}`}
                           style={{ width: `${source.percentage}%` }}
                         ></div>
                       </div>
@@ -1398,7 +1354,7 @@ const AdminDashboard: React.FC = () => {
                   <div className="text-sm text-ink-muted">Operating Costs</div>
                   <div className="text-xs text-brass mt-1">-3% from last month</div>
                 </div>
-                <div className="text-center p-4 bg-purple-50 rounded-sm">
+                <div className="text-center p-4 bg-sand-warm rounded-sm border border-sand-deep">
                   <div className="text-2xl font-bold text-brass">$65,791</div>
                   <div className="text-sm text-ink-muted">Net Profit</div>
                   <div className="text-xs text-brass mt-1">+18% from last month</div>
@@ -1624,7 +1580,7 @@ const AdminDashboard: React.FC = () => {
                     ))}
                   </div>
                   <div>
-                    <button className="w-full bg-red-600 text-white px-4 py-2 rounded-sm hover:bg-red-700 transition-colors">
+                    <button className="w-full btn-secondary text-sm">
                       Reset Admin Password
                     </button>
                   </div>
@@ -1699,7 +1655,7 @@ const AdminDashboard: React.FC = () => {
                   <div className="text-sm text-ink-muted">Current Version</div>
                   <div className="text-xs text-brass mt-1">Latest available</div>
                 </div>
-                <div className="text-center p-4 bg-purple-50 rounded-sm">
+                <div className="text-center p-4 bg-sand-warm rounded-sm border border-sand-deep">
                   <div className="text-2xl font-bold text-brass">2.4GB</div>
                   <div className="text-sm text-ink-muted">Database Size</div>
                   <div className="text-xs text-brass mt-1">15% of limit</div>
@@ -1724,7 +1680,7 @@ const AdminDashboard: React.FC = () => {
       {/* Status Change Modal */}
       {showStatusModal && selectedBooking && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white panel shadow-none p-6 w-full max-w-md mx-4">
+          <div className="panel w-full max-w-md mx-4">
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-lg font-semibold text-ink">Change Booking Status</h3>
               <button
@@ -1744,7 +1700,7 @@ const AdminDashboard: React.FC = () => {
                 <p className="text-sm text-ink-muted mt-2">Guest</p>
                 <p className="font-semibold text-ink">{selectedBooking.guestName}</p>
                 <p className="text-sm text-ink-muted mt-2">Current Status</p>
-                <span className={`status-chip cursor-pointer ${getStatusColor(selectedBooking.status)}`}>
+                <span className={getStatusColor(selectedBooking.status)}>
                   {selectedBooking.status}
                 </span>
               </div>
@@ -1756,7 +1712,7 @@ const AdminDashboard: React.FC = () => {
                     <button
                       key={status}
                       onClick={() => updateBookingStatus(status as Booking['status'])}
-                      className={`w-full text-left px-4 py-3 rounded-sm border-2 hover:border-brass transition-colors ${getStatusColor(status)} border-transparent`}
+                      className={`w-full text-left px-4 py-3 rounded-sm border border-sand-deep hover:border-brass transition-colors ${getStatusColor(status)}`}
                     >
                       <span className="font-medium capitalize">{status}</span>
                       <p className="text-xs mt-1 opacity-75">
@@ -1787,7 +1743,7 @@ const AdminDashboard: React.FC = () => {
       {/* Room Status Change Modal */}
       {showRoomStatusModal && selectedRoom && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white panel shadow-none p-6 w-full max-w-md mx-4">
+          <div className="panel w-full max-w-md mx-4">
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-lg font-semibold text-ink">Change Room Status</h3>
               <button
@@ -1811,7 +1767,7 @@ const AdminDashboard: React.FC = () => {
                 <p className="text-sm text-ink-muted mt-2">Price</p>
                 <p className="font-semibold text-ink">${selectedRoom.price}/night</p>
                 <p className="text-sm text-ink-muted mt-2">Current Status</p>
-                <span className={`status-chip cursor-pointer ${getStatusColor(selectedRoom.status)}`}>
+                <span className={getStatusColor(selectedRoom.status)}>
                   {selectedRoom.status}
                 </span>
               </div>
@@ -1823,7 +1779,7 @@ const AdminDashboard: React.FC = () => {
                     <button
                       key={status}
                       onClick={() => updateRoomStatus(status as Room['status'])}
-                      className={`w-full text-left px-4 py-3 rounded-sm border-2 hover:border-brass transition-colors ${getStatusColor(status)} border-transparent`}
+                      className={`w-full text-left px-4 py-3 rounded-sm border border-sand-deep hover:border-brass transition-colors ${getStatusColor(status)}`}
                     >
                       <span className="font-medium capitalize">{status}</span>
                       <p className="text-xs mt-1 opacity-75">
