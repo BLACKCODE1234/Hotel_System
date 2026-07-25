@@ -1,28 +1,36 @@
-# Hotel System - Frontend Dependencies
-# Install with: npm install
-# Or for each package: npm install <package>
+# LuxuryStay Frontend — dependency reference
+# Primary install (required):
+#   cd client
+#   npm install
+#
+# This file mirrors package.json so both sections document their deps.
+# Do not use pip here — the client is a Create React App / npm project.
 
 # Runtime
-react ^18.2.0
-react-dom ^18.2.0
-react-router-dom ^6.3.0
-lucide-react ^0.263.1
-react-scripts 5.0.1
-typescript ^4.7.4
-web-vitals ^2.1.4
+react@^18.2.0
+react-dom@^18.2.0
+react-router-dom@^6.3.0
+lucide-react@^0.263.1
+react-scripts@5.0.1
+typescript@^4.7.4
+web-vitals@^2.1.4
 
 # Testing
-@testing-library/jest-dom ^5.16.4
-@testing-library/react ^13.3.0
-@testing-library/user-event ^13.5.0
-@types/jest ^27.5.2
+@testing-library/jest-dom@^5.16.4
+@testing-library/react@^13.3.0
+@testing-library/user-event@^13.5.0
+@types/jest@^27.5.2
 
-# Types
-@types/node ^16.11.56
-@types/react ^18.0.17
-@types/react-dom ^18.0.6
+# TypeScript types
+@types/node@^16.11.56
+@types/react@^18.0.17
+@types/react-dom@^18.0.6
 
-# Dev
-autoprefixer ^10.4.8
-postcss ^8.4.16
-tailwindcss ^3.1.8
+# Styling (Tailwind)
+tailwindcss@^3.1.8
+postcss@^8.4.16
+autoprefixer@^10.4.8
+
+# Node tooling
+# Node.js 16+ (18 LTS recommended)
+# npm 8+ or yarn 1.22+

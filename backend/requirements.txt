@@ -1,10 +1,25 @@
-fastapi
-passlib[argon2]
-psycopg2
-python-dotenv
-PyJWT
-argon2-cffi
-uvicorn
-pydantic
-email-validator
-slowapi
+# LuxuryStay Backend — Python dependencies
+# Install: pip install -r requirements.txt
+# Requires: Python 3.10+ and PostgreSQL
+
+# API framework
+fastapi==0.128.0
+uvicorn[standard]==0.40.0
+starlette==0.50.0
+
+# Validation & settings
+pydantic[email]==2.12.5
+email-validator==2.3.0
+python-dotenv==1.1.1
+
+# Auth & security
+PyJWT==2.10.1
+passlib[argon2]==1.7.4
+argon2-cffi==25.1.0
+
+# Database
+psycopg2-binary==2.9.10
+
+# Rate limiting
+slowapi==0.1.10
+limits==5.8.0
