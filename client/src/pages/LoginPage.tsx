@@ -119,7 +119,7 @@ const LoginPage: React.FC = () => {
           </Link>
         </p>
 
-        {process.env.REACT_APP_ENV === 'development' && (
+        {import.meta.env.DEV && (
           <p className="mt-4 text-center text-xs text-ink-muted/80">
             Seed accounts listed in backend/.env.example
           </p>
