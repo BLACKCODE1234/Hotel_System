@@ -41,21 +41,8 @@ const Header: React.FC = () => {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
-          <Link to="/" className="flex flex-col leading-none">
-            <span
-              className={`font-display text-3xl font-semibold tracking-wide ${
-                lightNav ? 'text-white' : 'text-ink'
-              }`}
-            >
-              LuxuryStay
-            </span>
-            <span
-              className={`text-[10px] uppercase tracking-[0.22em] mt-1 ${
-                lightNav ? 'text-brass-soft' : 'text-brass'
-              }`}
-            >
-              Accra
-            </span>
+          <Link to="/" className="flex items-center gap-3">
+            <img src="/logo.png" alt="LuxuryStay" className="h-10 w-auto" />
           </Link>
 
           {isHome ? (
