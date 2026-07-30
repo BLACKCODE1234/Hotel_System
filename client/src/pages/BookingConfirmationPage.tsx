@@ -111,12 +111,12 @@ const BookingConfirmationPage: React.FC = () => {
           location: 'Accra, Ghana',
           address: '123 Independence Avenue, Accra Central, Ghana',
           rating: 4.8,
-          image: '/hotel-exterior.jpg',
+          image: '/homepage.jpg',
         },
         room: {
           name: roomNames[roomType] || 'Deluxe Ocean View',
           type: roomTypes[roomType] || 'Deluxe',
-          image: '/room-deluxe-1.jpg',
+          image: '/userdashboard.jpg',
           amenities: ['Free Wi-Fi', 'Air Conditioning', 'Mini Bar', 'Ocean View', 'Balcony'],
         },
         dates: {

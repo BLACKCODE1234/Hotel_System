@@ -49,11 +49,11 @@ interface Hotel {
 }
 
 const fallbackImages = [
-  '/hotel-exterior.jpg',
-  '/hotel-lobby.jpg',
-  '/hotel-pool.jpg',
-  '/hotel-restaurant.jpg',
-  '/hotel-spa.jpg',
+  '/homepage.jpg',
+  '/signup.jpg',
+  '/userdashboard.jpg',
+  '/userloginpage.jpg',
+  '/homepage.jpg',
 ];
 
 const inputClass =

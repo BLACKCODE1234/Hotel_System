@@ -113,7 +113,7 @@ const HomePage: React.FC = () => {
           <div
             className="min-h-[320px] border border-white/10"
             style={{
-              backgroundImage: "url('/hotel-exterior.jpg')",
+              backgroundImage: "url('/homepage.jpg')",
               backgroundSize: 'cover',
               backgroundPosition: 'center',
             }}

@@ -79,7 +79,7 @@ const UserDashboard: React.FC = () => {
             guests: b.guests || b.adults || 1,
             status: b.status || 'confirmed',
             totalAmount: b.total_amount || b.totalAmount || 0,
-            image: '/homepage.jpg',
+            image: '/userdashboard.jpg',
           }));
           setBookings(mapped);
         }
