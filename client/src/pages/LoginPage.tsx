@@ -4,7 +4,7 @@ import { Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
 const inputClass =
-  'w-full border border-sand-deep bg-white px-3 py-3 text-ink focus:outline-none focus:border-brass';
+  'w-full border border-white/20 bg-white/10 px-3 py-3 text-white placeholder-white/40 focus:outline-none focus:border-brass';
 
 const LoginPage: React.FC = () => {
   const navigate = useNavigate();
@@ -57,10 +57,10 @@ const LoginPage: React.FC = () => {
         backgroundPosition: 'center',
       }}
     >
-      <div className="relative w-full max-w-md bg-sand-warm border border-sand-deep p-8 md:p-10 animate-rise">
-        <p className="section-label mb-2">LuxuryStay</p>
-        <h1 className="font-display text-4xl text-ink mb-2">Sign in</h1>
-        <p className="text-ink-muted mb-8">Access your reservations and guest profile.</p>
+      <div className="relative w-full max-w-md bg-ink/90 border border-white/10 p-8 md:p-10 animate-rise">
+        <p className="section-label text-brass-soft mb-2">LuxuryStay</p>
+        <h1 className="font-display text-4xl text-white mb-2">Sign in</h1>
+        <p className="text-white/60 mb-8">Access your reservations and guest profile.</p>
 
         {showVerificationSuccess && (
           <div className="mb-6 border border-[#C5DED6] bg-[#E8F2EF] px-4 py-3 text-forest text-sm">
@@ -70,7 +70,7 @@ const LoginPage: React.FC = () => {
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="block text-xs uppercase tracking-wider text-ink-muted mb-2">Email</label>
+            <label className="block text-xs uppercase tracking-wider text-white/60 mb-2">Email</label>
             <input
               type="email"
               name="email"
@@ -83,7 +83,7 @@ const LoginPage: React.FC = () => {
           </div>
 
           <div>
-            <label className="block text-xs uppercase tracking-wider text-ink-muted mb-2">Password</label>
+            <label className="block text-xs uppercase tracking-wider text-white/60 mb-2">Password</label>
             <div className="relative">
               <input
                 type={showPassword ? 'text' : 'password'}
@@ -96,7 +96,7 @@ const LoginPage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-ink-muted"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-white/50"
                 aria-label="Toggle password"
               >
                 {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -112,7 +112,7 @@ const LoginPage: React.FC = () => {
           </button>
         </form>
 
-        <p className="mt-8 text-center text-sm text-ink-muted">
+        <p className="mt-8 text-center text-sm text-white/60">
           New guest?{' '}
           <Link to="/signup" className="text-brass hover:text-brass-deep font-medium">
             Create an account
@@ -120,7 +120,7 @@ const LoginPage: React.FC = () => {
         </p>
 
         {import.meta.env.DEV && (
-          <p className="mt-4 text-center text-xs text-ink-muted/80">
+          <p className="mt-4 text-center text-xs text-white/40">
             Seed accounts listed in backend/.env.example
           </p>
         )}

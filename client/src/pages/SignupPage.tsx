@@ -4,7 +4,7 @@ import { Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
 const inputClass =
-  'w-full border border-sand-deep bg-white px-3 py-3 text-ink focus:outline-none focus:border-brass';
+  'w-full border border-white/20 bg-white/10 px-3 py-3 text-white placeholder-white/40 focus:outline-none focus:border-brass';
 
 const SignupPage: React.FC = () => {
   const navigate = useNavigate();
@@ -62,39 +62,39 @@ const SignupPage: React.FC = () => {
         backgroundPosition: 'center',
       }}
     >
-      <div className="relative w-full max-w-lg bg-sand-warm border border-sand-deep p-8 md:p-10 animate-rise">
-        <p className="section-label mb-2">LuxuryStay</p>
-        <h1 className="font-display text-4xl text-ink mb-2">Create account</h1>
-        <p className="text-ink-muted mb-8">Join to manage bookings and guest preferences.</p>
+      <div className="relative w-full max-w-lg bg-ink/90 border border-white/10 p-8 md:p-10 animate-rise">
+        <p className="section-label text-brass-soft mb-2">LuxuryStay</p>
+        <h1 className="font-display text-4xl text-white mb-2">Create account</h1>
+        <p className="text-white/60 mb-8">Join to manage bookings and guest preferences.</p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs uppercase tracking-wider text-ink-muted mb-2">First name</label>
+              <label className="block text-xs uppercase tracking-wider text-white/60 mb-2">First name</label>
               <input name="first_name" value={formData.first_name} onChange={onChange} className={inputClass} />
               {errors.first_name && <p className="mt-1 text-sm text-[#8B3A32]">{errors.first_name}</p>}
             </div>
             <div>
-              <label className="block text-xs uppercase tracking-wider text-ink-muted mb-2">Last name</label>
+              <label className="block text-xs uppercase tracking-wider text-white/60 mb-2">Last name</label>
               <input name="last_name" value={formData.last_name} onChange={onChange} className={inputClass} />
               {errors.last_name && <p className="mt-1 text-sm text-[#8B3A32]">{errors.last_name}</p>}
             </div>
           </div>
 
           <div>
-            <label className="block text-xs uppercase tracking-wider text-ink-muted mb-2">Phone</label>
+            <label className="block text-xs uppercase tracking-wider text-white/60 mb-2">Phone</label>
             <input name="mobile_number" value={formData.mobile_number} onChange={onChange} className={inputClass} />
             {errors.mobile_number && <p className="mt-1 text-sm text-[#8B3A32]">{errors.mobile_number}</p>}
           </div>
 
           <div>
-            <label className="block text-xs uppercase tracking-wider text-ink-muted mb-2">Email</label>
+            <label className="block text-xs uppercase tracking-wider text-white/60 mb-2">Email</label>
             <input type="email" name="email" value={formData.email} onChange={onChange} className={inputClass} />
             {errors.email && <p className="mt-1 text-sm text-[#8B3A32]">{errors.email}</p>}
           </div>
 
           <div>
-            <label className="block text-xs uppercase tracking-wider text-ink-muted mb-2">Password</label>
+            <label className="block text-xs uppercase tracking-wider text-white/60 mb-2">Password</label>
             <div className="relative">
               <input
                 type={showPassword ? 'text' : 'password'}
@@ -105,7 +105,7 @@ const SignupPage: React.FC = () => {
               />
               <button
                 type="button"
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-ink-muted"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-white/50"
                 onClick={() => setShowPassword(!showPassword)}
               >
                 {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -115,7 +115,7 @@ const SignupPage: React.FC = () => {
           </div>
 
           <div>
-            <label className="block text-xs uppercase tracking-wider text-ink-muted mb-2">Confirm password</label>
+            <label className="block text-xs uppercase tracking-wider text-white/60 mb-2">Confirm password</label>
             <div className="relative">
               <input
                 type={showConfirmPassword ? 'text' : 'password'}
@@ -126,7 +126,7 @@ const SignupPage: React.FC = () => {
               />
               <button
                 type="button"
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-ink-muted"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-white/50"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
               >
                 {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -144,7 +144,7 @@ const SignupPage: React.FC = () => {
           </button>
         </form>
 
-        <p className="mt-8 text-center text-sm text-ink-muted">
+        <p className="mt-8 text-center text-sm text-white/60">
           Already have an account?{' '}
           <Link to="/login" className="text-brass hover:text-brass-deep font-medium">
             Sign in
