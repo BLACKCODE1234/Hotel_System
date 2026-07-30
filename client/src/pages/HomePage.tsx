@@ -36,22 +36,49 @@ const HomePage: React.FC = () => {
         </div>
       </section>
 
-      <section className="py-20 bg-sand-warm border-b border-sand-deep">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section
+        className="relative min-h-[60vh] flex items-center justify-center text-white"
+        style={{
+          backgroundImage: "linear-gradient(180deg, rgba(20,33,43,0.4), rgba(20,33,43,0.75)), url('/admindashboard.jpg')",
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundAttachment: 'fixed',
+        }}
+      >
+        <div className="relative z-10 text-center max-w-3xl mx-auto px-4 animate-rise">
+          <p className="section-label text-brass-soft mb-4">Experience</p>
+          <h2 className="font-display text-4xl md:text-6xl font-semibold leading-[1.1] mb-5">
+          Where comfort meets the coast
+          </h2>
+          <p className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto font-light leading-relaxed">
+          Every stay is crafted around the little details that make a trip memorable.
+          </p>
+        </div>
+      </section>
+
+      <section
+        className="relative py-20 text-white border-b border-white/10"
+        style={{
+          backgroundImage: "linear-gradient(180deg, rgba(20,33,43,0.6), rgba(20,33,43,0.8)), url('/signup.jpg')",
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}
+      >
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-12 items-end">
             <div>
-              <p className="section-label mb-3">Find your room</p>
-              <h2 className="page-title mb-4">Choose the stay that fits your trip</h2>
-              <p className="text-ink-muted text-lg max-w-xl leading-relaxed">
+              <p className="section-label text-brass-soft mb-3">Find your room</p>
+              <h2 className="font-display text-4xl md:text-5xl font-semibold mb-4">Choose the stay that fits your trip</h2>
+              <p className="text-white/75 text-lg max-w-xl leading-relaxed">
                 Browse suites by type and rate, then reserve with clear dates and guest details.
               </p>
             </div>
-            <div className="panel flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
+            <div className="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between bg-black/30 border border-white/10 p-6">
               <div>
-                <p className="text-sm text-ink-muted">Independence Avenue, Accra</p>
-                <p className="font-display text-2xl text-ink mt-1">Rooms from $149 / night</p>
+                <p className="text-sm text-white/60">Independence Avenue, Accra</p>
+                <p className="font-display text-2xl text-white mt-1">Rooms from $149 / night</p>
               </div>
-              <Link to="/rooms" className="btn-primary whitespace-nowrap">
+              <Link to="/rooms" className="inline-flex items-center justify-center px-6 py-3 border border-brass text-brass-soft font-semibold tracking-wide hover:bg-brass hover:text-ink transition-colors whitespace-nowrap">
                 Browse rooms
               </Link>
             </div>
@@ -59,12 +86,19 @@ const HomePage: React.FC = () => {
         </div>
       </section>
 
-      <section className="py-24 bg-sand">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section
+        className="relative py-24 text-white"
+        style={{
+          backgroundImage: "linear-gradient(180deg, rgba(20,33,43,0.55), rgba(20,33,43,0.8)), url('/userdashboard.jpg')",
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}
+      >
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-2xl mb-14">
-            <p className="section-label mb-3">On property</p>
-            <h2 className="page-title mb-4">What guests use every day</h2>
-            <p className="text-ink-muted text-lg leading-relaxed">
+            <p className="section-label text-brass-soft mb-3">On property</p>
+            <h2 className="font-display text-4xl md:text-5xl font-semibold mb-4">What guests use every day</h2>
+            <p className="text-white/75 text-lg leading-relaxed">
               Practical amenities for business trips and quiet weekends—kept simple and reliable.
             </p>
           </div>
@@ -75,10 +109,10 @@ const HomePage: React.FC = () => {
               { icon: Car, title: 'Airport transfer', copy: 'Arranged rides to and from Kotoka.' },
               { icon: Dumbbell, title: 'Fitness room', copy: 'Open early for guests who travel with a routine.' },
             ].map(({ icon: Icon, title, copy }) => (
-              <div key={title} className="border-t border-sand-deep pt-6">
-                <Icon className="h-6 w-6 text-brass mb-4" />
-                <h3 className="font-display text-2xl text-ink mb-2">{title}</h3>
-                <p className="text-ink-muted leading-relaxed">{copy}</p>
+              <div key={title} className="border-t border-white/20 pt-6">
+                <Icon className="h-6 w-6 text-brass-soft mb-4" />
+                <h3 className="font-display text-2xl text-white mb-2">{title}</h3>
+                <p className="text-white/70 leading-relaxed">{copy}</p>
               </div>
             ))}
           </div>
@@ -121,14 +155,21 @@ const HomePage: React.FC = () => {
         </div>
       </section>
 
-      <section className="py-20 bg-sand-warm">
-        <div className="max-w-3xl mx-auto px-4 text-center">
-          <p className="section-label mb-3">Reservations</p>
-          <h2 className="page-title mb-5">Ready when you are</h2>
-          <p className="text-ink-muted text-lg mb-8 leading-relaxed">
+      <section
+        className="relative py-20 text-white"
+        style={{
+          backgroundImage: "linear-gradient(180deg, rgba(20,33,43,0.5), rgba(20,33,43,0.8)), url('/userloginpage.jpg')",
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}
+      >
+        <div className="relative z-10 max-w-3xl mx-auto px-4 text-center">
+          <p className="section-label text-brass-soft mb-3">Reservations</p>
+          <h2 className="font-display text-4xl md:text-5xl font-semibold mb-5">Ready when you are</h2>
+          <p className="text-white/75 text-lg mb-8 leading-relaxed">
             Select dates, choose a room, and confirm your stay in a few clear steps.
           </p>
-          <Link to="/booking" className="btn-primary">
+          <Link to="/booking" className="inline-flex items-center justify-center px-8 py-3.5 border border-brass text-brass-soft font-semibold tracking-wide hover:bg-brass hover:text-ink transition-colors">
             Start booking
           </Link>
         </div>
