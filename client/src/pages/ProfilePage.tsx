@@ -8,8 +8,8 @@ import {
   Camera,
   Upload,
   Save,
-  Facebook,
-  Chrome,
+  Globe,
+  CircleUser,
   ArrowLeft
 } from 'lucide-react';
 
@@ -329,8 +329,8 @@ const ProfilePage: React.FC = () => {
                 <h4 className="section-label mb-4">Connected accounts</h4>
                 <div className="space-y-3">
                   {[
-                    { icon: Chrome, name: 'Google' },
-                    { icon: Facebook, name: 'Facebook' },
+                    { icon: Globe, name: 'Google' },
+                    { icon: CircleUser, name: 'Facebook' },
                   ].map(({ icon: Icon, name }) => (
                     <div
                       key={name}
