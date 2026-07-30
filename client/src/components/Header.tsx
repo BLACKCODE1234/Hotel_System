@@ -43,6 +43,14 @@ const Header: React.FC = () => {
         <div className="flex justify-between items-center h-20">
           <Link to="/" className="flex items-center gap-3">
             <img src="/logo.png" alt="LuxuryStay" className="h-10 w-auto" />
+            <span className="flex flex-col leading-none">
+              <span className="font-display text-2xl font-semibold tracking-wide text-ink">
+                LuxuryStay
+              </span>
+              <span className="text-[9px] uppercase tracking-[0.22em] text-brass">
+                Accra
+              </span>
+            </span>
           </Link>
 
           {isHome ? (
