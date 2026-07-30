@@ -4,7 +4,7 @@ import { Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
 const inputClass =
-  'w-full border border-white/20 bg-white/10 px-3 py-3 text-white placeholder-white/40 focus:outline-none focus:border-brass';
+  'w-full border border-white/20 bg-white/10 px-3 py-3 text-white font-semibold placeholder-white/40 focus:outline-none focus:border-brass';
 
 const LoginPage: React.FC = () => {
   const navigate = useNavigate();
@@ -49,7 +49,7 @@ const LoginPage: React.FC = () => {
 
   return (
     <div
-      className="min-h-[calc(100vh-5rem)] flex items-center justify-center py-16 px-4 relative"
+      className="min-h-full flex items-center justify-center py-16 px-4 relative"
       style={{
         backgroundImage:
           "linear-gradient(180deg, rgba(20,33,43,0.55), rgba(20,33,43,0.72)), url('/userloginpage.jpg')",
@@ -57,10 +57,10 @@ const LoginPage: React.FC = () => {
         backgroundPosition: 'center',
       }}
     >
-      <div className="relative w-full max-w-md bg-ink/90 border border-white/10 p-8 md:p-10 animate-rise">
+      <div className="relative w-full max-w-md bg-ink/40 border border-white/10 p-8 md:p-10 animate-rise">
         <p className="section-label text-brass-soft mb-2">LuxuryStay</p>
         <h1 className="font-display text-4xl text-white mb-2">Sign in</h1>
-        <p className="text-white/60 mb-8">Access your reservations and guest profile.</p>
+        <p className="text-white mb-8">Access your reservations and guest profile.</p>
 
         {showVerificationSuccess && (
           <div className="mb-6 border border-[#C5DED6] bg-[#E8F2EF] px-4 py-3 text-forest text-sm">
@@ -70,7 +70,7 @@ const LoginPage: React.FC = () => {
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="block text-xs uppercase tracking-wider text-white/60 mb-2">Email</label>
+            <label className="block text-xs uppercase tracking-wider text-white font-semibold mb-2">Email</label>
             <input
               type="email"
               name="email"
@@ -83,7 +83,7 @@ const LoginPage: React.FC = () => {
           </div>
 
           <div>
-            <label className="block text-xs uppercase tracking-wider text-white/60 mb-2">Password</label>
+            <label className="block text-xs uppercase tracking-wider text-white font-semibold mb-2">Password</label>
             <div className="relative">
               <input
                 type={showPassword ? 'text' : 'password'}
@@ -112,7 +112,7 @@ const LoginPage: React.FC = () => {
           </button>
         </form>
 
-        <p className="mt-8 text-center text-sm text-white/60">
+        <p className="mt-8 text-center text-sm text-white">
           New guest?{' '}
           <Link to="/signup" className="text-brass hover:text-brass-deep font-medium">
             Create an account

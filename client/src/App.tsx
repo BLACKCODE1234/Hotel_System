@@ -2,12 +2,14 @@ import React from 'react';
 import { BrowserRouter as Router, Navigate, Routes, Route, useLocation } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import Header from './components/Header';
+import Footer from './components/Footer';
 import HomePage from './pages/HomePage';
 import RoomsPage from './pages/RoomsPage';
 import BookingPage from './pages/BookingPage';
 import SignupPage from './pages/SignupPage';
 import LoginPage from './pages/LoginPage';
 import EmailVerificationPage from './pages/EmailVerificationPage';
+import OtpVerificationPage from './pages/OtpVerificationPage';
 import UserDashboard from './pages/UserDashboard';
 import ProfilePage from './pages/ProfilePage';
 import HistoryPage from './pages/HistoryPage';
@@ -67,15 +69,17 @@ function AppContent() {
                       location.pathname === '/staff';
 
   return (
-    <div className="min-h-screen bg-sand text-ink">
-      {!isAdminRoute && <Header />}
-      <Routes>
+      <div className="min-h-screen bg-sand text-ink flex flex-col">
+        {!isAdminRoute && <Header />}
+        <div className="flex-1">
+          <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/rooms" element={<RoomsPage />} />
           <Route path="/booking" element={<ProtectedRoute roles={['user', 'admin', 'superadmin']}><BookingPage /></ProtectedRoute>} />
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/email-verification" element={<EmailVerificationPage />} />
+          <Route path="/otp-verification" element={<OtpVerificationPage />} />
           <Route path="/dashboard" element={<ProtectedRoute roles={['user', 'admin', 'superadmin']}><UserDashboard /></ProtectedRoute>} />
           <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
           <Route path="/history" element={<ProtectedRoute roles={['user', 'admin', 'superadmin']}><HistoryPage /></ProtectedRoute>} />
@@ -91,6 +95,8 @@ function AppContent() {
           <Route path="/superadmin" element={<ProtectedRoute roles={['superadmin']}><SuperAdminDashboard /></ProtectedRoute>} />
           <Route path="/staff" element={<ProtectedRoute roles={['staff', 'admin']}><StaffDashboard /></ProtectedRoute>} />
         </Routes>
+        </div>
+        {!isAdminRoute && <Footer />}
     </div>
   );
 }

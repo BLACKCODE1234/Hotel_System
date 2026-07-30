@@ -160,7 +160,7 @@ const EmailVerificationPage: React.FC = () => {
 
   return (
     <div
-      className="min-h-[calc(100vh-5rem)] flex items-center justify-center py-16 px-4 relative"
+      className="min-h-full flex items-center justify-center py-16 px-4 relative"
       style={{
         backgroundImage:
           "linear-gradient(180deg, rgba(20,33,43,0.55), rgba(20,33,43,0.72)), url('/signup.jpg')",
