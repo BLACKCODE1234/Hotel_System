@@ -85,33 +85,33 @@ const HomePage: React.FC = () => {
         </div>
       </section>
 
-      <section className="py-24 bg-ink text-white">
+      <section className="py-24 bg-sand text-ink">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-12 items-center">
           <div>
-            <p className="section-label text-brass-soft mb-3">Location</p>
-            <h2 className="font-display text-4xl md:text-5xl font-semibold mb-5">
+            <p className="section-label text-brass mb-3">Location</p>
+            <h2 className="font-display text-4xl md:text-5xl font-semibold mb-5 text-ink">
               Central Accra, minutes from the coast
             </h2>
-            <p className="text-white/75 text-lg leading-relaxed mb-8">
+            <p className="text-ink-muted text-lg leading-relaxed mb-10">
               Stay close to Independence Avenue with easy access to business districts and the Atlantic shoreline.
             </p>
-            <div className="space-y-3 text-white/80">
+            <div className="space-y-3">
               <p className="flex items-center gap-3">
-                <MapPin className="h-5 w-5 text-brass-soft" />
+                <MapPin className="h-5 w-5 text-brass shrink-0" />
                 123 Independence Avenue, Accra Central
               </p>
               <p className="flex items-center gap-3">
-                <Phone className="h-5 w-5 text-brass-soft" />
+                <Phone className="h-5 w-5 text-brass shrink-0" />
                 +233 30 123 4567
               </p>
               <p className="flex items-center gap-3">
-                <Mail className="h-5 w-5 text-brass-soft" />
+                <Mail className="h-5 w-5 text-brass shrink-0" />
                 reservations@luxurystay.com
               </p>
             </div>
           </div>
           <div
-            className="min-h-[320px] border border-white/10"
+            className="min-h-[320px] border border-sand-deep"
             style={{
               backgroundImage: "url('/homepage.jpg')",
               backgroundSize: 'cover',
